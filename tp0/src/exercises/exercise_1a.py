@@ -4,9 +4,9 @@ from src.pokemon import PokemonFactory, StatusEffect
 import pandas as pd
 
 
-CONFIG_FILE_PATH="../config/1a_config.json"
-POKEMON_JSON="../../pokemon.json"
-OUTPUT_FILE_PATH="../output/1a_results.csv"
+CONFIG_FILE_PATH="src/config/1a_config.json"
+POKEMON_JSON="pokemon.json"
+OUTPUT_FILE_PATH="src/output/1a_results.csv"
 
 factory = PokemonFactory(POKEMON_JSON)
 with open(CONFIG_FILE_PATH, "r") as f:
