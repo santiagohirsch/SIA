@@ -1,4 +1,6 @@
 import json
+import matplotlib.pyplot as plt
+
 from src.catching import attempt_catch
 from src.pokemon import PokemonFactory, StatusEffect
 import pandas as pd
@@ -6,24 +8,30 @@ import pandas as pd
 if __name__ == "__main__":
     
     ATTEMPS=100
-    CONFIG_FILE_PATH="src/config/1b_config.json"
     POKEMON_JSON="pokemon.json"
-    OUTPUT_FILE_PATH="src/output/1b_results.csv"
 
     factory = PokemonFactory(POKEMON_JSON)
-    with open(CONFIG_FILE_PATH, "r") as f:
-            data = json.load(f)
-            POKEBALLS = data["pokeball"]
-            POKEMONS = data["pokemon"]
-    results = []
+    catch_per_status = []
+    status_names = []
+    for status in StatusEffect:
+        jolteon = factory.create("jolteon", 100, status, 1.0) 
+        count = 0
+        for _ in range(1000):
+            catch, _ = attempt_catch(jolteon, "pokeball")
+            if catch:
+                count += 1
+        catch_per_status.append(count)
+        if status != StatusEffect.NONE:
+            status_names.append(status.name)
+    
+    normalized_counts = [count / catch_per_status[-1] for count in catch_per_status]
 
-    for pokemon_name in POKEMONS:
-        pokemon = factory.create(pokemon_name, 100, StatusEffect.NONE, 1)
-        for pokeball in POKEBALLS:
-            for _ in range(ATTEMPS):
-                    catch_result = attempt_catch(pokemon, pokeball)
-                    results.append({"Pokemon" : pokemon_name, "Pokeball" : pokeball, "Catch result" : catch_result[0]})
+    del normalized_counts[-1]
 
-
-    df = pd.DataFrame(results)
-    df.to_csv(OUTPUT_FILE_PATH, index=False)
+    plt.bar(status_names, normalized_counts)
+    for i, count in enumerate(normalized_counts):
+        plt.text(i, count, f'{count:.2f}', ha='center', va='bottom', fontsize=10)
+    plt.xlabel('Status Effect')
+    plt.ylabel('Catch Ratio')
+    plt.title('Catch Ratio for Different Status Effects on Jolteon')
+    plt.show()
