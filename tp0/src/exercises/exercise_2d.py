@@ -22,7 +22,7 @@ for pokemon_name in POKEMONS:
                         pokemon = factory.create(pokemon_name, 100, status, hp/100)
                         for _ in range(100):
                             catch_result = attempt_catch(pokemon, pokeball)
-                            results.append({"Pokemon" : pokemon_name, "HP" : hp, "Status Effect" : status.name, "Pokeball" : pokeball, "Catch result" : catch_result[0]})
+                            results.append({"Pokemon" : pokemon_name, "HP" : hp, "Status Effect" : status, "Pokeball" : pokeball, "Catch result" : catch_result[0]})
 
         
 
