@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 def plot_catches_by_hp_for_pokemon(df, pokemon_name, ax):
     # Filter the results for the specified Pokémon
@@ -24,8 +25,9 @@ for pokemon in df["Pokemon"].unique():
 
 # Customize the plot
 plt.xlabel('Pokemon HP')
-plt.ylabel('Capture Percentage')
-plt.title('Capture Percentage based on HP')
+plt.ylabel('Capture Rate (%)')
+plt.yticks(np.arange(0, 21, 1))
+plt.title('Capture Rate based on HP')
 plt.legend()
 plt.grid(True)
 

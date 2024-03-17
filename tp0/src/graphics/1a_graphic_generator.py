@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-CSV_PATH="src/output/1b_results.csv"
+CSV_PATH="src/output/1a_results.csv"
 ATTEMPTS=100
 
 csv = pd.read_csv(CSV_PATH)
@@ -19,7 +19,7 @@ for pokemon_name in pokemons:
         pokemon_info = csv[csv["Pokemon"] == pokemon_name]
         pokeball_info = pokemon_info[pokemon_info["Pokeball"] == pokeball]
         results = pokeball_info[pokeball_info["Catch result"] == True]
-        probabilities_per_pokeball[pokeball] += (len(results)/ATTEMPTS,)
+        probabilities_per_pokeball[pokeball] += (len(results),)
 
 
 x_spacing = 1.3
@@ -35,10 +35,12 @@ for attribute, measurement in probabilities_per_pokeball.items():
     ax.bar_label(rects, padding=3)
     multiplier += 1
 
-ax.set_ylabel('Capture rate')
-ax.set_title('Average Capture rate for each Pokeball')
+ax.set_ylabel('Capture Rate (%)')
+ax.set_title('Average Capture Rate for each Pokeball')
 ax.set_xticks(x + width, pokemons)
 ax.legend(loc='upper right', ncols=2)
-ax.set_ylim(0, 1)
+ax.set_yticks(np.arange(0, 101, 5))
+ax.set_axisbelow(True)
+plt.grid(True, axis='y')
 
 plt.show()

@@ -4,9 +4,9 @@ from src.pokemon import PokemonFactory, StatusEffect
 import pandas as pd
 
 
-CONFIG_FILE_PATH="src/config/2d_config.json"
+CONFIG_FILE_PATH="src/config/1a_config.json"
 POKEMON_JSON="pokemon.json"
-OUTPUT_FILE_PATH="src/output/2d_results.csv"
+OUTPUT_FILE_PATH="src/output/1a_results.csv"
 
 factory = PokemonFactory(POKEMON_JSON)
 with open(CONFIG_FILE_PATH, "r") as f:
@@ -16,15 +16,11 @@ with open(CONFIG_FILE_PATH, "r") as f:
 results = []
 
 for pokemon_name in POKEMONS:
-      for hp in range(1, 100):
-            for status in StatusEffect:
-                  for pokeball in POKEBALLS:
-                        pokemon = factory.create(pokemon_name, 100, status, hp/100)
-                        for _ in range(100):
-                            catch_result = attempt_catch(pokemon, pokeball)
-                            results.append({"Pokemon" : pokemon_name, "HP" : hp, "Status Effect" : status.name, "Pokeball" : pokeball, "Catch result" : catch_result[0]})
-
-        
+      pokemon = factory.create(pokemon_name, 100, StatusEffect.NONE, 1)
+      for pokeball in POKEBALLS:
+            for _ in range(100):
+                  catch_result = attempt_catch(pokemon, pokeball)
+                  results.append({"Pokemon" : pokemon_name, "Pokeball" : pokeball, "Catch result" : catch_result[0]})
 
 
 df = pd.DataFrame(results)

@@ -32,8 +32,11 @@ for pokemon_name in pokemons:
 
 for pokeball in pokeballs:
     if pokeball != BASE_POKEBALL:
-        probabilities_per_pokeball[pokeball] = np.array(probabilities_per_pokeball[pokeball]) / np.array(
-            probabilities_per_pokeball[BASE_POKEBALL])
+        base_probabilities = np.array(probabilities_per_pokeball[BASE_POKEBALL])
+        pokeball_probabilities = np.array(probabilities_per_pokeball[pokeball])
+        divider = base_probabilities != 0
+        probabilities_per_pokeball[pokeball] = np.where(divider, pokeball_probabilities / base_probabilities, pokeball_probabilities*100)
+        probabilities_per_pokeball[pokeball] = np.round(probabilities_per_pokeball[pokeball], 3)
 
 del probabilities_per_pokeball[BASE_POKEBALL]
 
@@ -51,10 +54,14 @@ for attribute, measurement in probabilities_per_pokeball.items():
     ax.bar_label(rects, padding=3)
     multiplier += 1
 
-ax.set_ylabel('Capture rate')
-ax.set_title('Average Capture rate for each Pokeball')
+
+
+ax.set_ylabel('Capture Rate (%)')
+ax.set_title('Average Capture Rate for each Pokeball relative to the base pokeball')
 ax.set_xticks(x + width, pokemons)
 ax.legend(loc='upper right', ncols=2)
-ax.set_ylim(0, 10)
-
+max_value = max(max(measurement) for measurement in probabilities_per_pokeball.values())
+ax.set_yticks(np.arange(0, max_value + 1.25, 0.25))
+ax.set_axisbelow(True)
+plt.grid(True, axis='y')
 plt.show()

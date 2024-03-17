@@ -17,7 +17,7 @@ with open(CONFIG_FILE_PATH, "r") as f:
 results = []
 
 for pokemon_name in POKEMONS:
-    for hp in range(1, 100):
+    for hp in range(1, 101):
       pokemon = factory.create(pokemon_name, 100, StatusEffect.NONE, hp/100)
       for _ in range(1000):
         catch_result = attempt_catch(pokemon, POKEBALL)
