@@ -1,0 +1,8 @@
+{
+    "pokemon":"caterpie",
+    "base_pokeball":"pokeball",
+    "alternative_pokeball":"ultraball",
+    "alternative_level":1,
+    "alternative_hp":1,
+    "alternative_status":"FREEZE"
+}
