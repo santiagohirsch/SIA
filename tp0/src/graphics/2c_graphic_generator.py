@@ -19,23 +19,43 @@ if not df.empty:
     # Combinar las columnas 'Pokemon', 'HP', 'Status Effect' y 'Pokeball' en una sola columna
     grouped['Pokemon Details'] =  "Pokemon: " + pokemon + ", Level: " + grouped["Level"].astype(str) + ", HP: " + grouped['HP'].astype(str) + ", Status Effect: " + grouped['Status Effect'] + ", Pokeball: " + grouped['Pokeball']
 
-    # Graficar el top 5 para cada Pokémon
+    # Combinar las columnas 'Pokemon', 'HP', 'Status Effect' y 'Pokeball' en una sola columna
+    # Only include the attributes that have been changed from the default values
+    # Check if all values are default
+    default_values = {'Level': 100, 'HP': 100, 'Status Effect': 'NONE', 'Pokeball': 'pokeball'}
+
+
+    grouped['Pokemon Details'] = grouped.apply(lambda row: ", ".join([f"{attr}: {row[attr]}" for attr in default_values if row[attr] != default_values[attr]]) if any(row[attr] != default_values[attr] for attr in default_values) else 'Default', axis=1)
+
+    grouped = grouped.sort_values(by='Pokemon Details', key=lambda x: x != 'Default')
     plt.figure(figsize=(12, 6))
     ax = plt.gca()
-
-
     rects = ax.bar(grouped['Pokemon Details'], grouped['Successful Catches'], label=pokemon)
     ax.bar_label(rects, padding=3)
 
     ax.set_ylabel("Capture Rate (%)")
     ax.set_yticks(np.arange(0, 101, 5))
-    ax.set_xlabel("Pokemon Details")
+    ax.set_xlabel("Changed Attributes")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', wrap=True)
     ax.legend()
     ax.set_axisbelow(True)
     plt.grid(True, axis='y')
-    plt.title("Top 5 combinations for each Pokemon")
+    plt.title("Capture Rate for each combination of changed attributes")
     plt.tight_layout()
     plt.show()
+
+    # rects = ax.bar(grouped['Pokemon Details'], grouped['Successful Catches'], label=pokemon)
+    # ax.bar_label(rects, padding=3)
+
+    # ax.set_ylabel("Capture Rate (%)")
+    # ax.set_yticks(np.arange(0, 101, 5))
+    # ax.set_xlabel("Pokemon Details")
+    # ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', wrap=True)
+    # ax.legend()
+    # ax.set_axisbelow(True)
+    # plt.grid(True, axis='y')
+    # plt.title("Top 5 combinations for each Pokemon")
+    # plt.tight_layout()
+    # plt.show()
 else:
     print("El DataFrame está vacío. No hay datos para graficar.")
