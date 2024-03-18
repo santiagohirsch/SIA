@@ -28,6 +28,9 @@ if __name__ == "__main__":
 
     del normalized_counts[-1]
 
+    ax = plt.gca()
+    ax.set_axisbelow(True)
+    plt.grid(True, axis='y')
     plt.bar(status_names, normalized_counts)
     for i, count in enumerate(normalized_counts):
         plt.text(i, count, f'{count:.2f}', ha='center', va='bottom', fontsize=10)

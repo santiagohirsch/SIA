@@ -1,56 +1,40 @@
 import json
+import matplotlib.pyplot as plt
+
 from src.catching import attempt_catch
 from src.pokemon import PokemonFactory, StatusEffect
 import pandas as pd
 
-
-CONFIG_FILE_PATH="src/config/2c_config.json"
-POKEMON_JSON="pokemon.json"
-OUTPUT_FILE_PATH="src/output/2c_results.csv"
-
-factory = PokemonFactory(POKEMON_JSON)
-with open(CONFIG_FILE_PATH, "r") as f:
-    data = json.load(f)
-    POKEMON = data["pokemon"]
-    BASE_POKEBALL = data["base_pokeball"]
-    ALT_POKEBALL = data["alternative_pokeball"]
-    ALT_LEVEL = data["alternative_level"]
-    ALT_HP = data["alternative_hp"]
-    ALT_STATUS = data["alternative_status"]
-results = []
-
-
-ORIGINAL_HP = 1
-HP_PERCENTAGE = 100
-
-
-# Default loop
-pokemon = factory.create(POKEMON, 100, StatusEffect.NONE, ORIGINAL_HP)
-for _ in range(100):
-    catch_result = attempt_catch(pokemon, BASE_POKEBALL)
-    results.append({"Pokemon" : POKEMON, "Level" : pokemon.level, "HP" : HP_PERCENTAGE, "Status Effect" : pokemon.status_effect.name, "Pokeball" : BASE_POKEBALL, "Catch result" : catch_result[0]})
-# Loop with alternative pokeball
-for _ in range(100):
-    catch_result = attempt_catch(pokemon, ALT_POKEBALL)
-    results.append({"Pokemon" : POKEMON, "Level" : pokemon.level, "HP" : HP_PERCENTAGE, "Status Effect" : pokemon.status_effect.name, "Pokeball" : ALT_POKEBALL, "Catch result" : catch_result[0]})
-# Loop with alternative level
-pokemon_alt_level = factory.create(POKEMON, ALT_LEVEL, StatusEffect.NONE, 1)
-for _ in range(100):
-    catch_result = attempt_catch(pokemon_alt_level, BASE_POKEBALL)
-    results.append({"Pokemon" : POKEMON, "Level" : ALT_LEVEL, "HP" : HP_PERCENTAGE, "Status Effect" : pokemon_alt_level.status_effect.name, "Pokeball" : BASE_POKEBALL, "Catch result" : catch_result[0]})
-# Loop with alternative HP
-pokemon_alt_hp = factory.create(POKEMON, 100, StatusEffect.NONE, ALT_HP/100)
-for _ in range(100):
-    catch_result = attempt_catch(pokemon_alt_hp, BASE_POKEBALL)
-    results.append({"Pokemon" : POKEMON, "Level" : pokemon_alt_hp.level, "HP" : ALT_HP, "Status Effect" : pokemon_alt_hp.status_effect.name, "Pokeball" : BASE_POKEBALL, "Catch result" : catch_result[0]})
-# Loop with alternative status
-pokemon_alt_status = factory.create(POKEMON, 100, StatusEffect[ALT_STATUS], 1)
-for _ in range(100):
-    catch_result = attempt_catch(pokemon_alt_status, BASE_POKEBALL)
-    results.append({"Pokemon" : POKEMON, "Level" : pokemon_alt_status.level, "HP" : HP_PERCENTAGE, "Status Effect" : ALT_STATUS, "Pokeball" : BASE_POKEBALL, "Catch result" : catch_result[0]})
+if __name__ == "__main__":
     
+    ATTEMPS=100
+    POKEMON_JSON="pokemon.json"
 
+    factory = PokemonFactory(POKEMON_JSON)
+    catch_per_status = []
+    status_names = []
+    for status in StatusEffect:
+        jolteon = factory.create("jolteon", 100, status, 1.0) 
+        count = 0
+        for _ in range(1000):
+            catch, _ = attempt_catch(jolteon, "pokeball")
+            if catch:
+                count += 1
+        catch_per_status.append(count)
+        if status != StatusEffect.NONE:
+            status_names.append(status.name)
+    
+    normalized_counts = [count / catch_per_status[-1] for count in catch_per_status]
 
-df = pd.DataFrame(results)
-df.to_csv(OUTPUT_FILE_PATH, index=False)
+    del normalized_counts[-1]
 
+    ax = plt.gca()
+    ax.set_axisbelow(True)
+    plt.grid(True, axis='y')
+    plt.bar(status_names, normalized_counts)
+    for i, count in enumerate(normalized_counts):
+        plt.text(i, count, f'{count:.2f}', ha='center', va='bottom', fontsize=10)
+    plt.xlabel('Status Effect')
+    plt.ylabel('Catch Ratio')
+    plt.title('Catch Ratio for Different Status Effects on Jolteon')
+    plt.show()
