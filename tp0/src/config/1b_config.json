@@ -12,5 +12,7 @@
         "ultraball", 
         "fastball",
         "heavyball"
-    ]
+    ],
+    "exercise_path": "exercise_1b",
+    "graphic_generator_path": "1b_graphic_generator"
 }

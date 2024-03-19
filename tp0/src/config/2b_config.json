@@ -3,5 +3,7 @@
         "snorlax", 
         "onix"
     ],
-    "pokeball": "pokeball"
+    "pokeball": "pokeball",
+    "exercise_path": "exercise_2b",
+    "graphic_generator_path": "2b_graphic_generator"
 }

@@ -8,5 +8,7 @@
         "ultraball", 
         "fastball",
         "heavyball"
-    ]
+    ],
+    "exercise_path": "exercise_2d",
+    "graphic_generator_path": "2d_graphic_generator"
 }

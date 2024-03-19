@@ -4,5 +4,7 @@
     "alternative_pokeball":"ultraball",
     "alternative_level":1,
     "alternative_hp":1,
-    "alternative_status":"FREEZE"
+    "alternative_status":"FREEZE",
+    "exercise_path": "exercise_2c",
+    "graphic_generator_path": "2c_graphic_generator"
 }
