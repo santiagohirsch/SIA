@@ -20,7 +20,7 @@ class Heuristics:
         return total_distance
 
     @staticmethod
-    def min_heuristic(state):
+    def minimum_distance(state):
         min_distance = None
         for box in state.boxes_points:
             player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y)

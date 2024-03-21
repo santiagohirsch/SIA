@@ -71,11 +71,11 @@ class StateUtils:
         return list(corners.difference(walls_points))
 
     @staticmethod
-    def draw_solution(node, depth):
+    def draw_solution_map(node, depth):
         depth += 1
         if node.father is None:
             print(node.state)
             print("Depth: ", depth)
             return
-        StateUtils.draw_solution(node.father, depth)
+        StateUtils.draw_solution_map(node.father, depth)
         print(node.state)

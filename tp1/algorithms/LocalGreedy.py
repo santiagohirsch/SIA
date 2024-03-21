@@ -13,16 +13,16 @@ class LocalGreedy:
         root = Node(None, initial_state)
         heapq.heappush(queue, AuxNode(root, 0))
         while queue:
-            utility_node = heapq.heappop(queue)
-            node = utility_node.node
+            Aux = heapq.heappop(queue)
+            node = Aux.node
             if node.state.is_solution():
-                print("Solution found opening ", size, " nodes using Local Greedy Search")
-                StateUtils.draw_solution(node, 0)
+                print("Local Greedy Search opened %d nodes", size)
+                StateUtils.draw_solution_map(node, 0)
                 return node.state
             if node not in visited:
                 visited.add(node)
                 for child in node.get_children():
-                    heuristic_value = Heuristics.heuristic_manhattan_distance(child.state)
-                    heapq.heappush(queue, AuxNode(child, heuristic_value))
+                    value = Heuristics.manhattan_distance(child.state)
+                    heapq.heappush(queue, AuxNode(child, value))
             size += 1
         return None

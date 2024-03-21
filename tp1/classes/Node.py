@@ -3,10 +3,10 @@ class Node:
         self.father = father
         self.state = state
 
-    def getFather(self):
+    def get_father(self):
         return self.father
 
-    def getState(self):
+    def get_state(self):
         return self.state
 
     def get_children(self):

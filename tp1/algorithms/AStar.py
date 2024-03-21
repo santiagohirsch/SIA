@@ -15,19 +15,19 @@ class AStar:
         total_cost: dict[Node, float] = {Node(None, initial_state): 0}
 
         while frontier:
-            aux_node = heapq.heappop(frontier)
-            node = aux_node.node
+            aux = heapq.heappop(frontier)
+            node = aux.node
 
             if node.state.is_solution():
-                print("Solution found using A*! Opened nodes: ", size)
-                StateUtils.draw_solution(node, 0)
+                print("A* solution was found opening  : %d nodes", size)
+                StateUtils.draw_solution_map(node, 0)
                 return node.state
             
             for child in node.get_children():
                 new_cost = total_cost[node] + 1
                 if child not in total_cost or new_cost < total_cost[child]:
                     total_cost[child] = new_cost
-                    cost = new_cost + Heuristics.heuristic_manhattan_distance(child.getState())
+                    cost = new_cost + Heuristics.manhattan_distance(child.get_state())
                     heapq.heappush(frontier, AuxNode(child, new_cost))
 
             size += 1

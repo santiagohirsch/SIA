@@ -13,8 +13,8 @@ class SokobanUtils:
             'P': 'player',
             'O': 'goal',
             'B': 'box',
-            '*': 'box_on_goal',
-            'X': 'player_on_goal',
+            '*': 'box_positioned', 
+            'X': 'player_positioned',
             ' ': 'blank'
         }
 
@@ -36,10 +36,10 @@ class SokobanUtils:
                 if cell in objects:
                     object_type = objects[cell]
                     positions.setdefault(object_type, []).append(Point(row_idx, col_idx))
-                    if object_type == 'box_on_goal':
+                    if object_type == 'box_positioned':
                         positions.setdefault('box', []).append(Point(row_idx, col_idx))
                         positions.setdefault('goal', []).append(Point(row_idx, col_idx))
-                    elif object_type == 'player_on_goal':
+                    elif object_type == 'player_positioned':
                         positions.setdefault('goal', []).append(Point(row_idx, col_idx))
         return positions
     

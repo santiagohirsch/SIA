@@ -16,7 +16,7 @@ class DFS:
             node = stack.pop()
             if node.state.is_solution():
                 print("Solution found opening ", size, " nodes using DFS")
-                StateUtils.draw_solution(node, 0)
+                StateUtils.draw_solution_map(node, 0)
                 return node.state
             if node not in visited:
                 visited.add(node)

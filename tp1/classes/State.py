@@ -17,8 +17,8 @@ class State:
             'player': 'P',
             'goal': 'O',
             'box': 'B',
-            'box_on_goal': '*',
-            'player_on_goal': 'x'
+            'box_positioned': '*',
+            'player_positioned': 'x'
         }
 
         all_points = [
@@ -33,12 +33,12 @@ class State:
 
         boxes_on_goals = [point for point in self.boxes_points if point in self.goals_points]
         boxes = [point for point in self.boxes_points if point not in boxes_on_goals]
-        player_symbol = object_symbols['player_on_goal'] if self.player_point in self.goals_points else object_symbols['player']
+        player_symbol = object_symbols['player_positioned'] if self.player_point in self.goals_points else object_symbols['player']
 
         builder = StateBuilder(max_x, max_y)
         builder.add_points(self.walls_points, object_symbols['wall']) \
             .add_points(self.goals_points, object_symbols['goal']) \
-            .add_points(boxes_on_goals, object_symbols['box_on_goal']) \
+            .add_points(boxes_on_goals, object_symbols['box_positioned']) \
             .add_points(boxes, object_symbols['box']) \
             .add_points([self.player_point], player_symbol)
         
