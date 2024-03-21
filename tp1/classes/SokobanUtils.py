@@ -1,4 +1,5 @@
 from classes.Point import Point
+from classes.Direction import Direction
 
 
 class SokobanUtils:
@@ -13,7 +14,8 @@ class SokobanUtils:
             'O': 'goal',
             'B': 'box',
             '*': 'box_on_goal',
-            'X': 'player_on_goal'
+            'X': 'player_on_goal',
+            ' ': 'blank'
         }
 
         rows = board.split('\n')
@@ -25,6 +27,7 @@ class SokobanUtils:
             'player': [],
             'goal': [],
             'box': [],
+            'blank': []
         }
 
         for row_idx in range(len(matrix)):
@@ -39,3 +42,37 @@ class SokobanUtils:
                     elif object_type == 'player_on_goal':
                         positions.setdefault('goal', []).append(Point(row_idx, col_idx))
         return positions
+    
+    @staticmethod
+    def get_deadlocks(walls, blanks):
+        deadlocks = []
+        for blank in blanks:
+            if SokobanUtils.is_deadlock(blank, walls):
+                deadlocks.append(blank)
+        return deadlocks
+
+    @staticmethod
+    def is_deadlock(blank, walls):
+        if SokobanUtils.is_corner_deadlock(blank, walls):
+            return True
+        if SokobanUtils.is_wall_deadlock(blank, walls):
+            return True
+        return False
+
+    @staticmethod
+    def is_wall_deadlock(blank, walls):
+        return False
+
+    @staticmethod
+    def is_corner_deadlock(blank, walls):
+        if blank.move(Direction.TOP) in walls:
+            if blank.move(Direction.LEFT) in walls:
+                return True
+            if blank.move(Direction.RIGHT) in walls:
+                return True
+        if blank.move(Direction.BOTTOM) in walls:
+            if blank.move(Direction.LEFT) in walls:
+                return True
+            if blank.move(Direction.RIGHT) in walls:
+                return True
+        return False
