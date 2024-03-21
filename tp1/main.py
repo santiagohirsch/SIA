@@ -3,6 +3,7 @@ from algorithms.bfs import BFS
 from algorithms.LocalGreedy import LocalGreedy
 from classes.SokobanUtils import SokobanUtils
 from classes.State import State
+from classes.StateBuilder import StateBuilder
 
 
 if __name__ == "__main__":
@@ -28,6 +29,11 @@ if __name__ == "__main__":
     goals = parsed_positions.get('goal', [])
     deadlocks = SokobanUtils.get_deadlocks(walls, blanks)
     print("Deadlock positions:", deadlocks)
+
+    builder = StateBuilder(max(point.x for point in walls) + 1, max(point.y for point in walls) + 1)
+    builder.add_points(walls, '#').add_points(deadlocks, 'D').add_points(goals, 'O')
+    grid = builder.build()
+    builder.print_grid()
 
     # BFS.bfs(State(parsed_positions.get('box', []), parsed_positions.get('wall', []), parsed_positions.get('player', [])[0], parsed_positions.get('goal', []), []))
     LocalGreedy.local_greedy(State(set(boxes), set(walls), player, set(goals), set(deadlocks)))
