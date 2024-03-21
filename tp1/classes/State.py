@@ -92,7 +92,7 @@ class State:
                 next_box_point = next_point.move(direction)
                 new_boxes_points = self.boxes_points.copy()
                 new_boxes_points.remove(next_point)
-                new_boxes_points.append(next_box_point)
+                new_boxes_points.add(next_box_point)
                 return State(new_boxes_points, self.walls_points, next_point, self.goals_points, self.deadlocks_points)
             return State(self.boxes_points, self.walls_points, next_point, self.goals_points, self.deadlocks_points)
 
@@ -104,4 +104,4 @@ class State:
         return children
 
     def is_solution(self):
-        return set(self.boxes_points).issubset(set(self.goals_points))
+        return self.boxes_points.issubset(self.goals_points)
