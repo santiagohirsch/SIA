@@ -6,9 +6,9 @@ class StateUtils:
     def __init__(self):
         raise NotImplementedError("Class instantiation not supported")
 
-    # A deadlock occurs when any of two conditions are met:
-    #   - It's a corner
-    #   - It's between two deadlocks, along two walls which don't have holes
+    # A deadlock occurs when :
+    #   - We are in a corner
+    #   - We are between two deadlocks, next to two walls which don't have holes
     @staticmethod
     def obtain_deadlocks(walls_points, goals_points):
         deadlocks = []
@@ -26,3 +26,13 @@ class StateUtils:
     def __get_corner_or_none(walls_points, point: Point):
         return (point.move(Direction.TOP) in walls_points or point.move(Direction.BOTTOM) in walls_points) \
             and (point.move(Direction.LEFT) or point.move(Direction.RIGHT))
+
+    @staticmethod
+    def draw_solution(node, depth):
+        depth += 1
+        if node.father is None:
+            print("Depth: ", depth)
+            print(node.state)
+            return
+        StateUtils.draw_solution(node.father, depth)
+        print(node.state)

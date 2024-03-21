@@ -7,14 +7,61 @@ class State:
         self.player_point = player_point
         self.goals_points = goals_points
         self.boxes_points = boxes_points
-        self.deadlocks_points = StateUtils.obtain_deadlocks(walls_points=walls_points, goals_points=goals_points)
+        self.deadlocks_points = deadlocks_points
+
+    def __str__(self):
+        object_symbols = {
+            'wall': '#',
+            'player': 'P',
+            'goal': 'O',
+            'box': 'B',
+            'box_on_goal': '*',
+            'player_on_goal': 'x'
+        }
+
+        all_points = [
+            self.player_point,
+            *self.boxes_points,
+            *self.walls_points,
+            *self.goals_points,
+            *self.deadlocks_points
+        ]
+
+        max_row = max(point.x for point in all_points)
+        max_col = max(point.y for point in all_points)
+
+        matrix = [[' '] * (max_col + 1) for _ in range(max_row + 1)]
+
+        for point in self.walls_points:
+            matrix[point.x][point.y] = object_symbols['wall']
+
+        for point in self.goals_points:
+            matrix[point.x][point.y] = object_symbols['goal']
+
+        for point in self.deadlocks_points:
+            matrix[point.x][point.y] = object_symbols['wall']
+
+        for point in self.boxes_points:
+            if point in self.goals_points:
+                matrix[point.x][point.y] = object_symbols['box_on_goal']
+            else:
+                matrix[point.x][point.y] = object_symbols['box']
+
+        if self.player_point in self.goals_points:
+            matrix[self.player_point.x][self.player_point.y] = object_symbols['player_on_goal']
+        else:
+            matrix[self.player_point.x][self.player_point.y] = object_symbols['player']
+
+        return '\n'.join([''.join(row) for row in matrix])
 
     def __hash__(self):
-        return hash((self.walls_points, self.player_point, self.goals_points, self.boxes_points))
+        if self._hash_value is None:
+            self._hash_value = hash((tuple(self.boxes_points), self.player_point))
+        return self._hash_value
 
     def __eq__(self, other):
-        return self.walls_points == other.walls_points and self.player_point == other.player_point and self.goals_points == other.goals_points and self.boxes_points == other.boxes_points
-
+        return self.player_point == other.player_point and self.boxes_points == other.boxes_points
+    
     def can_continue_search(self, direction):
         return self.can_move(direction) and not self.has_deadlocks(direction)
 
@@ -33,7 +80,7 @@ class State:
 
     def move(self, direction):
         if self.is_solution():
-            print("Solution found :D")
+            print("Solution found :)")
             return
 
         if self.can_continue_search(direction):
