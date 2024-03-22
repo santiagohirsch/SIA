@@ -14,13 +14,12 @@ class DFS:
         stack.append(root)
         while stack:
             node = stack.pop()
-            if node.state.is_solution():
-                print("DFS solution was found opening: %d nodes" % qty)
-                StateUtils.draw_solution_map(node, 0)
-                return node.state
+            if node.state.is_solution():        
+                StateUtils.print_solution('DFS', qty, node)
+                return True
             if node not in visited_nodes:
                 visited_nodes.add(node)
                 for child in node.get_children():
                     stack.append(child)
             qty += 1
-        return None
+        return False

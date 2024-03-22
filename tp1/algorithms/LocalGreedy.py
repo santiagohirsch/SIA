@@ -17,9 +17,8 @@ class LocalGreedy:
             node = aux.node
             
             if node.state.is_solution():
-                print("Local Greedy solution was found opening: %d nodes" % qty)
-                StateUtils.draw_solution_map(node, 0)
-                return node.state
+                StateUtils.print_solution('Local Greedy', qty, node)
+                return True
             
             if node not in visited_nodes:
                 visited_nodes.add(node)
@@ -29,4 +28,4 @@ class LocalGreedy:
             
             qty += 1
         
-        return None
+        return False

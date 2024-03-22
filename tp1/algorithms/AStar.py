@@ -18,9 +18,8 @@ class AStar:
             node = aux.node
 
             if node.state.is_solution():
-                print("A* solution was found opening: %d nodes" % qty) 
-                StateUtils.draw_solution_map(node, 0)
-                return node.state
+                StateUtils.print_solution('A*', qty, node)
+                return True
             
             for child in node.get_children():
                 new_cost = total_cost[node] + 1
@@ -30,4 +29,4 @@ class AStar:
                     heapq.heappush(frontier, AuxNode(child, cost))
 
             qty += 1
-        return None
+        return False

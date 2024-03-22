@@ -79,3 +79,8 @@ class StateUtils:
             return
         StateUtils.draw_solution_map(node.father, depth)
         print(node.state)
+
+    @staticmethod
+    def print_solution(algorithm_name, qty, node):
+        print("%s solution was found opening: %d nodes", algorithm_name, qty)
+        StateUtils.draw_solution_map(node, 0) 

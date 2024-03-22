@@ -14,9 +14,8 @@ class BFS:
         while queue:
             node = queue.popleft()
             if node.state.is_solution():
-                print("BFS solution was found opening: %d nodes" % qty) 
-                StateUtils.draw_solution_map(node, 0)
-                return node.state
+                StateUtils.print_solution('BFS', qty, node)
+                return True
 
             if node not in visited_nodes:
                 visited_nodes.add(node)
@@ -25,4 +24,4 @@ class BFS:
 
             qty += 1
 
-        return None
+        return False
