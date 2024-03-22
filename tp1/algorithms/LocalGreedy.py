@@ -2,10 +2,12 @@ from classes.Node import Node
 from classes.StateUtils import StateUtils
 from algorithms.AlgorithmUtils import AuxNode, Heuristics
 import heapq
+import time
 
 class LocalGreedy:
     @staticmethod
     def search(initial_state):
+        start_time = time.time()
         qty = 0
         visited_nodes = set()
         queue = []
@@ -17,15 +19,17 @@ class LocalGreedy:
             node = aux.node
             
             if node.state.is_solution():
+                end_time = time.time()
+                duration = end_time - start_time
                 StateUtils.print_solution('Local Greedy', qty, node)
-                return True
+                return True, duration
             
             if node not in visited_nodes:
                 visited_nodes.add(node)
-                for child in node.get_children():
-                    value = Heuristics.manhattan_distance(child.state)
-                    heapq.heappush(queue, AuxNode(child, value))
+                sorted_children = sorted(node.get_children(), key=lambda child: Heuristics.manhattan_distance(child.state))
+                for child in sorted_children:
+                    heapq.heappush(queue, AuxNode(child, Heuristics.manhattan_distance(child.state)))
             
             qty += 1
-        
-        return False
+        duration = time.time() - start_time
+        return False, duration
