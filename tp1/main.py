@@ -1,9 +1,8 @@
 import sys
+import importlib
 from classes.SokobanUtils import SokobanUtils
+from algorithms.AlgorithmUtils import algorithm_normalizer
 from classes.State import State
-from algorithms.DFS import DFS
-from algorithms.BFS import BFS
-from algorithms.LocalGreedy import LocalGreedy
 
 if __name__ == "__main__":
     # Set algorithm and map as None
@@ -11,11 +10,11 @@ if __name__ == "__main__":
 
     # Run through params to find algorithm and map
     i = 1
-    while i < len(sys.args):
-        if sys.args[i] == '-a' or sys.args[i] == 'algorithm':
-            options['algorithm'] = sys.args[i+1]
-        elif sys.args[i] == '-m' or sys.args[i] == 'map':
-            options['map'] = sys.args[i+1]
+    while i < len(sys.argv):
+        if sys.argv[i] == '-a' or sys.argv[i] == 'algorithm':
+            options['algorithm'] = sys.argv[i+1]
+        elif sys.argv[i] == '-m' or sys.argv[i] == 'map':
+            options['map'] = sys.argv[i+1]
         i += 2
 
     # Check if parameters where received
@@ -23,6 +22,7 @@ if __name__ == "__main__":
         print("Program was executed incorrectly please check readme file for instructions.")
         exit(1)
     
+    normalized_algorithm = algorithm_normalizer(options['algorithm'])
     # find map file
     try:
         with open(options['map'], 'r') as file:
@@ -32,10 +32,10 @@ if __name__ == "__main__":
 
     # find algorithm file
     try:
-        with open(options['algorithm'], 'r') as file:
-            algorithm = file.read()
-    except FileNotFoundError:
-        print(f"Error: Algorithm {algorithm} not found.")
+        imported_module = importlib.import_module(f"algorithms.{normalized_algorithm}")
+    except ModuleNotFoundError:
+        print(f"El algoritmo {normalized_algorithm} no existe o no ha sido implementado")
+        sys.exit(1)
 
     parsed_positions = SokobanUtils.parse_sokoban_board(sokoban_board)
 
@@ -52,5 +52,5 @@ if __name__ == "__main__":
     deadlocks = SokobanUtils.get_deadlocks(walls, blanks)
     print("Deadlock positions:", deadlocks)
 
-    # BFS.search(State(parsed_positions.get('box', []), parsed_positions.get('wall', []), parsed_positions.get('player', [])[0], parsed_positions.get('goal', []), []))
-    LocalGreedy.local_greedy(State(set(boxes), set(walls), player, set(goals), set(deadlocks)))
+    algorithm_class = getattr(imported_module, normalized_algorithm)
+    algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)))
