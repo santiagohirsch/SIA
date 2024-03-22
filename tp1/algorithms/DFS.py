@@ -2,11 +2,11 @@ from collections import deque
 import time
 from classes.Node import Node
 from classes.StateUtils import StateUtils
-
+from classes.State import State
 
 class DFS:
     @staticmethod
-    def search(initial_state):
+    def search(initial_state: State):
         start_time = time.time()
         qty = 0
         visited_nodes = set()

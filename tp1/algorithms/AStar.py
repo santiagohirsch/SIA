@@ -1,13 +1,14 @@
 from classes.Node import Node
+from classes.State import State
 from classes.StateUtils import StateUtils
-from algorithms import AuxNode
+from algorithms.AlgorithmUtils import AuxNode
 from algorithms.AlgorithmUtils import Heuristics
 import heapq
 import time
 
 class AStar:
     @staticmethod
-    def search(initial_state):
+    def search(initial_state: State):
         start_time = time.time()
         qty = 0
         frontier = []

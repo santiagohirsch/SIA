@@ -1,3 +1,14 @@
+from classes.State import State
+from classes.Node import Node
+
+ALGORITHMS = {
+    'localgreedy': 'LocalGreedy',
+    'globalgreedy': 'GlobalGreedy',
+    'dfs': 'DFS',
+    'astar': 'AStar',
+    'bfs': 'BFS',
+}
+
 class AuxNode:
     def __init__(self, node, priority):
         self.node = node
@@ -7,12 +18,12 @@ class AuxNode:
         return self.priority < other.priority
 
     def __str__(self):
-        return f"Node: {self.node}, Priority: {self.priority}"
+        return f'Node: {self.node}, Priority: {self.priority}'
 
 
 class Heuristics:
     @staticmethod
-    def heuristic_manhattan_distance(state):
+    def heuristic_manhattan_distance(state: State):
         total_distance = 0
         for box in state.boxes_points:
             for goal in state.goals_points:
@@ -20,7 +31,7 @@ class Heuristics:
         return total_distance
 
     @staticmethod
-    def minimum_distance(state):
+    def minimum_distance(state: State):
         min_distance = None
         for box in state.boxes_points:
             player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y)
@@ -30,4 +41,13 @@ class Heuristics:
                 if min_distance is None or min_distance > total_distance:
                     min_distance = total_distance
         return min_distance
-        
+
+def algorithm_normalizer(algorithm: str) -> str:
+    # first I remove the extension if provided any
+    algorithm = algorithm.replace('.py', '')
+    # then I remove the path if provided any
+    algorithm = algorithm.split('/')[-1]
+    if algorithm.lower() in ALGORITHMS:
+        return ALGORITHMS[algorithm.lower()]
+    else:
+        return None
