@@ -9,6 +9,12 @@ ALGORITHMS = {
     'bfs': 'BFS',
 }
 
+HEURISTICS = {
+    'manhattan': 'manhattan_distance',
+    # 'modifiedman': 'modified_manhattan',
+    # 'improvedman': 'improved_modified_manhattan'
+}
+
 class AuxNode:
     def __init__(self, node, priority):
         self.node = node
@@ -31,16 +37,29 @@ class Heuristics:
         return total_distance
 
     @staticmethod
-    def minimum_distance(state: State):
-        min_distance = None
+    def modified_manhattan(state: State): # defines how close you are to all boxes in the closest goal     
+        print('Modified Manhattan')
+        distances = [[None for _ in range(len(state.boxes_points[0]))] for _ in range(len(state.boxes_points))]
         for box in state.boxes_points:
-            player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y)
+            player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y) 
             for goal in state.goals_points:
-                goal_distance = abs(box.x - goal.x) + abs(box.y - goal.y)
-                total_distance = player_distance + goal_distance
-                if min_distance is None or min_distance > total_distance:
-                    min_distance = total_distance
+                goal_distance = abs(box.x - goal.x) + abs(box.y - goal.y) 
+                final_distance = player_distance + goal_distance
+                if distances[box] is None or distances[box] > final_distance:
+                    min_distance = final_distance
+        min_distance = sum(filter(None, [dist for sublist in distances for dist in sublist]))
         return min_distance
+
+    @staticmethod
+    def improved_modified_manhattan(state: State): # defines how close you are to all boxes in the closest goal   
+        print('Improved Modified Manhattan')  
+        distances = [[None for _ in range(len(state.boxes_points))] for _ in range(len(state.boxes_points))]
+        for box in state.boxes_points:
+            player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y) 
+            for goal in state.goals_points:
+                goal_distance = abs(box.x - goal.x) + abs(box.y - goal.y) 
+                distances[box][goal] = player_distance + goal_distance
+        
 
 def algorithm_normalizer(algorithm: str) -> str:
     # first I remove the extension if provided any
@@ -49,5 +68,11 @@ def algorithm_normalizer(algorithm: str) -> str:
     algorithm = algorithm.split('/')[-1]
     if algorithm.lower() in ALGORITHMS:
         return ALGORITHMS[algorithm.lower()]
+    else:
+        return None
+
+def heuristic_normalizer(heuristic: str) -> str:
+    if heuristic.lower() in HEURISTICS:
+        return HEURISTICS[heuristic.lower()]
     else:
         return None
