@@ -23,7 +23,7 @@ class AuxNode:
 
 class Heuristics:
     @staticmethod
-    def heuristic_manhattan_distance(state: State):
+    def manhattan_distance(state: State):
         total_distance = 0
         for box in state.boxes_points:
             for goal in state.goals_points:
