@@ -3,26 +3,30 @@ from classes.StateUtils import StateUtils
 from algorithms.AlgorithmUtils import AuxNode, Heuristics
 import heapq
 
-
 class LocalGreedy:
     @staticmethod
-    def local_greedy(initial_state):
-        size = 0
-        visited = set()
+    def search(initial_state):
+        qty = 0
+        visited_nodes = set()
         queue = []
         root = Node(None, initial_state)
         heapq.heappush(queue, AuxNode(root, 0))
+        
         while queue:
-            Aux = heapq.heappop(queue)
-            node = Aux.node
+            aux = heapq.heappop(queue)
+            node = aux.node
+            
             if node.state.is_solution():
-                print("Local Greedy Search opened %d nodes", size)
+                print("Local Greedy solution was found opening: %d nodes" % qty)
                 StateUtils.draw_solution_map(node, 0)
                 return node.state
-            if node not in visited:
-                visited.add(node)
+            
+            if node not in visited_nodes:
+                visited_nodes.add(node)
                 for child in node.get_children():
                     value = Heuristics.manhattan_distance(child.state)
                     heapq.heappush(queue, AuxNode(child, value))
-            size += 1
+            
+            qty += 1
+        
         return None
