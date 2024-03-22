@@ -8,12 +8,13 @@ import time
 
 class AStar:
     @staticmethod
-    def search(initial_state: State):
+    def search(initial_state: State, heuristic: str = ''):
         start_time = time.time()
         qty = 0
         frontier = []
         heapq.heappush(frontier, AuxNode(Node(None, initial_state), 0))
         total_cost = {Node(None, initial_state): 0}
+        heuristic_method = getattr(Heuristics, heuristic)
 
         while frontier:
             aux = heapq.heappop(frontier)
@@ -29,7 +30,7 @@ class AStar:
                 new_cost = total_cost[node] + 1
                 if child not in total_cost or new_cost < total_cost[child]:
                     total_cost[child] = new_cost
-                    cost = new_cost + Heuristics.manhattan_distance(child.get_state())
+                    cost = new_cost + heuristic_method(child.get_state())
                     heapq.heappush(frontier, AuxNode(child, cost))
 
             qty += 1

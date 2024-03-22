@@ -6,7 +6,7 @@ from classes.State import State
 
 class BFS:
     @staticmethod
-    def search(initial_state: State):
+    def search(initial_state: State, heuristic: str = ''):
         start_time = time.time()
         qty = 0
         visited_nodes = set()

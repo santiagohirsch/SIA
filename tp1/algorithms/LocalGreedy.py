@@ -7,13 +7,14 @@ import time
 
 class LocalGreedy:
     @staticmethod
-    def search(initial_state: State):
+    def search(initial_state: State, heuristic: str = ''):
         start_time = time.time()
         qty = 0
         visited_nodes = set()
         queue = []
         root = Node(None, initial_state)
         heapq.heappush(queue, AuxNode(root, 0))
+        heuristic_method = getattr(Heuristics, heuristic)
         
         while queue:
             aux = heapq.heappop(queue)
@@ -27,9 +28,9 @@ class LocalGreedy:
             
             if node not in visited_nodes:
                 visited_nodes.add(node)
-                sorted_children = sorted(node.get_children(), key=lambda child: Heuristics.manhattan_distance(child.state))
+                sorted_children = sorted(node.get_children(), key=lambda child: heuristic_method(child.state))
                 for child in sorted_children:
-                    heapq.heappush(queue, AuxNode(child, Heuristics.manhattan_distance(child.state)))
+                    heapq.heappush(queue, AuxNode(child, heuristic_method(child.state)))
             
             qty += 1
         duration = time.time() - start_time

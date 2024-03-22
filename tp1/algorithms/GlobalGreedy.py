@@ -7,13 +7,14 @@ import time
 
 class GlobalGreedy:
     @staticmethod
-    def search(initial_state: State):
+    def search(initial_state: State, heuristic: str = ''):
         start_time = time.time()
         qty = 0
         visited_nodes = set()
         queue = []
         root = Node(None, initial_state)
         heapq.heappush(queue, AuxNode(root, 0))
+        heuristic_method = getattr(Heuristics, heuristic)
         
         while queue:
             aux = heapq.heappop(queue)
@@ -28,7 +29,7 @@ class GlobalGreedy:
             if node not in visited_nodes:
                 visited_nodes.add(node)
                 for child in node.get_children():
-                    value = Heuristics.manhattan_distance(child.state)
+                    value = heuristic_method(child.state)
                     heapq.heappush(queue, AuxNode(child, value))
             
             qty += 1
