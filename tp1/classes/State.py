@@ -1,9 +1,10 @@
 from classes.Direction import Direction
 from classes.StateUtils import StateUtils
 from classes.StateBuilder import StateBuilder
+from classes.Point import Point
 
 class State:
-    def __init__(self, boxes_points, walls_points, player_point, goals_points, deadlocks_points):
+    def __init__(self, boxes_points: Point, walls_points: Point, player_point: Point, goals_points: Point, deadlocks_points: Point):
         self.walls_points = walls_points
         self.player_point = player_point
         self.goals_points = goals_points
