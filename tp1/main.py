@@ -2,11 +2,13 @@ import sys
 import importlib
 from classes.SokobanUtils import SokobanUtils
 from algorithms.AlgorithmUtils import algorithm_normalizer
+from algorithms.AlgorithmUtils import heuristic_normalizer
 from classes.State import State
+from algorithms.AlgorithmUtils import HEURISTICS
 
 if __name__ == "__main__":
     # Set algorithm and map as None
-    options = {'algorithm': None, 'map': None}
+    options = {'algorithm': None, 'map': None, 'heuristic': None}
 
     # Run through params to find algorithm and map
     i = 1
@@ -15,6 +17,8 @@ if __name__ == "__main__":
             options['algorithm'] = sys.argv[i+1]
         elif sys.argv[i] == '-m' or sys.argv[i] == '--map':
             options['map'] = sys.argv[i+1]
+        elif sys.argv[i] == '-h' or sys.argv[i] == '--heuristic':
+            options['heuristic'] = sys.argv[i+1]
         i += 2
 
     # Check if parameters where received
@@ -23,6 +27,9 @@ if __name__ == "__main__":
         exit(1)
     
     normalized_algorithm = algorithm_normalizer(options['algorithm'])
+    normalized_heuristic = None
+    if options['heuristic'] is not None:
+        normalized_heuristic = heuristic_normalizer(options['heuristic'])
     # find map file
     try:
         with open(options['map'], 'r') as file:
@@ -43,7 +50,7 @@ if __name__ == "__main__":
     print("Player position:", parsed_positions.get('player', []))
     print("Goal positions:", parsed_positions.get('goal', []))
     print("Box positions:", parsed_positions.get('box', []))
-    print("Box on goal positions:", parsed_positions.get('box_positio', []))
+    print("Box on goal positions:", parsed_positions.get('box_positioned', []))
     walls = parsed_positions.get('wall', [])
     blanks = parsed_positions.get('blank', [])
     boxes = parsed_positions.get('box', [])
@@ -53,4 +60,17 @@ if __name__ == "__main__":
     print("Deadlock positions:", deadlocks)
 
     algorithm_class = getattr(imported_module, normalized_algorithm)
-    algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)))
+    print("Solving...")
+    if normalized_heuristic is None:
+        for _, heuristic in HEURISTICS.items():
+            success, duration = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), heuristic)
+            if success:
+                print(f"It took {round(duration, 9)} seconds to solve the map: {options['map'].split('/')[-1]}")
+            else:
+                print(f"Failure, could not solve the map: {options['map'].split('/')[-1]}")
+    else:
+        success, duration = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), normalized_heuristic)
+        if success:
+            print(f"It took {round(duration, 9)} seconds to solve the map: {options['map'].split('/')[-1]}")
+        else:
+            print(f"Failure, could not solve the map: {options['map'].split('/')[-1]}")
