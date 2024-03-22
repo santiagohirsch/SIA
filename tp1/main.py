@@ -11,9 +11,9 @@ if __name__ == "__main__":
     # Run through params to find algorithm and map
     i = 1
     while i < len(sys.argv):
-        if sys.argv[i] == '-a' or sys.argv[i] == 'algorithm':
+        if sys.argv[i] == '-a' or sys.argv[i] == '--algorithm':
             options['algorithm'] = sys.argv[i+1]
-        elif sys.argv[i] == '-m' or sys.argv[i] == 'map':
+        elif sys.argv[i] == '-m' or sys.argv[i] == '--map':
             options['map'] = sys.argv[i+1]
         i += 2
 
