@@ -1,5 +1,6 @@
 from classes.State import State
 from classes.Node import Node
+import intertools
 
 ALGORITHMS = {
     'localgreedy': 'LocalGreedy',
@@ -76,3 +77,18 @@ def heuristic_normalizer(heuristic: str) -> str:
         return HEURISTICS[heuristic.lower()]
     else:
         return None
+
+def minor_sum(matriz):
+    n = len(matriz)
+    minor_sum = float('inf')
+    
+    # Generar todas las permutaciones posibles de las columnas
+    cols = list(range(n))
+    cols_exanges = itertools.permutations(cols)
+    
+    # Iterar sobre todas las permutaciones posibles
+    for exanges in cols_exanges:
+        actual_sum = sum(matriz[i][exanges[i]] for i in range(n))
+        minor_sum = min(minor_sum, actual_sum)
+    
+    return minor_sum
