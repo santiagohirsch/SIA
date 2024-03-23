@@ -1,6 +1,6 @@
+import itertools
 from classes.State import State
 from classes.Node import Node
-import intertools
 
 ALGORITHMS = {
     'localgreedy': 'LocalGreedy',
@@ -8,6 +8,7 @@ ALGORITHMS = {
     'dfs': 'DFS',
     'astar': 'AStar',
     'bfs': 'BFS',
+    'iddfs': 'IDDFS',
 }
 
 HEURISTICS = {
