@@ -14,7 +14,7 @@ ALGORITHMS = {
 HEURISTICS = {
     'manhattan': 'manhattan_distance',
     # 'modifiedman': 'modified_manhattan',
-    # 'improvedman': 'improved_modified_manhattan'
+    'improvedman': 'improved_modified_manhattan'
 }
 
 class AuxNode:
@@ -54,13 +54,14 @@ class Heuristics:
 
     @staticmethod
     def improved_modified_manhattan(state: State): # defines how close you are to all boxes in the closest goal   
-        print('Improved Modified Manhattan')  
-        distances = [[None for _ in range(len(state.boxes_points))] for _ in range(len(state.boxes_points))]
-        for box in state.boxes_points:
+        distances = [[None for _ in range(len(state.goals_points))] for _ in range(len(state.boxes_points))]
+        for i, box in enumerate(state.boxes_points):
             player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y) 
-            for goal in state.goals_points:
+            for j, goal in enumerate(state.goals_points):
                 goal_distance = abs(box.x - goal.x) + abs(box.y - goal.y) 
-                distances[box][goal] = player_distance + goal_distance
+                distances[i][j] = player_distance + goal_distance
+        return minor_sum(distances)
+
         
 
 def algorithm_normalizer(algorithm: str) -> str:
