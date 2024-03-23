@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     algorithm_class = getattr(imported_module, normalized_algorithm)
     print("Solving...")
-    if normalized_heuristic is None:
+    if normalized_heuristic is None and normalized_algorithm != 'IDDFS' and normalized_algorithm != 'BFS' and normalized_algorithm != 'DFS':
         for _, heuristic in HEURISTICS.items():
             success, duration = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), heuristic)
             if success:
