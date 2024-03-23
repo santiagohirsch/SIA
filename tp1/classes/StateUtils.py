@@ -81,6 +81,6 @@ class StateUtils:
         print(node.state)
 
     @staticmethod
-    def print_solution(algorithm_name, qty, node):
-        print(f"{algorithm_name} solution was found opening: {qty} nodes")
+    def print_solution(algorithm_name, qty, node, heuristic_name):
+        print(f"{algorithm_name} solution was found opening: {qty} nodes\nWhen using the {heuristic_name} heuristic")
         StateUtils.draw_solution_map(node, 0) 

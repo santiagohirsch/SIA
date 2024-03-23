@@ -23,7 +23,7 @@ class LocalGreedy:
             if node.state.is_solution():
                 end_time = time.time()
                 duration = end_time - start_time
-                StateUtils.print_solution('Local Greedy', qty, node)
+                StateUtils.print_solution('Local Greedy', qty, node, heuristic)
                 return True, duration
             
             if node not in visited_nodes:

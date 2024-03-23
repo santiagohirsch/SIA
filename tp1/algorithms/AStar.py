@@ -23,7 +23,7 @@ class AStar:
             if node.state.is_solution():
                 end_time = time.time()  
                 duration = end_time - start_time  
-                StateUtils.print_solution('A*', qty, node)
+                StateUtils.print_solution('A*', qty, node, heuristic)
                 return True, duration 
             
             for child in node.get_children():
