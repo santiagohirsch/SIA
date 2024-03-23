@@ -36,6 +36,7 @@ Para correr el programa, se debe ejecutar el `main` como se indica, pasándole d
   - DFS
   - LocalGreedy
   - GlobalGreedy
+  - IDDFS
 - `-h` o `--heuristic`: Este parámetro es opcional y acepta el nombre de una de las heuristicas implementadas. Si se quieren correr todas las heuristicas se debe omitir el parámetro. Las heuristicas disponibles son:
   - Manhattan
   - ModifiedMan
