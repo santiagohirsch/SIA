@@ -46,18 +46,12 @@ if __name__ == "__main__":
 
     parsed_positions = SokobanUtils.parse_sokoban_board(sokoban_board)
 
-    print("Wall positions:", parsed_positions.get('wall', []))
-    print("Player position:", parsed_positions.get('player', []))
-    print("Goal positions:", parsed_positions.get('goal', []))
-    print("Box positions:", parsed_positions.get('box', []))
-    print("Box on goal positions:", parsed_positions.get('box_positioned', []))
     walls = parsed_positions.get('wall', [])
     blanks = parsed_positions.get('blank', [])
     boxes = parsed_positions.get('box', [])
     player = parsed_positions.get('player', [])[0]
     goals = parsed_positions.get('goal', [])
     deadlocks = SokobanUtils.get_deadlocks(walls, blanks)
-    print("Deadlock positions:", deadlocks)
 
     algorithm_class = getattr(imported_module, normalized_algorithm)
     print("Solving...")

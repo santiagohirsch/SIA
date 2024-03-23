@@ -1,6 +1,5 @@
 import itertools
 from classes.State import State
-from classes.Node import Node
 
 ALGORITHMS = {
     'localgreedy': 'LocalGreedy',
