@@ -29,18 +29,21 @@ if __name__ == "__main__":
     deadlocks = SokobanUtils.get_deadlocks(walls, blanks)
     with open('results.csv', 'a', newline='') as file:
         writer = csv.writer(file)  
-        writer.writerow(['Algorithm', 'Duration', 'Nodes Expanded', 'Frontier Nodes'])
+        writer.writerow(['Algorithm', 'Duration', 'Nodes Expanded', 'Frontier Nodes', 'Heuristic'])
 
     for algorithm in ALGORITHMS:
-        for _ in range(100):
-                try:
-                    imported_module = importlib.import_module(f"algorithms.{algorithm_normalizer(algorithm)}")
-                except ModuleNotFoundError:
-                    sys.exit(1)
-                algorithm_class = getattr(imported_module, algorithm_normalizer(algorithm))
-                success, duration, nodes, frontier_nodes = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), 'manhattan_distance')
-                with open('results.csv', 'a', newline='') as file:
-                    writer = csv.writer(file)  
-                    writer.writerow([algorithm, duration, nodes, frontier_nodes])
+        for heuristic in HEURISTICS:
+            for _ in range(100):
+                    try:
+                        imported_module = importlib.import_module(f"algorithms.{algorithm_normalizer(algorithm)}")
+                    except ModuleNotFoundError:
+                        sys.exit(1)
+                    algorithm_class = getattr(imported_module, algorithm_normalizer(algorithm))
+                    success, duration, nodes, frontier_nodes = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), heuristic_normalizer(heuristic))
+                    with open('results.csv', 'a', newline='') as file:
+                        writer = csv.writer(file)  
+                        writer.writerow([algorithm, duration, nodes, frontier_nodes, heuristic])
+
+
 
 

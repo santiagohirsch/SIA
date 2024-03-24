@@ -37,3 +37,4 @@ plt.ylabel('Average Duration')
 plt.title('IDDFS average duration')
 
 plt.show()
+
