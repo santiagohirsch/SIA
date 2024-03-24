@@ -92,6 +92,7 @@ class StateUtils:
             print(f"When using the {get_parsed_heuristic(heuristic_name)} heuristic")
         print(f"Frontier nodes: {frontier}")
         StateUtils.draw_solution_map(node, 0)
+        print("\n\n")
 
 def get_parsed_heuristic(heuristic: str) -> str:
     return PARSED_HEURISTICS[heuristic]
