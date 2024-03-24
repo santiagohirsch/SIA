@@ -88,7 +88,11 @@ class StateUtils:
     @staticmethod
     def print_solution(algorithm_name, qty, node, heuristic_name):
         print(f"{algorithm_name} solution was found opening: {qty} nodes\nWhen using the {get_parsed_heuristic(heuristic_name)} heuristic")
-        StateUtils.draw_solution_map(node, 0) 
+        StateUtils.draw_solution_map(node, 0)
+
+    @staticmethod
+    def print_frontier_nodes(qty):
+        print(f"Frontier nodes: {qty}")
 
 def get_parsed_heuristic(heuristic: str) -> str:
     return PARSED_HEURISTICS[heuristic]

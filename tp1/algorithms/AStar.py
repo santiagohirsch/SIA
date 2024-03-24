@@ -24,6 +24,7 @@ class AStar:
                 end_time = time.time()  
                 duration = end_time - start_time  
                 StateUtils.print_solution('A*', qty, node, heuristic)
+                StateUtils.print_frontier_nodes(len(frontier))
                 return True, duration 
             
             for child in node.get_children():

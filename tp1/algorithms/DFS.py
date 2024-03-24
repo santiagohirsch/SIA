@@ -19,6 +19,7 @@ class DFS:
                 end_time = time.time()
                 duration = end_time - start_time    
                 StateUtils.print_solution('DFS', qty, node, heuristic)
+                StateUtils.print_frontier_nodes(len(stack))
                 return True, duration
             if node not in visited_nodes:
                 visited_nodes.add(node)

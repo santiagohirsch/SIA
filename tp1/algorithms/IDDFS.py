@@ -8,10 +8,11 @@ class IDDFS:
         start_time = time.time()
         depth_limit = 0
         while True:
-            result, qty = IDDFS.dfs(initial_state, depth_limit)
+            result, qty, frontier = IDDFS.dfs(initial_state, depth_limit)
             if result is not None:
                 end_time = time.time()
                 StateUtils.print_solution('IDDFS', qty, result, heuristic)
+                StateUtils.print_frontier_nodes(frontier)
                 return True, end_time - start_time
             depth_limit += 1
             if qty == -1: 
@@ -25,8 +26,8 @@ class IDDFS:
             node, depth = stack.pop()
             qty += 1  
             if node.state.is_solution():
-                return node, qty
+                return node, qty, len(stack)
             if depth > 0:  
                 for child in reversed(node.get_children()):
                     stack.append((child, depth - 1))  
-        return None, qty
+        return None, qty, len(stack)

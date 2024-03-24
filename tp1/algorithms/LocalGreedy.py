@@ -24,6 +24,7 @@ class LocalGreedy:
                 end_time = time.time()
                 duration = end_time - start_time
                 StateUtils.print_solution('Local Greedy', qty, node, heuristic)
+                StateUtils.print_frontier_nodes(len(queue))
                 return True, duration
             
             if node not in visited_nodes:
