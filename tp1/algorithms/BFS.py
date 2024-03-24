@@ -20,7 +20,7 @@ class BFS:
                 end_time = time.time()
                 duration = end_time - start_time
                 StateUtils.print_solution('BFS', qty, node, '', len(queue))
-                return True, duration
+                return True, duration , qty , len(queue)
 
             if node not in visited_nodes:
                 visited_nodes.add(node)

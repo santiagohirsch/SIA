@@ -12,7 +12,7 @@ class IDDFS:
             if result is not None:
                 end_time = time.time()
                 StateUtils.print_solution('IDDFS', qty, result, '', frontier)
-                return True, end_time - start_time
+                return True, end_time - start_time , qty , frontier
             depth_limit += 1
             if qty == -1: 
                 return False, time.time() - start_time
