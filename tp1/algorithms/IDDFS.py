@@ -11,7 +11,7 @@ class IDDFS:
             result, qty, frontier = IDDFS.dfs(initial_state, depth_limit)
             if result is not None:
                 end_time = time.time()
-                StateUtils.print_solution('IDDFS', qty, result, heuristic, frontier)
+                StateUtils.print_solution('IDDFS', qty, result, '', frontier)
                 return True, end_time - start_time
             depth_limit += 1
             if qty == -1: 
