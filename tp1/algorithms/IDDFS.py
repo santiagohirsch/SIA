@@ -20,14 +20,14 @@ class IDDFS:
     
     @staticmethod
     def dfs(initial_state, depth_limit):
-        stack = [(Node(None, initial_state), depth_limit)]  
+        queue = [(Node(None, initial_state), depth_limit)]  
         qty = 0  
-        while stack:
-            node, depth = stack.pop()
+        while queue:
+            node, depth = queue.pop()
             qty += 1  
             if node.state.is_solution():
-                return node, qty, len(stack)
+                return node, qty, len(queue)
             if depth > 0:  
                 for child in reversed(node.get_children()):
-                    stack.append((child, depth - 1))  
-        return None, qty, len(stack)
+                    queue.append((child, depth - 1))  
+        return None, qty, len(queue)

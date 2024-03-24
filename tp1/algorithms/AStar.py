@@ -11,20 +11,20 @@ class AStar:
     def search(initial_state: State, heuristic: str = ''):
         start_time = time.time()
         qty = 0
-        frontier = []
-        heapq.heappush(frontier, AuxNode(Node(None, initial_state), 0))
+        queue = []
+        heapq.heappush(queue, AuxNode(Node(None, initial_state), 0))
         total_cost = {Node(None, initial_state): 0}
         heuristic_method = getattr(Heuristics, heuristic)
 
-        while frontier:
-            aux = heapq.heappop(frontier)
+        while queue:
+            aux = heapq.heappop(queue)
             node = aux.node
 
             if node.state.is_solution():
                 end_time = time.time()  
                 duration = end_time - start_time  
                 StateUtils.print_solution('A*', qty, node, heuristic)
-                StateUtils.print_frontier_nodes(len(frontier))
+                StateUtils.print_frontier_nodes(len(queue))
                 return True, duration 
             
             for child in node.get_children():
@@ -32,7 +32,7 @@ class AStar:
                 if child not in total_cost or new_cost < total_cost[child]:
                     total_cost[child] = new_cost
                     cost = new_cost + heuristic_method(child.get_state())
-                    heapq.heappush(frontier, AuxNode(child, cost))
+                    heapq.heappush(queue, AuxNode(child, cost))
 
             qty += 1
         duration = time.time() - start_time

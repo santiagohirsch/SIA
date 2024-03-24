@@ -10,21 +10,21 @@ class DFS:
         start_time = time.time()
         qty = 0
         visited_nodes = set()
-        stack = deque()
+        queue = deque()
         root = Node(None, initial_state)
-        stack.append(root)
-        while stack:
-            node = stack.pop()
+        queue.append(root)
+        while queue:
+            node = queue.pop()
             if node.state.is_solution():    
                 end_time = time.time()
                 duration = end_time - start_time    
                 StateUtils.print_solution('DFS', qty, node, heuristic)
-                StateUtils.print_frontier_nodes(len(stack))
+                StateUtils.print_frontier_nodes(len(queue))
                 return True, duration
             if node not in visited_nodes:
                 visited_nodes.add(node)
                 for child in node.get_children():
-                    stack.append(child)
+                    queue.append(child)
             qty += 1
         duration = time.time() - start_time
         return False, duration
