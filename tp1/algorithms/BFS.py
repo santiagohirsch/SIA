@@ -19,8 +19,7 @@ class BFS:
             if node.state.is_solution():
                 end_time = time.time()
                 duration = end_time - start_time
-                StateUtils.print_solution('BFS', qty, node, heuristic)
-                StateUtils.print_frontier_nodes(len(queue))
+                StateUtils.print_solution('BFS', qty, node, heuristic, len(queue))
                 return True, duration
 
             if node not in visited_nodes:
