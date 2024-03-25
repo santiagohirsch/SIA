@@ -12,7 +12,7 @@ import csv
 
 if __name__ == "__main__":
 
-    map_path = 'maps/map1.txt'
+    map_path = 'maps/map2.txt'
     try:
         with open(map_path, 'r') as file:
             sokoban_board = file.read()
@@ -27,11 +27,13 @@ if __name__ == "__main__":
     player = parsed_positions.get('player', [])[0]
     goals = parsed_positions.get('goal', [])
     deadlocks = SokobanUtils.get_deadlocks(walls, blanks)
-    with open('results.csv', 'a', newline='') as file:
+    with open('results2.csv', 'a', newline='') as file:
         writer = csv.writer(file)  
         writer.writerow(['Algorithm', 'Duration', 'Nodes Expanded', 'Frontier Nodes', 'Heuristic'])
 
     for algorithm in ALGORITHMS:
+        if(algorithm == 'iddfs'):
+            continue
         for heuristic in HEURISTICS:
             for _ in range(100):
                     try:
@@ -40,7 +42,7 @@ if __name__ == "__main__":
                         sys.exit(1)
                     algorithm_class = getattr(imported_module, algorithm_normalizer(algorithm))
                     success, duration, nodes, frontier_nodes = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), heuristic_normalizer(heuristic))
-                    with open('results.csv', 'a', newline='') as file:
+                    with open('results2.csv', 'a', newline='') as file:
                         writer = csv.writer(file)  
                         writer.writerow([algorithm, duration, nodes, frontier_nodes, heuristic])
 
