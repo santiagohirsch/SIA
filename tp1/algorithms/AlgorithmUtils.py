@@ -33,8 +33,12 @@ class Heuristics:
     def manhattan_distance(state: State):
         total_distance = 0
         for box in state.boxes_points:
+            min_distance = None
             for goal in state.goals_points:
-                total_distance += abs(box.x - goal.x) + abs(box.y - goal.y)
+                distance = abs(box.x - goal.x) + abs(box.y - goal.y)
+                if min_distance is None or distance < min_distance:
+                    min_distance = distance
+            total_distance += min_distance
         return total_distance
 
     @staticmethod
