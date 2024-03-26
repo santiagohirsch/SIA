@@ -3,7 +3,6 @@ from typing import List, Set
 
 PARSED_HEURISTICS = {
     'manhattan_distance': 'Manhattan Distance',
-    'modified_manhattan': 'Modified Manhattan',
     'improved_modified_manhattan': 'Improved Modified Manhattan',
 }
 
