@@ -53,18 +53,6 @@ class SokobanUtils:
 
     @staticmethod
     def is_deadlock(blank, walls):
-        if SokobanUtils.is_corner_deadlock(blank, walls):
-            return True
-        if SokobanUtils.is_wall_deadlock(blank, walls):
-            return True
-        return False
-
-    @staticmethod
-    def is_wall_deadlock(blank, walls):
-        return False
-
-    @staticmethod
-    def is_corner_deadlock(blank, walls):
         if blank.move(Direction.TOP) in walls:
             if blank.move(Direction.LEFT) in walls:
                 return True
@@ -76,3 +64,6 @@ class SokobanUtils:
             if blank.move(Direction.RIGHT) in walls:
                 return True
         return False
+
+
+        

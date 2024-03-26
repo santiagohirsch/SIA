@@ -1,4 +1,3 @@
-from classes.Movement import Movement
 from classes.Point import Point
 from typing import List, Set
 
