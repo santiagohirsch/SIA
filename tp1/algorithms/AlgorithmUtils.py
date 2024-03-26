@@ -62,7 +62,10 @@ class Heuristics:
             player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y) 
             for j, goal in enumerate(state.goals_points):
                 goal_distance = abs(box.x - goal.x) + abs(box.y - goal.y) 
-                distances[i][j] = player_distance + goal_distance
+                if goal_distance == 0:
+                    distances[i][j] = 0
+                else:
+                    distances[i][j] = player_distance + goal_distance
         return minor_sum(distances)
 
         
