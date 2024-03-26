@@ -1,5 +1,5 @@
 from classes.Direction import Direction
-from classes.StateUtils import StateUtils
+from classes.StatePrinter import StatePrinter
 from classes.Point import Point
 
 class State:
@@ -12,7 +12,37 @@ class State:
         self._hash_value = None
         
     def __str__(self):
-        return "Player: " + str(self.player_point) + "\nBoxes: " + str(self.boxes_points) + "\nWalls: " + str(self.walls_points) + "\nGoals: " + str(self.goals_points) + "\nDeadlocks: " + str(self.deadlocks_points) + "\n"
+        object_symbols = {
+            'wall': '#',
+            'player': 'P',
+            'goal': 'O',
+            'box': 'B',
+            'box_positioned': '*',
+            'player_positioned': 'x'
+        }
+
+        all_points = [
+            self.player_point,
+            *self.boxes_points,
+            *self.walls_points,
+            *self.goals_points
+        ]
+
+        max_x = max(point.x for point in all_points) + 1
+        max_y = max(point.y for point in all_points) + 1
+
+        boxes_on_goals = [point for point in self.boxes_points if point in self.goals_points]
+        boxes = [point for point in self.boxes_points if point not in boxes_on_goals]
+        player_symbol = object_symbols['player_positioned'] if self.player_point in self.goals_points else object_symbols['player']
+
+        builder = StatePrinter(max_x, max_y)
+        builder.add_points(self.walls_points, object_symbols['wall']) \
+            .add_points(self.goals_points, object_symbols['goal']) \
+            .add_points(boxes_on_goals, object_symbols['box_positioned']) \
+            .add_points(boxes, object_symbols['box']) \
+            .add_points([self.player_point], player_symbol)
+
+        return str(builder)
         
 
     def __hash__(self):

@@ -36,12 +36,13 @@ if __name__ == "__main__":
             sokoban_board = file.read()
     except FileNotFoundError:
         print(f"Error: Map {options['map']} not found.")
+        sys.exit(1)
 
     # find algorithm file
     try:
         imported_module = importlib.import_module(f"algorithms.{normalized_algorithm}")
     except ModuleNotFoundError:
-        print(f"El algoritmo {normalized_algorithm} no existe o no ha sido implementado")
+        print(f"El algoritmo {normalized_algorithm if normalized_algorithm is not None else options['algorithm']} no existe o no ha sido implementado")
         sys.exit(1)
 
     parsed_positions = SokobanUtils.parse_sokoban_board(sokoban_board)
