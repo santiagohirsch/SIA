@@ -15,7 +15,6 @@ class AStar:
         heapq.heappush(queue, AuxNode(Node(None, initial_state), 0))
         total_cost = {Node(None, initial_state): 0}
         heuristic_method = getattr(Heuristics, heuristic)
-
         while queue:
             aux = heapq.heappop(queue)
             node = aux.node
