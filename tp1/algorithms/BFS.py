@@ -20,7 +20,8 @@ class BFS:
                 end_time = time.time()
                 duration = end_time - start_time
                 StateUtils.print_solution('BFS', qty, node, '', len(queue))
-                return True, duration , qty , len(queue)
+                depth = StateUtils.calculate_depth(node)
+                return True, duration , qty , len(queue), depth
 
             if node not in visited_nodes:
                 visited_nodes.add(node)

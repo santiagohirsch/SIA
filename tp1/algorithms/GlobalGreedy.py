@@ -24,7 +24,8 @@ class GlobalGreedy:
                 end_time = time.time()
                 duration = end_time - start_time
                 StateUtils.print_solution('Global Greedy', qty, node, heuristic, len(queue))
-                return True, duration , qty , len(queue)
+                depth = StateUtils.calculate_depth(node)
+                return True, duration , qty , len(queue), depth
             
             if node not in visited_nodes:
                 visited_nodes.add(node)

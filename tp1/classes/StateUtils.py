@@ -1,5 +1,8 @@
+import itertools
 from classes.Point import Point
 from typing import List, Set
+from classes.State import State
+
 
 PARSED_HEURISTICS = {
     'manhattan_distance': 'Manhattan Distance',
@@ -9,6 +12,14 @@ PARSED_HEURISTICS = {
 class StateUtils:
     def __init__(self):
         raise NotImplementedError("Class instantiation not supported")
+    
+    @staticmethod
+    def calculate_depth(node):
+        depth = 0
+        while node.father is not None:
+            node = node.father
+            depth += 1
+        return depth
 
     @staticmethod
     def draw_solution_map(node, depth):

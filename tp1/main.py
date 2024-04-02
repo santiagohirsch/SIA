@@ -64,7 +64,7 @@ if __name__ == "__main__":
             else:
                 print(f"Failure, could not solve the map: {options['map'].split('/')[-1]}")
     else:
-        success, duration, nodes, frontier_nodes = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), normalized_heuristic)
+        success, duration, nodes, frontier_nodes, _ = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), normalized_heuristic)
         if success:
             print(f"It took {round(duration, 9)} seconds to solve the map: {options['map'].split('/')[-1]}")
         else:

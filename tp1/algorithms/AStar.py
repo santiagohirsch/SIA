@@ -23,7 +23,8 @@ class AStar:
                 end_time = time.time()  
                 duration = end_time - start_time  
                 StateUtils.print_solution('A*', qty, node, heuristic, len(queue))
-                return True, duration , qty , len(queue)
+                depth = StateUtils.calculate_depth(node)
+                return True, duration , qty , len(queue), depth
             
             for child in node.get_children():
                 new_cost = total_cost[node] + 1
