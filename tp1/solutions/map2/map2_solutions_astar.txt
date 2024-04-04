@@ -76,7 +76,9 @@ Depth:  12
 #*P   #
 #######
 
-It took 0.003138065 seconds to solve the map: map2.txt
+
+
+It took 0.003159046 seconds to solve the map: map2.txt
 
 
 A* solution was found opening: 153 nodes
@@ -156,4 +158,8 @@ Depth:  12
 #*P   #
 #######
 
-It took 0.002754927 seconds to solve the map: map2.txt
+
+
+It took 0.002761364 seconds to solve the map: map2.txt
+
+

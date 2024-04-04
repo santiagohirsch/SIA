@@ -1709,4 +1709,4 @@ Depth:  284
 
 
 
-It took 0.162522793 seconds to solve the map: map5.txt
+It took 0.144340992 seconds to solve the map: map5.txt

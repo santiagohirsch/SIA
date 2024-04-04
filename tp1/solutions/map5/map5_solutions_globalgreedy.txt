@@ -232,7 +232,9 @@ Depth:  38
 #  P* #
 #######
 
-It took 0.002710819 seconds to solve the map: map5.txt
+
+
+It took 0.002747297 seconds to solve the map: map5.txt
 
 
 Global Greedy solution was found opening: 114 nodes
@@ -396,4 +398,8 @@ Depth:  26
 #  P* #
 #######
 
-It took 0.003834963 seconds to solve the map: map5.txt
+
+
+It took 0.003434896 seconds to solve the map: map5.txt
+
+

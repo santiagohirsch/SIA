@@ -82,7 +82,9 @@ Depth:  13
 # #   #
 #######
 
-It took 0.001250982 seconds to solve the map: map3.txt
+
+
+It took 0.000972033 seconds to solve the map: map3.txt
 
 
 Local Greedy solution was found opening: 152 nodes
@@ -168,4 +170,8 @@ Depth:  13
 # #   #
 #######
 
-It took 0.001825809 seconds to solve the map: map3.txt
+
+
+It took 0.00176096 seconds to solve the map: map3.txt
+
+

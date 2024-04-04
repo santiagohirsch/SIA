@@ -795,4 +795,4 @@ Depth:  79
 
 
 
-It took 0.184111834 seconds to solve the map: map6.txt
+It took 0.260586023 seconds to solve the map: map6.txt

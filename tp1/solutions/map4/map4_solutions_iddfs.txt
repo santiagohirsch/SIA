@@ -71,4 +71,4 @@ Depth:  11
 
 
 
-It took 0.099038839 seconds to solve the map: map4.txt
+It took 0.100301981 seconds to solve the map: map4.txt

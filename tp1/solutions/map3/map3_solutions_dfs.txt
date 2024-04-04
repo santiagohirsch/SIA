@@ -635,4 +635,4 @@ Depth:  105
 
 
 
-It took 0.005294085 seconds to solve the map: map3.txt
+It took 0.005377054 seconds to solve the map: map3.txt

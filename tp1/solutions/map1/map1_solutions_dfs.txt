@@ -191,4 +191,4 @@ Depth:  31
 
 
 
-It took 0.016379833 seconds to solve the map: map1.txt
+It took 0.012658119 seconds to solve the map: map1.txt

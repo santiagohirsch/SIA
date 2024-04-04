@@ -250,19 +250,21 @@ Depth:  41
 #    *#
 #######
 
-It took 0.005938292 seconds to solve the map: map4.txt
 
 
-Local Greedy solution was found opening: 345 nodes
+It took 0.006083965 seconds to solve the map: map4.txt
+
+
+Local Greedy solution was found opening: 43 nodes
 When using the Improved Modified Manhattan heuristic
-Frontier nodes: 94
+Frontier nodes: 20
 #######
 #P    #
 #  OB #
 # OBB #
 #    O#
 #######
-Depth:  25
+Depth:  15
 #######
 #     #
 #P OB #
@@ -295,117 +297,61 @@ Depth:  25
 #######
 #######
 #     #
-#  *B #
-# OPB #
+#  OB #
+# OBB #
+#   PO#
+#######
+#######
+#     #
+#  OB #
+# OBB #
+#    x#
+#######
+#######
+#     #
+#  OB #
+# OBBP#
 #    O#
 #######
 #######
 #     #
-#  *B #
-# O PB#
+#  OBP#
+# OBB #
 #    O#
-#######
-#######
-#     #
-#  *B #
-# OP B#
-#    O#
-#######
-#######
-#     #
-#  *B #
-# x  B#
-#    O#
-#######
-#######
-#     #
-# P*B #
-# O  B#
-#    O#
-#######
-#######
-# P   #
-#  *B #
-# O  B#
-#    O#
-#######
-#######
-#  P  #
-#  *B #
-# O  B#
-#    O#
-#######
-#######
-#   P #
-#  *B #
-# O  B#
-#    O#
-#######
-#######
-#    P#
-#  *B #
-# O  B#
-#    O#
-#######
-#######
-#     #
-#  *BP#
-# O  B#
-#    O#
-#######
-#######
-#     #
-#  *B #
-# O  P#
-#    *#
-#######
-#######
-#     #
-#  *BP#
-# O   #
-#    *#
-#######
-#######
-#    P#
-#  *B #
-# O   #
-#    *#
-#######
-#######
-#   P #
-#  *B #
-# O   #
-#    *#
 #######
 #######
 #     #
 #  *P #
-# O B #
-#    *#
-#######
-#######
-#     #
-#  * P#
-# O B #
-#    *#
-#######
-#######
-#     #
-#  *  #
-# O BP#
-#    *#
+# OBB #
+#    O#
 #######
 #######
 #     #
 #  *  #
 # OBP #
-#    *#
+#   BO#
 #######
 #######
 #     #
 #  *  #
 # *P  #
-#    *#
+#   BO#
+#######
+#######
+#     #
+#  *  #
+# *   #
+#  PBO#
+#######
+#######
+#     #
+#  *  #
+# *   #
+#   P*#
 #######
 
-It took 0.006551981 seconds to solve the map: map4.txt
+
+
+It took 0.001032114 seconds to solve the map: map4.txt
+
+

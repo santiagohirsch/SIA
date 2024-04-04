@@ -95,4 +95,4 @@ Depth:  15
 
 
 
-It took 0.015388012 seconds to solve the map: map1.txt
+It took 0.01459527 seconds to solve the map: map1.txt

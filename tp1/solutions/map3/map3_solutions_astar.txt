@@ -82,12 +82,14 @@ Depth:  13
 # #   #
 #######
 
-It took 0.002199173 seconds to solve the map: map3.txt
 
 
-A* solution was found opening: 136 nodes
+It took 0.002208948 seconds to solve the map: map3.txt
+
+
+A* solution was found opening: 142 nodes
 When using the Improved Modified Manhattan heuristic
-Frontier nodes: 54
+Frontier nodes: 40
 #######
 #P #  #
 #O B O#
@@ -168,4 +170,8 @@ Depth:  13
 # #   #
 #######
 
-It took 0.002082109 seconds to solve the map: map3.txt
+
+
+It took 0.002120972 seconds to solve the map: map3.txt
+
+

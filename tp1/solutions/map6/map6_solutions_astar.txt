@@ -794,7 +794,9 @@ Depth:  79
 ####  ###  ####
    #### ####   
 
-It took 0.21967411 seconds to solve the map: map6.txt
+
+
+It took 0.229974985 seconds to solve the map: map6.txt
 
 
 A* solution was found opening: 19427 nodes
@@ -1592,4 +1594,8 @@ Depth:  79
 ####  ###  ####
    #### ####   
 
-It took 0.263966799 seconds to solve the map: map6.txt
+
+
+It took 0.29219985 seconds to solve the map: map6.txt
+
+

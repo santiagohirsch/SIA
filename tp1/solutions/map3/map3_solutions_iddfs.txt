@@ -83,4 +83,4 @@ Depth:  13
 
 
 
-It took 0.449173689 seconds to solve the map: map3.txt
+It took 0.444151878 seconds to solve the map: map3.txt

@@ -70,12 +70,14 @@ Depth:  11
 #   P*#
 #######
 
-It took 0.000864029 seconds to solve the map: map4.txt
 
 
-A* solution was found opening: 49 nodes
+It took 0.000849962 seconds to solve the map: map4.txt
+
+
+A* solution was found opening: 29 nodes
 When using the Improved Modified Manhattan heuristic
-Frontier nodes: 50
+Frontier nodes: 29
 #######
 #P    #
 #  OB #
@@ -144,4 +146,8 @@ Depth:  11
 #   P*#
 #######
 
-It took 0.001194954 seconds to solve the map: map4.txt
+
+
+It took 0.000715971 seconds to solve the map: map4.txt
+
+

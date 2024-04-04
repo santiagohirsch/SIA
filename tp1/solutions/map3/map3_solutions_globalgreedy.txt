@@ -82,19 +82,21 @@ Depth:  13
 # #   #
 #######
 
-It took 0.001435041 seconds to solve the map: map3.txt
 
 
-Global Greedy solution was found opening: 295 nodes
+It took 0.001548052 seconds to solve the map: map3.txt
+
+
+Global Greedy solution was found opening: 140 nodes
 When using the Improved Modified Manhattan heuristic
-Frontier nodes: 49
+Frontier nodes: 37
 #######
 #P #  #
 #O B O#
 #  B  #
 # #   #
 #######
-Depth:  15
+Depth:  13
 #######
 # P#  #
 #O B O#
@@ -124,18 +126,6 @@ Depth:  15
 #O   *#
 #  BP #
 # #   #
-#######
-#######
-#  #  #
-#O   *#
-#  B P#
-# #   #
-#######
-#######
-#  #  #
-#O   *#
-#  B  #
-# #  P#
 #######
 #######
 #  #  #
@@ -180,4 +170,8 @@ Depth:  15
 # #   #
 #######
 
-It took 0.002360106 seconds to solve the map: map3.txt
+
+
+It took 0.001329899 seconds to solve the map: map3.txt
+
+

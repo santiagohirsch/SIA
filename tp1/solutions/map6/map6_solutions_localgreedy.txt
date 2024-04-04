@@ -1434,7 +1434,9 @@ Depth:  143
 ####  ###  ####
    #### ####   
 
-It took 0.01284194 seconds to solve the map: map6.txt
+
+
+It took 0.013226032 seconds to solve the map: map6.txt
 
 
 Local Greedy solution was found opening: 1412 nodes
@@ -2512,4 +2514,8 @@ Depth:  107
 ####  ###  ####
    #### ####   
 
-It took 0.015154123 seconds to solve the map: map6.txt
+
+
+It took 0.016323805 seconds to solve the map: map6.txt
+
+

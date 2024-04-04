@@ -106,11 +106,14 @@ Depth:  17
 #   * #
 #######
 
-It took 0.020247936 seconds to solve the map: map5.txt
 
-A* solution was found opening: 1353 nodes
+
+It took 0.020894051 seconds to solve the map: map5.txt
+
+
+A* solution was found opening: 947 nodes
 When using the Improved Modified Manhattan heuristic
-Frontier nodes: 739
+Frontier nodes: 605
 #######
 #P  O #
 #OOB  #
@@ -215,4 +218,8 @@ Depth:  17
 #   * #
 #######
 
-It took 0.050219059 seconds to solve the map: map5.txt
+
+
+It took 0.037612915 seconds to solve the map: map5.txt
+
+
