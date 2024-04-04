@@ -58,7 +58,7 @@ if __name__ == "__main__":
     print("Solving...")
     if normalized_heuristic is None and normalized_algorithm != 'IDDFS' and normalized_algorithm != 'BFS' and normalized_algorithm != 'DFS':
         for _, heuristic in HEURISTICS.items():
-            success, duration, nodes, frontier_nodes = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), heuristic)
+            success, duration, nodes, frontier_nodes, _ = algorithm_class.search(State(set(boxes), set(walls), player, set(goals), set(deadlocks)), heuristic)
             if success:
                 print(f"It took {round(duration, 9)} seconds to solve the map: {options['map'].split('/')[-1]}")
             else:
