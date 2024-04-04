@@ -45,11 +45,9 @@ class Heuristics:
         distances = [[None for _ in range(len(state.goals_points))] for _ in range(len(state.boxes_points))]
         for i, box in enumerate(state.boxes_points):
             # player_distance = abs(box.x - state.player_point.x) + abs(box.y - state.player_point.y) 
-            box_in_goal = False
             for j, goal in enumerate(state.goals_points):
                 goal_distance = abs(box.x - goal.x) + abs(box.y - goal.y) 
-                if goal_distance == 0 or box_in_goal:
-                    box_in_goal = True
+                if goal_distance == 0:
                     distances[i][j] = 0
                 else:
                     distances[i][j] = goal_distance
