@@ -6,3 +6,6 @@ DEFENSE_PCT = 0.3
 class Spy(Character):
     def __init__(self, attributes):
         super().__init__(attributes, ATTACK_PCT, DEFENSE_PCT)
+
+    def __str__(self):
+        return "Spy" + super().__str__()
