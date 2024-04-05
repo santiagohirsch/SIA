@@ -7,3 +7,6 @@ class Endurance(Attribute):
 
     def get_p(self):
         return tanh(0.01 * self.value)
+
+    def __str__(self):
+        return super().__str__()

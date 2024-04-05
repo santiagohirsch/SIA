@@ -1,4 +1,3 @@
-from math import tanh
 from src.classes.attributes.Attribute import Attribute
 
 class Height(Attribute):
@@ -10,3 +9,6 @@ class Height(Attribute):
     
     def get_DEM(self):
         return 2 + (3 * self.value - 5) ** 4 - (3 * self.value - 5) ** 2 - self.value / 2
+
+    def __str__(self):
+        return super().__str__()
