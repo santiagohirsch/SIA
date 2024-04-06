@@ -7,15 +7,14 @@ class Character(ABC):
         self.defense_pct = defense_pct
         self.attributes = attributes
 
-    def get_attribute(self):
-        return self.attribute
+    def get_attributes(self):
+        return self.attributes
 
-    # HACER
+
     @abstractmethod
     def attack(self):
         return (self.attributes.get_agility().get_p() + self.attributes.get_expertise().get_p()) * self.attributes.get_strength().get_p() * self.attributes.get_height().get_ATM()
 
-    # HACER
     @abstractmethod
     def defend(self):
         return (self.attributes.get_endurance().get_p() + self.attributes.get_expertise().get_p()) * self.attributes.get_health().get_p() * self.attributes.get_height().get_DEM()
@@ -28,7 +27,7 @@ class Character(ABC):
         return self.attack_pct * self.attack() + self.defense_pct * self.defend()
 
     def __lt__(self, other):
-        return self.fitness < other.fitness
+        return self.fitness() < other.fitness()
     
     def __eq__(self, other):
         return self.attributes == other.attributes
