@@ -57,7 +57,7 @@ def get_class(class_type, class_dict, param):
     if param.lower() in class_dict:
         # find class file
         try:
-            imported_module = importlib.import_module(f"{class_type}.{class_dict[param.lower()]}")
+            imported_module = importlib.import_module(f"src.{class_type.lower()}.{class_dict[param.lower()]}")
         except ModuleNotFoundError:
             print(f"El {class_type} {class_dict[param.lower()]} no existe o no ha sido implementado")
             sys.exit(1)
@@ -68,16 +68,16 @@ def get_class(class_type, class_dict, param):
         sys.exit(1)
 
 def get_character_class(character):
-    return get_class("character", CHARACTER_TYPES, character)
+    return get_class("classes.characters", CHARACTER_TYPES, character)
 
 def get_selection_method(selection_method):
     return get_class("selection", SELECTION_METHODS, selection_method)
 
 def get_crossing_method(crossing):
-    return get_class("crossing", CROSSING_METHODS, crossing)
+    return get_class("operators.crossing", CROSSING_METHODS, crossing)
 
 def get_mutation_method(mutation):
-    return get_class("mutation", MUTATION_METHODS, mutation)
+    return get_class("operators.mutation", MUTATION_METHODS, mutation)
 
 def get_cutoff_method(cutoff):
     return get_class("cutoff", CUTOFF_METHODS, cutoff)
