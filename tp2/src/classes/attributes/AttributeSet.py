@@ -7,11 +7,13 @@ from src.classes.attributes.Height import Height
 
 class AttributeSet:
     def __init__(self, agility: float, strength: float, expertise: float, endurance: float, health: float, height: float):
-        self.agility = Agility(agility)
-        self.strength = Strength(strength)
-        self.expertise = Expertise(expertise)
-        self.endurance = Endurance(endurance)
-        self.health = Health(health)
+        total = agility + strength + expertise + endurance + health
+        modifier = 150 / total
+        self.agility = Agility(agility * modifier)
+        self.strength = Strength(strength * modifier)
+        self.expertise = Expertise(expertise * modifier)
+        self.endurance = Endurance(endurance * modifier)
+        self.health = Health(health * modifier)
         self.height = Height(height)
 
     def get_agility(self) -> Agility:
