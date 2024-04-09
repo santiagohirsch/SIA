@@ -1,0 +1,39 @@
+{
+    "character": "[ archer | defender | spy | warrior ]",
+    "attribute_sets": [
+        {"agility": 15, "strength":  25, "expertise": 35, "endurance": 40, "health": 35, "height": 1.6 },
+        {"agility": 20, "strength":  30, "expertise": 30, "endurance": 35, "health": 35, "height": 1.5 },
+        {"agility": 25, "strength":  35, "expertise": 25, "endurance": 30, "health": 35, "height": 1.7 },
+        {"agility": 30, "strength":  40, "expertise": 20, "endurance": 25, "health": 35, "height": 1.8 },
+        {"agility": 35, "strength":  45, "expertise": 15, "endurance": 20, "health": 35, "height": 2.0 },
+        {"agility": 40, "strength":  50, "expertise": 10, "endurance": 15, "health": 35, "height": 1.3 },
+        {"agility": 45, "strength":  55, "expertise": 5, "endurance": 10, "health": 35, "height": 1.9 },
+        {"agility": 50, "strength":  60, "expertise": 0, "endurance": 5, "health": 35, "height": 1.4 },
+        {"agility": 55, "strength":  55, "expertise": 5, "endurance": 5, "health": 30, "height": 1.6 },
+        {"agility": 60, "strength":  50, "expertise": 10, "endurance": 5, "health": 25, "height": 1.8 }
+    ],
+    "crossing": "[ annular | one_point | two_point | uniform ]",
+    "mutation": {
+        "name": "[ single | uniform | limited | complete ]",
+        "rate": "[ 0.0 - 1.0 ]"
+    },
+    "selection": {
+        "first": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+        "second": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+        "a_value": "[ 0.0 - 1.0 ]"
+    },
+    "individuals": "[ > 0 ]",
+    "cutoff": {
+        "name": "[ content | structure | max_gen | optimum ]",
+        "value": "[ > 0 ]"
+    },
+    "replacement": {
+        "name": "[ traditional | young ]",
+        "b_value": "[ 0.0 - 1.0 ]",
+        "selection": {
+            "first": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+            "second": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]"
+        }
+    }
+    
+}
