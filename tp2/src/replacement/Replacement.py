@@ -2,5 +2,5 @@ from abc import ABC, abstractmethod
 
 class Replacement(ABC):
     @abstractmethod
-    def replace(population, children, population_individuals, children_individuals, B):
+    def replace(population, children, selection1, selection2, B):
         pass
