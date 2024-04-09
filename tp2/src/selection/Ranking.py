@@ -3,8 +3,8 @@ import random
 
 class Ranking(Selection):
     
-    @staticmethod
-    def select(population, individuals):
+    @classmethod
+    def select(self, population, individuals):
         sorted_population = sorted(population, key=lambda x: x.fitness(), reverse=True)
         function_population = []
         length = len(sorted_population)

@@ -2,10 +2,10 @@ from src.selection.Selection import Selection
 
 class Elite(Selection):
     
-    @staticmethod
-    def select(population, individuals):
+    @classmethod
+    def select(self, population, individuals):
         new_population = []
-        sorted_population = sorted(population, reverse=True)
+        sorted_population = sorted(population, reverse=True, key=lambda individual: individual.fitness())
         i = 0
         k = 0
         while i < individuals:

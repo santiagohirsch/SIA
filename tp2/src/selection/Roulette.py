@@ -2,7 +2,8 @@ from selection.Selection import Selection
 import random
 
 class Roulette(Selection):
-    def select(population, individuals):
+    @classmethod
+    def select(self, population, individuals):
         total_fitness = sum(individual.fitness() for individual in population)
         selection_probs = [individual.fitness() / total_fitness for individual in population]
 

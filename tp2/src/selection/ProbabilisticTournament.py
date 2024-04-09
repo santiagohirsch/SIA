@@ -5,8 +5,8 @@ import math
 
 class ProbabilisticTournament(Selection):
     
-    @staticmethod
-    def select(population, individuals):
+    @classmethod
+    def select(self, population, individuals):
         selected = []
         for i in range(individuals):
             selected.append(ProbabilisticTournament.tournament(population))

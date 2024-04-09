@@ -5,8 +5,8 @@ import math
 
 
 class DeterministicTournament(Selection):    
-    @staticmethod
-    def select(population, individuals):
+    @classmethod
+    def select(self, population, individuals):
         selected = []
         for i in range(individuals):
             selected.append(DeterministicTournament.tournament(population))

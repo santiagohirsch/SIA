@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 class Selection(ABC):
+    @classmethod
     @abstractmethod
-    def select(population, individuals):
+    def select(self, population, individuals):
         pass
