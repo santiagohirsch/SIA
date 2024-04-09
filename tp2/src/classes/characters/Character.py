@@ -11,15 +11,12 @@ class Character(ABC):
         return self.attributes
 
 
-    @abstractmethod
     def attack(self):
-        return (self.attributes.get_agility().get_p() + self.attributes.get_expertise().get_p()) * self.attributes.get_strength().get_p() * self.attributes.get_height().get_ATM()
+        return (self.get_attributes().get_agility().get_p() + self.attributes.get_expertise().get_p()) * self.attributes.get_strength().get_p() * self.attributes.get_height().get_ATM()
 
-    @abstractmethod
     def defend(self):
         return (self.attributes.get_endurance().get_p() + self.attributes.get_expertise().get_p()) * self.attributes.get_health().get_p() * self.attributes.get_height().get_DEM()
-
-    @abstractmethod
+    
     def __str__(self):
         return self.attributes.__str__()
 
