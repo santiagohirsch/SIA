@@ -6,5 +6,7 @@ class Attribute(ABC):
 
     def __str__(self):
         return self.value.__str__()
+    
+
 
     

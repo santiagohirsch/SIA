@@ -43,3 +43,8 @@ class AttributeSet:
 
     def __str__(self) -> str:
         return f"\nAgility: {self.agility} | Strength: {self.strength} | Expertise: {self.expertise} | Endurance: {self.endurance} | Health: {self.health} | Height: {self.height}"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, AttributeSet):
+            return False
+        return self.agility == other.agility and self.strength == other.strength and self.expertise == other.expertise and self.endurance == other.endurance and self.health == other.health and self.height == other.height

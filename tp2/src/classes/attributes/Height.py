@@ -1,4 +1,5 @@
 from src.classes.attributes.Attribute import Attribute
+import math
 
 class Height(Attribute):
     def __init__(self, value):
@@ -12,3 +13,11 @@ class Height(Attribute):
 
     def __str__(self):
         return super().__str__()
+
+    def __eq__(self, other):
+        if other is None:
+            return False
+        if isinstance(other, Height):
+            return math.isclose(other.value, self.value, rel_tol=1e-03)
+        else:
+            return False

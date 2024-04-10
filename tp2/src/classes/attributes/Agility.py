@@ -1,4 +1,5 @@
 from math import tanh
+import math
 from src.classes.attributes.Attribute import Attribute
 
 class Agility(Attribute):
@@ -10,3 +11,11 @@ class Agility(Attribute):
 
     def __str__(self):
         return super().__str__()
+    
+    def __eq__(self, other):
+        if other is None:
+            return False
+        if isinstance(other, Agility):
+            return math.isclose(other.value, self.value, rel_tol=1e-03)
+        else:
+            return False

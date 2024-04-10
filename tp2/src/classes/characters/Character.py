@@ -26,5 +26,7 @@ class Character(ABC):
     def __lt__(self, other):
         return self.fitness() < other.fitness()
     
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Character):
+            return False
         return self.attributes == other.attributes
