@@ -24,7 +24,7 @@ CROSSING_METHODS = {
     "one_point": "OnePoint",
     "two_point": "TwoPoint",
     "uniform": "Uniform",
-    "anular": "Annular",
+    "annular": "Annular",
 }
 
 MUTATION_METHODS = {

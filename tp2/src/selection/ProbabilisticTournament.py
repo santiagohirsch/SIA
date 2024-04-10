@@ -16,7 +16,7 @@ class ProbabilisticTournament(Selection):
     def tournament(population):
         k = 2
         selected = []
-        threshold = random(0.5,1)
+        threshold = random.uniform(0.5, 1)
         for _ in range(k):
             selected.append(random.choice(population))
         best = selected[0]
