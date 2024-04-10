@@ -3,6 +3,7 @@ import json
 import sys
 
 from utils import get_attribute_sets, get_character_class, get_crossing_method, get_cutoff_method, get_mutation_method, get_population, get_replacement_method, get_selection_method
+import math
         
 def main():
     with open(f"{sys.argv[1]}", "r") as f:
@@ -52,9 +53,11 @@ def main():
     generation = 0
 
     while cutoff_class.should_cutoff(population, old_generations, generation, cutoff_value) is False:
+        
         # select parents
-        parents = first_selection_class.select(population, individuals * a_value)
-        parents.extend(second_selection_class.select(population, individuals * (1 - a_value)))
+        parents = first_selection_class.select(population, math.ceil(individuals * a_value))
+        parents.extend(second_selection_class.select(population, math.floor(individuals * (1 - a_value))))
+
 
         # crossing
         children_attributes = []
@@ -76,7 +79,7 @@ def main():
         print("Population:")
         for individual in population:
             print(individual)
-            print(f"Fitness: {individual.fitness}")
+            print(f"Fitness: {individual.fitness()}")
 
 
 
