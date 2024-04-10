@@ -18,8 +18,15 @@
         "rate": "[ 0.0 - 1.0 ]"
     },
     "selection": {
-        "first": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
-        "second": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+
+        "first": {
+            "name": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+            "params": "[tournament_det: {\"range\":  2} | boltzmann {\"T0\": 10, \"TC\": 5, \"k\": 2, \"generation\": 10} | else: {} ]"
+        },
+        "second": {
+            "name": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+            "params": "[tournament_det: {\"range\":  2} | boltzmann {\"T0\": 10, \"TC\": 5, \"k\": 2, \"generation\": 10} | else: {} ]"
+        },
         "a_value": "[ 0.0 - 1.0 ]"
     },
     "individuals": "[ > 0 ]",
@@ -31,8 +38,14 @@
         "name": "[ traditional | young ]",
         "b_value": "[ 0.0 - 1.0 ]",
         "selection": {
-            "first": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
-            "second": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]"
+            "first": {
+                "name": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+                "params": "[tournament_det: {\"range\":  2} | boltzmann {\"T0\": 10, \"TC\": 5, \"k\": 2, \"generation\": 10} | else: {} ]"
+            },
+            "second": {
+                "name": "[ roulette | elite | universal | tournament_det | tournament_prob | ranking | boltzmann ]",
+                "params": "[tournament_det: {\"range\":  2} | boltzmann {\"T0\": 10, \"TC\": 5, \"k\": 2, \"generation\": 10} | else: {} ]"
+            }
         }
     }
     
