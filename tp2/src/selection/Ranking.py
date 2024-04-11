@@ -9,7 +9,7 @@ class Ranking(Selection):
         function_population = []
         length = len(sorted_population)
 
-        for i in enumerate(sorted_population):
+        for i, _ in enumerate(sorted_population):
             function_population.append((length-i+1)/length)
 
         selected = []
