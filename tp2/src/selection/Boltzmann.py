@@ -4,25 +4,14 @@ import math
 from src.selection.Selection import Selection
 
 class Boltzmann(Selection):
-    tc = 0
-    t0 = 0
-    k = 0
-    generation = 0
 
-    # TODO: Figure out where to instance function
-    @classmethod
-    def set_boltzmann_params(self, tc: int, t0: int, k: int, generation: int):
+    def __init__(self, tc: int, t0: int, k: int, generation: int):
         self.tc = tc
         self.t0 = t0
         self.k = k
         self.generation = generation
 
-    @classmethod
-    def select(self, population: [], individuals: int): # type: ignore
-        print("tc", self.tc)
-        print("t0", self.t0)
-        print("k", self.k)
-        print("generation", self.generation)
+    def select(self, population: [], individuals: int):
         temperature = self.tc + (self.t0 + self.tc) * math.exp(-self.k * self.generation)
         selected = []
         fitness = [math.exp(individual.fitness()/temperature) for individual in population]

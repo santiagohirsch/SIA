@@ -8,11 +8,9 @@ class DeterministicTournament(Selection):
 
     k = 10
 
-    @classmethod
-    def define_params(self, k):
+    def __init__(self, k):
         self.k = k
 
-    @classmethod
     def select(self, population, individuals):
         selected = []
         for i in range(individuals):
@@ -21,7 +19,6 @@ class DeterministicTournament(Selection):
     
 
     def tournament(self,population):
-        print("k",self.k)
         selected = []
         for _ in range(self.k):
             selected.append(random.choice(population))
