@@ -1,4 +1,4 @@
-from selection.Selection import Selection
+from src.selection.Selection import Selection
 import random
 
 class Roulette(Selection):
