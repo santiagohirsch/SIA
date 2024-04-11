@@ -16,7 +16,7 @@ def main():
         first_selection = config["selection"]["first"]["name"]
         first_selection_params = config["selection"]["first"]["params"]
         second_selection = config["selection"]["second"]["name"]
-        second_selection_params = config["selection"]["first"]["params"]
+        second_selection_params = config["selection"]["second"]["params"]
         a_value = config["selection"]["a_value"]
         individuals = config["individuals"]
         cutoff = config["cutoff"]["name"]
@@ -39,16 +39,16 @@ def main():
 
     # find selection method class
     first_selection_class = get_selection_method(first_selection)
-    if first_selection_class.__name__ == "Boltzmann":
-        first_selection_class.set_boltzmann_params(first_selection_params["TC"], first_selection_params["T0"], first_selection_params["k"], first_selection_params["generation"])
+    if first_selection == "boltzmann":
+        first_selection_class = first_selection_class(first_selection_params["TC"], first_selection_params["T0"], first_selection_params["k"], first_selection_params["generation"])
     elif first_selection_class.__name__ == "DeterministicTournament":
-        first_selection_class.define_params(first_selection_params["k"]) 
+        first_selection_class = first_selection_class(first_selection_params["k"]) 
 
     second_selection_class = get_selection_method(second_selection)
-    if second_selection_class.__name__ == "Boltzmann":
-        second_selection_class.set_boltzmann_params(second_selection_params["TC"], second_selection_params["T0"], second_selection_params["k"], second_selection_params["generation"])
+    if first_selection == "boltzmann":
+        second_selection_class = second_selection_class(second_selection_params["TC"], second_selection_params["T0"], second_selection_params["k"], second_selection_params["generation"])
     elif second_selection_class.__name__ == "DeterministicTournament":
-        second_selection_class.define_params(second_selection_params["k"]) 
+        second_selection_class = second_selection_class(second_selection_params["k"]) 
 
     # find cutoff method class
     cutoff_class = get_cutoff_method(cutoff)
@@ -57,14 +57,14 @@ def main():
     replacement_class = get_replacement_method(replacement)
     replacement_first_selection_class = get_selection_method(replacement_first_selection)
     if replacement_first_selection_class.__name__ == "Boltzmann":
-        replacement_first_selection_class.set_boltzmann_params(replacement_first_selection_params["TC"], replacement_first_selection_params["T0"], replacement_first_selection_params["k"], replacement_first_selection_params["generation"])
+        replacement_first_selection_class = replacement_first_selection_class(replacement_first_selection_params["TC"], replacement_first_selection_params["T0"], replacement_first_selection_params["k"], replacement_first_selection_params["generation"])
     elif replacement_first_selection_class.__name__ == "DeterministicTournament":
-        replacement_first_selection_class.define_params(replacement_first_selection_params["k"]) 
+        replacement_first_selection_class = replacement_first_selection_class(replacement_first_selection_params["k"]) 
     replacement_second_selection_class = get_selection_method(replacement_second_selection)
     if replacement_second_selection_class.__name__ == "Boltzmann":
-        replacement_second_selection_class.set_boltzmann_params(replacement_second_selection_params["TC"], replacement_second_selection_params["T0"], replacement_second_selection_params["k"], replacement_second_selection_params["generation"])
+        replacement_second_selection_class = replacement_second_selection_class(replacement_second_selection_params["TC"], replacement_second_selection_params["T0"], replacement_second_selection_params["k"], replacement_second_selection_params["generation"])
     elif replacement_second_selection_class.__name__ == "DeterministicTournament":
-        replacement_second_selection_class.define_params(replacement_second_selection_params["k"]) 
+        replacement_second_selection_class = replacement_second_selection_class(replacement_second_selection_params["k"]) 
 
     # get attribute sets
     attribute_sets = get_attribute_sets(attribute_configs)
