@@ -21,6 +21,7 @@ def main():
         individuals = config["individuals"]
         cutoff = config["cutoff"]["name"]
         cutoff_value = config["cutoff"]["value"]
+        cutoff_generations = config["cutoff"]["generations"]
         replacement = config["replacement"]["name"]
         replacement_first_selection = config["replacement"]["selection"]["first"]["name"]
         replacement_first_selection_params = config["replacement"]["selection"]["first"]["params"]
@@ -45,13 +46,17 @@ def main():
         first_selection_class = first_selection_class(first_selection_params["k"]) 
 
     second_selection_class = get_selection_method(second_selection)
-    if first_selection == "boltzmann":
+    if second_selection == "boltzmann":
         second_selection_class = second_selection_class(second_selection_params["TC"], second_selection_params["T0"], second_selection_params["k"], second_selection_params["generation"])
     elif second_selection_class.__name__ == "DeterministicTournament":
         second_selection_class = second_selection_class(second_selection_params["k"]) 
 
     # find cutoff method class
     cutoff_class = get_cutoff_method(cutoff)
+
+    if cutoff == "structure":
+        cutoff_class.set_max_generations(cutoff_generations)
+        
 
     # find replacement method class
     replacement_class = get_replacement_method(replacement)
@@ -99,7 +104,8 @@ def main():
         population = replacement_class.replace(population, children, replacement_first_selection_class, replacement_second_selection_class, b_value)
         generation += 1
 
-        print("Population:")
+        print("-----------------------------")
+        print(f"Generation {generation}")
         for individual in population:
             print(individual)
             print(f"Fitness: {individual.fitness()}")

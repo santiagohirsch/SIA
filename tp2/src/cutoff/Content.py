@@ -3,8 +3,8 @@ import math
 
 class Content(Cutoff):
 
-    @staticmethod
-    def should_cutoff(current_population, old_population, generation, cutoff_value):
+    @classmethod
+    def should_cutoff(self, current_population, old_population, generation, cutoff_value):
         if generation < cutoff_value:
             return False
         new_gen_max = max([individual.fitness() for individual in current_population])
