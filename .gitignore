@@ -165,4 +165,4 @@ Pipfile
 
 tp0/src/output/*
 
-tp2/src/output/*
+tp2/output/*
