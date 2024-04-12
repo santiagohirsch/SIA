@@ -1,8 +1,7 @@
-import importlib
 import json
 import sys
 
-from utils import get_attribute_sets, get_character_class, get_crossing_method, get_cutoff_method, get_mutation_method, get_population, get_replacement_method, get_selection_method
+from src.utils.class_utils import get_attribute_sets, get_character_class, get_crossing_method, get_cutoff_method, get_mutation_method, get_population, get_replacement_method, get_selection_method
 import math
         
 def main():
@@ -56,7 +55,7 @@ def main():
 
     if cutoff == "structure":
         cutoff_class.set_max_generations(cutoff_generations)
-        
+
 
     # find replacement method class
     replacement_class = get_replacement_method(replacement)
