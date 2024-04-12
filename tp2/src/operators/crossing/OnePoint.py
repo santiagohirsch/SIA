@@ -9,5 +9,4 @@ class OnePoint(Crossing):
         point = random.randrange(1, len(parent1_arr))
         child1 = parent1_arr[:point] + parent2_arr[point:]
         child2 = parent2_arr[:point] + parent1_arr[point:]
-        print(point)
         return AttributeSet.from_array(child1), AttributeSet.from_array(child2)
