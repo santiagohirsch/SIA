@@ -33,7 +33,7 @@
     "cutoff": {
         "name": "[ content | structure | max_gen | optimum ]",
         "value": "[structure: [ 0.0 - 1.0 ] | else: > 0 ]",
-        "generation": "[ structure: > 0 | else : 0 ]"
+        "generations": "[ structure: > 0 | else : 0 ]"
     },
     "replacement": {
         "name": "[ traditional | young ]",
