@@ -41,14 +41,14 @@ if __name__ == "__main__":
             # find selection method class
             first_selection_class = get_selection_method(first_selection)
             if first_selection == 'boltzmann':
-                first_selection_class = first_selection_class(15, 10, 5, 50)
+                first_selection_class = first_selection_class(15, 10, 5, 10)
             elif first_selection == 'tournament_det':
                 first_selection_class = first_selection_class(5)
             
             for second_selection in SELECTION_METHODS.keys():
                 second_selection_class = get_selection_method(second_selection)
                 if second_selection == 'boltzmann':
-                    second_selection_class = second_selection_class(15, 10, 5, 50)
+                    second_selection_class = second_selection_class(15, 10, 5, 10)
                 elif second_selection == 'tournament_det':
                     second_selection_class = second_selection_class(5)
 
@@ -56,7 +56,10 @@ if __name__ == "__main__":
                     population = first_population
                     old_generations = []
                     generation = 0
-                    
+                    if first_selection == 'boltzmann':
+                        first_selection_class.set_generation(10)
+                    if second_selection == 'boltzmann':
+                        second_selection_class.set_generation(10)
                     while cutoff_class.should_cutoff(population, old_generations, generation, DEFAULT_CUTOFF_VALUE) is False:
                         
                         # select parents
