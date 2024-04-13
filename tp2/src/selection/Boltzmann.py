@@ -25,6 +25,7 @@ class Boltzmann(Selection):
             index = population_copy.index(individual)
             population_copy.pop(index)
             values.pop(index)
+        self.generation += 1
         return selected
 
 
