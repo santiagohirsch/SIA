@@ -1,14 +1,10 @@
-import json
 import math
-import sys
 from src.utils.class_utils import get_attribute_sets, get_character_class, get_crossing_method, get_cutoff_method, get_mutation_method, get_population, get_replacement_method, get_selection_method, CHARACTER_TYPES, CROSSING_METHODS
 from src.utils.generator_utils import DEFAULT_MUTATION_METHOD, DEFAULT_MUTATION_RATE, DEFAULT_FIRST_SELECTION_METHOD, DEFAULT_SECOND_SELECTION_METHOD, DEFAULT_A_VALUE, DEFAULT_INDIVIDUALS, DEFAULT_CUTOFF_METHOD, DEFAULT_CUTOFF_VALUE, DEFAULT_CUTOFF_GENERATIONS, DEFAULT_REPLACEMENT_METHOD, DEFAULT_B_VALUE, DEFAULT_REPLACEMENT_FIRST_SELECTION_METHOD, DEFAULT_REPLACEMENT_SECOND_SELECTION_METHOD, DEFAULT_ATTRIBUTE_SETS
 import csv
 
 
 if __name__ == "__main__":
-
-
 
     # find mutation method class
     mutation_class = get_mutation_method(DEFAULT_MUTATION_METHOD)
@@ -43,13 +39,14 @@ if __name__ == "__main__":
             crossing_class = get_crossing_method(crossing)
             # find character class
             character_class = get_character_class(character)
-            # create population
-            population = get_population(attribute_sets, character)
-
-            old_generations = []
-            generation = 0
+            
+            first_population = get_population(attribute_sets, character)
+            
             for _ in range(50):
-                
+                # create population
+                population = first_population
+                old_generations = []
+                generation = 0
                 while cutoff_class.should_cutoff(population, old_generations, generation, DEFAULT_CUTOFF_VALUE) is False:
                     
                     # select parents
