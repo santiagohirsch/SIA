@@ -6,3 +6,9 @@ run:
 
 crossing:
 	pipenv run python crossing_method_generator.py config.json
+
+mutation:
+	pipenv run python mutation_method_generator.py config.json
+
+selection:
+	pipenv run python selection_method_generator.py config.json

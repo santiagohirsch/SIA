@@ -7,7 +7,7 @@ DEFAULT_A_VALUE = 0.5
 DEFAULT_INDIVIDUALS = 100
 DEFAULT_CUTOFF_METHOD = 'structure'
 DEFAULT_CUTOFF_VALUE = 0.8
-DEFAULT_CUTOFF_GENERATIONS = 10
+DEFAULT_CUTOFF_GENERATIONS = 50
 DEFAULT_REPLACEMENT_METHOD = 'traditional'
 DEFAULT_B_VALUE = 0.7
 DEFAULT_REPLACEMENT_FIRST_SELECTION_METHOD = 'roulette'
@@ -24,3 +24,8 @@ DEFAULT_ATTRIBUTE_SETS = [
         {"agility": 55, "strength":  55, "expertise": 5, "endurance": 5, "health": 30, "height": 1.6 },
         {"agility": 60, "strength":  50, "expertise": 10, "endurance": 5, "health": 25, "height": 1.8 }
     ]
+BEST_CROSSING_METHOD = 'uniform'
+BEST_MUTATION_METHOD = 'limited'
+BEST_MUTATION_RATE = 0.8
+BEST_FIRST_SELECTION_METHOD = 'elite'
+BEST_SECOND_SELECTION_METHOD = 'roulette'
