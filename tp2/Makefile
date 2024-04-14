@@ -34,3 +34,6 @@ replacement_analysis:
 
 crossing_graphs:
 	pipenv run python output/crossing_graphs.py
+
+mutation_graphs:
+	pipenv run python output/mutation_graphs.py
