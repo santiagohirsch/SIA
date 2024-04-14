@@ -21,13 +21,16 @@ replacement:
 	pipenv run python replacement_method_generator.py
 
 crossing_analysis:
-	pipenv run python crossing_analysis.py
+	pipenv run python output/crossing_analysis.py
 
 mutation_analysis:
-	pipenv run python mutation_analysis.py
+	pipenv run python output/mutation_analysis.py
 
 selection_analysis:
-	pipenv run python selection_analysis.py
+	pipenv run python output/selection_analysis.py
 
 replacement_analysis:
-	pipenv run python replacement_analysis.py
+	pipenv run python output/replacement_analysis.py
+
+crossing_graphs:
+	pipenv run python output/crossing_graphs.py
