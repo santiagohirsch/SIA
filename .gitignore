@@ -165,4 +165,6 @@ Pipfile
 
 tp0/src/output/*
 
-tp2/output/*
+tp2/output/*.csv
+tp2/output/*.txt
+tp2/output/*.md
