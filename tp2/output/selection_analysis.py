@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Step 1: Read the CSV file into a pandas DataFrame
-df = pd.read_csv("/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/selection_method.csv")
+df = pd.read_csv("output/selection_method.csv")
 # Step 2: Group the data by Character, First Selection Method, and Second Selection Method
 grouped = df.groupby(['Character', 'First Selection Method', 'Second Selection Method'])
 
@@ -28,11 +28,6 @@ for _, row in aggregated_data.iterrows():
         coefficient = best_average_fitness 
     
     coefficients.append(coefficient)
-    
-    print(f"Character: {character}, First Selection Method: {first_method}, Second Selection Method: {second_method}")
-    print(f"Best Average Fitness: {best_average_fitness}")
-    print(f"Average Generation Count: {average_generation_count}")
-    print(f"Coefficient: {coefficient}\n")
 
 # Sort the results by coefficient
 aggregated_data['Coefficient'] = coefficients

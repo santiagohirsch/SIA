@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Step 1: Read the CSV file into a pandas DataFrame
-df = pd.read_csv("/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/mutation_method.csv")
+df = pd.read_csv("output/mutation_method.csv")
 
 # Step 2: Group the data by Character, Mutation Method, and Mutation Rate
 grouped = df.groupby(['Character', 'Mutation Method', 'Mutation Rate'])
