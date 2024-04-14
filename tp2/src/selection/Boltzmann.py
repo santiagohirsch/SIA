@@ -15,7 +15,6 @@ class Boltzmann(Selection):
         self.generation = generation
 
     def select(self, population, individuals):
-        print("generation: ", self.generation)
         temperature = self.tc + (self.t0 + self.tc) * math.exp(-self.k * self.generation)
         selected = []
         fitness = [math.exp(individual.fitness()/temperature) for individual in population]
