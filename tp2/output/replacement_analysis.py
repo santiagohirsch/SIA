@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Step 1: Read the CSV file into a pandas DataFrame
-df = pd.read_csv("replacement_method.csv")
+df = pd.read_csv('/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/replacement_method.csv')
 
 # Step 2: Group the data by Character, Replacement, First Selection Method, and Second Selection Method
 grouped = df.groupby(['Character', 'Replacement', 'First Selection Method', 'Second Selection Method'])
@@ -27,7 +27,7 @@ for _, row in aggregated_data.iterrows():
     if average_generation_count != 0:
         coefficient = 10 / average_generation_count + best_average_fitness
     else:
-        coefficient = float('inf')  # Assigning infinity if average_generation_count is zero
+        coefficient = best_average_fitness
     
     coefficients.append(coefficient)
 
