@@ -1,102 +1,50 @@
-import csv
-def get_average_fitness_per_method(file_path):
-    best_fitness = []
+import pandas as pd
 
-    with open(file_path, 'r') as file:
-        reader = csv.reader(file)
-        next(reader)  # Skip the header row
-        first_line = next(reader)
-        best_partial_fitness = 0
-        best_fitness_per_method = []
-        generation_count = []
-        generation_count_per_method = []
-        partial_method = first_line[1]
-        generation_aux = 0
-        for row in reader:
-            if partial_method != str(row[1]):
-                best_fitness.append(best_fitness_per_method)
-                best_fitness_per_method = []
-                generation_count.append(generation_count_per_method)
-                partial_method = str(row[1])
-            fitness = float(row[4])
-            if fitness > best_partial_fitness:
-                best_partial_fitness = fitness
-            if int(row[2]) == 0:
-                best_fitness_per_method.append(best_partial_fitness)
-                best_partial_fitness = 0
-                generation_count_per_method.append(generation_aux)
-                generation_aux = 0
-            generation_aux = generation_aux + 1
+# Step 1: Read the CSV file into a pandas DataFrame
+df = pd.read_csv("/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/crossing_method.csv")
 
-        best_fitness.append(best_fitness_per_method)
-        generation_count.append(generation_count_per_method)
-        toReturn = [] 
-        generation_avg = []
-        for array in best_fitness:
-            toReturn.append(sum(array)/len(array))
-        for array in generation_count:
-            generation_avg.append(sum(array)/len(array))
-        return toReturn, generation_avg
+# Step 2: Group the data by Character and Crossing Method
+grouped = df.groupby(['Character', 'Crossing Method'])
+
+# Step 3: Aggregate the data to calculate the best average fitness and average generation count
+aggregated_data = grouped.agg({
+    'Best Fitness': 'max',
+    'Average Fitness': 'mean',
+    'Generation': 'mean'
+}).reset_index()
+
+# Step 4: Iterate over unique combinations to retrieve the desired information and calculate the coefficient
+coefficients = []
+for _, row in aggregated_data.iterrows():
+    character = row['Character']
+    crossing_method = row['Crossing Method']
+    best_average_fitness = row['Average Fitness']
+    average_generation_count = row['Generation']
+
+    
+    # Check if average_generation_count is not zero to avoid division by zero
+    if average_generation_count != 0:
+        coefficient = 10 / average_generation_count + best_average_fitness
+    else:
+        coefficient = float('inf')  # Assigning infinity if average_generation_count is zero
+    
+    coefficients.append(coefficient)
 
 
-file_path = '/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/crossing_method.csv'
-avg_fitness, generation_avg = get_average_fitness_per_method(file_path)
-one_point = 0.0
-two_point = 0.0
-uniform = 0.0
-anular = 0.0
-coefficient = 0.0
-print("the order is 1-point, 2-point, uniform, anular")
-for i in range(0,4):
-    coefficient = 10/generation_avg[i] + avg_fitness[i]
-    print("Average fitness for archer are", i, ":", avg_fitness[i])
-    print("Coefficient: ", coefficient)
-    if i % 4 == 0:
-        one_point = one_point + coefficient
-    elif i % 4 == 1:
-        two_point = two_point + coefficient
-    elif i % 4 == 2:
-        uniform = uniform + coefficient
-    elif i % 4 == 3:
-        anular = anular + coefficient
-for i in range(4,8):
-    coefficient = 10/generation_avg[i] + avg_fitness[i]
-    print("Average fitness for warriors are", i, ":", avg_fitness[i])
-    print("Coefficient: ", coefficient)
-    if i % 4 == 0:
-        one_point = one_point + coefficient
-    elif i % 4 == 1:
-        two_point = two_point + coefficient
-    elif i % 4 == 2:
-        uniform = uniform + coefficient
-    elif i % 4 == 3:
-        anular = anular + coefficient
-for i in range(8,12):
-    coefficient = 10/generation_avg[i] + avg_fitness[i]
-    print("Average fitness for defender are", i, ":", avg_fitness[i])
-    print("Coefficient: ", coefficient)
-    if i % 4 == 0:
-        one_point = one_point + coefficient
-    elif i % 4 == 1:
-        two_point = two_point + coefficient
-    elif i % 4 == 2:
-        uniform = uniform + coefficient
-    elif i % 4 == 3:
-        anular = anular + coefficient
-for i in range(12,16):
-    coefficient = 10/generation_avg[i] + avg_fitness[i]
-    print("Average fitness for spy are", i, ":", avg_fitness[i])
-    print("Coefficient: ", coefficient)
-    if i % 4 == 0:
-        one_point = one_point + coefficient
-    elif i % 4 == 1:
-        two_point = two_point + coefficient
-    elif i % 4 == 2:
-        uniform = uniform + coefficient
-    elif i % 4 == 3:
-        anular = anular + coefficient
+# Sort the results by coefficient
+aggregated_data['Coefficient'] = coefficients
+sorted_data = aggregated_data.sort_values(by='Coefficient', ascending=False)
 
-print("Average coefficient for one point is: ", one_point/4)
-print("Average coefficient for two point is: ", two_point/4)
-print("Average coefficient for uniform is: ", uniform/4)
-print("Average coefficient for anular is: ", anular/4)
+# Group by Crossing Method and calculate average coefficient
+grouped_data = sorted_data.groupby(['Crossing Method']).agg({'Coefficient': 'mean'}).reset_index()
+
+# Sort the grouped and averaged results by coefficient
+sorted_grouped_data = grouped_data.sort_values(by='Coefficient', ascending=False)
+
+# Print the sorted results
+print("Sorted grouped and averaged results:")
+for _, row in sorted_grouped_data.iterrows():
+    crossing_method = row['Crossing Method']
+    average_coefficient = row['Coefficient']
+    
+    print(f"Crossing Method: {crossing_method}, Average Coefficient: {average_coefficient}")
