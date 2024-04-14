@@ -22,6 +22,9 @@ for character, data in average_generation_count.groupby('Character'):
     ax.set_axisbelow(True)
     plt.grid(True, axis='y')
     
+    # Add error bars
+    plt.errorbar(data['Crossing Method'], data['Generation'], yerr=data['Generation'].std(), fmt='none', ecolor='black', capsize=5)
+    
     # Add text annotations
     for bar in bars:
         plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), round(bar.get_height(), 2),
@@ -30,7 +33,7 @@ for character, data in average_generation_count.groupby('Character'):
     plt.show()
 
 # Step 5: Calculate the average and best fitness per crossing method
-average_best_fitness = grouped['Best Fitness'].mean().reset_index()
+average_best_fitness = grouped['Best Fitness'].max().reset_index()
 average_average_fitness = grouped['Average Fitness'].mean().reset_index()
 
 # Step 6: Plot the data for each character
@@ -48,6 +51,10 @@ for character, data in average_best_fitness.groupby('Character'):
                  ha='center', va='bottom')
         plt.text(bar2.get_x() + bar2.get_width() / 2, bar2.get_height(), round(bar2.get_height(), 2),
                  ha='center', va='bottom')
+    
+    # Add error bars only to the bars representing average fitness
+    plt.errorbar(index + bar_width , average_average_fitness[average_average_fitness['Character'] == character]['Average Fitness'],
+                 yerr=df.groupby(['Character', 'Crossing Method'])['Average Fitness'].std().loc[character].values, fmt='none', ecolor='black', capsize=5)
     
     plt.title(f'Average and Best Fitness per Crossing Method - Character {character}')
     plt.xlabel('Crossing Method')
@@ -78,12 +85,12 @@ for _, row in aggregated_data.iterrows():
     
     coefficients.append(coefficient)
 
-# Step 5: Add the coefficient values to the aggregated data
+# Step 7: Add the coefficient values to the aggregated data
 aggregated_data['Coefficient'] = coefficients
 
-# Step 6: Group the aggregated data by Crossing Method and calculate the average coefficient per method
+# Step 8: Group the aggregated data by Crossing Method and calculate the average coefficient per method
 average_coefficient = aggregated_data.groupby('Crossing Method')['Coefficient'].mean().reset_index()
-# Step 8: Plot the data
+# Step 9: Plot the data
 plt.figure()
 bars = plt.bar(average_coefficient['Crossing Method'], average_coefficient['Coefficient'])
 plt.title('Average Coefficient per Crossing Method')
@@ -93,9 +100,15 @@ ax = plt.gca()
 ax.set_axisbelow(True)
 plt.grid(True, axis='y')
 
+# Calculate the positions for error bars to be located in the middle of the bars representing average coefficient
+positions = np.arange(len(average_coefficient['Crossing Method']))
+plt.errorbar(positions, average_coefficient['Coefficient'],
+             yerr=aggregated_data.groupby('Crossing Method')['Coefficient'].std().values, fmt='none', ecolor='black', capsize=5)
+
 # Add text annotations
-for bar in bars:
-    plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), round(bar.get_height(), 2),
+for bar, position in zip(bars, positions):
+    plt.text(position, bar.get_height(), round(bar.get_height(), 2),
              ha='center', va='bottom')
 
+plt.xticks(positions, average_coefficient['Crossing Method'])
 plt.show()
