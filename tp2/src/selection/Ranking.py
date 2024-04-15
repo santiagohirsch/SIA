@@ -15,7 +15,8 @@ class Ranking(Selection):
         selected = []
 
         for _ in range(individuals):
-            pick = random.random()
+            # pick random number between 0 and sum(function_population)
+            pick = random.uniform(0, sum(function_population))
             current = 0
             for i in range(len(population)):
                 current += function_population[i]
