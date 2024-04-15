@@ -15,20 +15,21 @@ def plot_metric_vs_mutation_rate(df):
 
     # Step 3: Plot the data for each metric (Average Generation Count, Best Fitness, Average Fitness) divided by character
     metrics = ['Generation', 'Best Fitness', 'Average Fitness']
+    ylabels = ['Average Generation Count', 'Best Fitness', 'Average Fitness']
     for metric in metrics:
-        for character, data in aggregated_data.groupby('Character'):
-            plt.figure()
-            for method, method_data in data.groupby('Mutation Method'):
-                plt.plot(method_data['Mutation Rate'], method_data[metric], 'o-', label=method)
-            plt.title(f'{metric} vs Mutation Rate - Character {character}')
-            plt.xlabel('Mutation Rate')
-            plt.ylabel(metric)
-            plt.legend()
-            ax = plt.gca()
-            ax.set_axisbelow(True)
-            plt.xticks(np.arange(0, 1.05, 0.05))  # Set x-axis ticks with intervals of 0.05 jumps
-            plt.grid(True)
-            plt.show()
+        for character, char_data in aggregated_data.groupby('Character'):
+            for method, method_data in char_data.groupby('Mutation Method'):
+                plt.figure()
+                plt.plot(method_data['Mutation Rate'], method_data[metric], 'o-', label=metric)
+                plt.title(f'{character} - Mutation Method: {method}')
+                plt.xlabel('Mutation Rate')
+                plt.ylabel(ylabels[metrics.index(metric)])
+                plt.legend()
+                ax = plt.gca()
+                ax.set_axisbelow(True)
+                plt.xticks(np.arange(0, 1.05, 0.05))  # Set x-axis ticks with intervals of 0.05 jumps
+                plt.grid(True)
+                plt.show()
 
 def plot_average_coefficient(df):
     # Group the data by Mutation Method and Mutation Rate
