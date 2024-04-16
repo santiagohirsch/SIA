@@ -55,6 +55,34 @@ def plot_fitness_metrics(data, combo, error_bar=True):
     plt.tight_layout()
     plt.show()
 
+def plot_coefficient_comparison(aggregated_data, top_combos):
+    plt.figure(figsize=(10, 6))
+    combo_labels = [f'{combo}' for combo in top_combos.index]
+    coefficients = top_combos['Coefficient'].values
+    std_errors = []
+
+    for combo in top_combos.index:
+        filtered_data = aggregated_data.xs(combo, level=['Replacement', 'First Selection Method', 'Second Selection Method'])
+        std_error = filtered_data['Coefficient'].std()
+        n = len(filtered_data)  # Number of samples
+        normalized_std_error = std_error / np.sqrt(n)  # Normalize the standard error
+        std_errors.append(normalized_std_error)
+
+    plt.bar(combo_labels, coefficients, yerr=std_errors, capsize=5)
+    for i, coef in enumerate(coefficients):
+        plt.text(i, coef, round(coef, 2), ha='center', va='bottom')
+
+    plt.title('Coefficient Comparison for Top 3 Combos')
+    plt.xlabel('Combo')
+    plt.ylabel('Coefficient')
+    plt.yticks(np.arange(0, 41, 5))
+    # plt.xticks(rotation=45)
+    ax = plt.gca()
+    ax.set_axisbelow(True)
+    plt.grid(axis='y')
+    plt.tight_layout()
+    plt.show()
+
 
 # Read the CSV file into a pandas DataFrame
 df = pd.read_csv("output/replacement_method.csv")
@@ -87,6 +115,9 @@ aggregated_data['Coefficient'] = coefficients
 top_3_combinations = aggregated_data.groupby(level=[1, 2, 3]).mean().sort_values('Coefficient', ascending=False).head(3)
 
 # Plot the desired generation graphs for each top combo
-for combo in top_3_combinations.index:
+# for combo in top_3_combinations.index:
     # plot_avg_generation_count(df, combo, error_bar=True)
-    plot_fitness_metrics(df, combo, error_bar=True)
+    # plot_fitness_metrics(df, combo, error_bar=True)
+
+# Plot the coefficient comparison for the top 3 combinations
+plot_coefficient_comparison(aggregated_data, top_3_combinations)
