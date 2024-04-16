@@ -15,6 +15,9 @@ def plot_avg_generation_count(data, first_sel_method, error_bar=True):
             for i, generation in enumerate(char_data['Generation']):
                 ax.text(i, generation, round(generation, 2), ha='center', va='bottom')
             plt.tight_layout()
+            ax = plt.gca()
+            ax.set_axisbelow(True)
+            plt.grid(axis='y')
             plt.show()
 
 def plot_fitness_metrics(data, first_sel_method, error_bar=True):
@@ -46,6 +49,9 @@ def plot_fitness_metrics(data, first_sel_method, error_bar=True):
             plt.xticks(index + bar_width / 2, char_data.index.get_level_values('Second Selection Method'), rotation=45)
             plt.legend()
             plt.tight_layout()
+            ax = plt.gca()
+            ax.set_axisbelow(True)
+            plt.grid(axis='y')
             plt.show()
 
 def plot_avg_coefficient(data):
@@ -62,6 +68,9 @@ def plot_avg_coefficient(data):
     plt.ylabel('Average Coefficient')
     plt.xticks(range(len(coefficients)), coefficients.index, rotation=45)
     plt.tight_layout()
+    ax = plt.gca()
+    ax.set_axisbelow(True)
+    plt.grid(axis='y')
     plt.show()
 
 
