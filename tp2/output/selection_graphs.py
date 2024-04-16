@@ -1,9 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot_avg_generation_count(data, first_sel_method):
+def plot_avg_generation_count(data, first_sel_method, error_bar=True):
     plt.figure()
-    ax = data['Generation'].plot(kind='bar', yerr=data['Generation'].std(), capsize=5)
+    ax = data['Generation'].plot(kind='bar', yerr=data['Generation'].std() if error_bar else None, capsize=5)
     ax.set_title(f'Average Generation Count for {first_sel_method}')
     ax.set_xlabel('Second Selection Method')
     ax.set_ylabel('Average Generation Count')
@@ -11,9 +11,10 @@ def plot_avg_generation_count(data, first_sel_method):
     plt.tight_layout()
     plt.show()
 
-def plot_fitness_metrics(data, first_sel_method):
+def plot_fitness_metrics(data, first_sel_method, error_bar=True):
     plt.figure()
-    ax = data[['Best Fitness', 'Average Fitness']].plot(kind='bar', yerr=data[['Best Fitness', 'Average Fitness']].std(), capsize=5)
+    error_values = data[['Best Fitness', 'Average Fitness']].std() if error_bar else None
+    ax = data[['Best Fitness', 'Average Fitness']].plot(kind='bar', yerr=error_values, capsize=5)
     ax.set_title(f'Best and Average Fitness for {first_sel_method}')
     ax.set_xlabel('Second Selection Method')
     ax.set_ylabel('Fitness')
@@ -33,7 +34,7 @@ def plot_avg_coefficient(data, first_sel_method):
 
 
 # Step 1: Read the CSV file into a pandas DataFrame
-df = pd.read_csv("/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/selection_method.csv")
+df = pd.read_csv("output/selection_method.csv")
 
 # Step 2: Group the data by "First Selection Method" and "Second Selection Method"
 grouped = df.groupby(['First Selection Method', 'Second Selection Method'])
@@ -60,6 +61,6 @@ aggregated_data['Coefficient'] = coefficients
 
 # Step 4: Plot the desired graphs for each "First Selection Method"
 for first_sel_method, data in aggregated_data.groupby(level=0):
-    plot_avg_generation_count(data, first_sel_method)
-    plot_fitness_metrics(data, first_sel_method)
+    plot_avg_generation_count(data, first_sel_method, error_bar=True)
+    plot_fitness_metrics(data, first_sel_method, error_bar=True)
     plot_avg_coefficient(data, first_sel_method)
