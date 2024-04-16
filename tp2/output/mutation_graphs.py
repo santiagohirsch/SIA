@@ -62,22 +62,23 @@ def plot_average_coefficient(df, error_bar=True):
     aggregated_data['Coefficient'] = coefficients
 
     # Plot the average coefficient per mutation method per mutation rate
-    plt.figure()
-    if error_bar:
-        for method, data in aggregated_data.groupby('Mutation Method'):
-            plt.errorbar(data['Mutation Rate'], data['Coefficient'], yerr=data['Coefficient'].std(), fmt='o-', label=method)
-    else:
-        for method, data in aggregated_data.groupby('Mutation Method'):
-            plt.plot(data['Mutation Rate'], data['Coefficient'], 'o-', label=method)
-    plt.title('Average Coefficient per Mutation Method and Rate')
-    plt.xlabel('Mutation Rate')
-    plt.ylabel('Average Coefficient')
-    plt.legend()
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.xticks(np.arange(0, 1.05, 0.05))  # Set x-axis ticks with intervals of 0.05 jumps
-    plt.grid(True)
-    plt.show()
+    methods = df['Mutation Method'].unique()
+    for method in methods:
+        method_data = aggregated_data[aggregated_data['Mutation Method'] == method]
+        plt.figure()
+        if error_bar:
+            plt.errorbar(method_data['Mutation Rate'], method_data['Coefficient'], yerr=method_data['Coefficient'].std(), fmt='o-', label=method)
+        else:
+            plt.plot(method_data['Mutation Rate'], method_data['Coefficient'], 'o-', label=method)
+        plt.title(f'Average Coefficient - {method} Mutation Method')
+        plt.xlabel('Mutation Rate')
+        plt.ylabel('Average Coefficient')
+        plt.legend()
+        ax = plt.gca()
+        ax.set_axisbelow(True)
+        plt.xticks(np.arange(0, 1.05, 0.05))  # Set x-axis ticks with intervals of 0.05 jumps
+        plt.grid(True)
+        plt.show()
 
 # Read the CSV file into a pandas DataFrame
 df = pd.read_csv("output/mutation_method.csv")
