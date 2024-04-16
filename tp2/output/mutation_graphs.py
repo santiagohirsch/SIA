@@ -2,10 +2,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot_metric_vs_mutation_rate(df):
+def plot_metric_vs_mutation_rate(df, error_bar=True):
     # Group the data by Character, Mutation Method, and Mutation Rate
     grouped = df.groupby(['Character', 'Mutation Method', 'Mutation Rate'])
-
 
     aggregated_data = grouped.agg({
         'Best Fitness': 'max',
@@ -20,7 +19,10 @@ def plot_metric_vs_mutation_rate(df):
         for character, char_data in aggregated_data.groupby('Character'):
             for method, method_data in char_data.groupby('Mutation Method'):
                 plt.figure()
-                plt.plot(method_data['Mutation Rate'], method_data[metric], 'o-', label=metric)
+                if error_bar:
+                    plt.errorbar(method_data['Mutation Rate'], method_data[metric], yerr=method_data['Average Fitness'].std(), fmt='o-', label=metric)
+                else:
+                    plt.plot(method_data['Mutation Rate'], method_data[metric], 'o-', label=metric)
                 plt.title(f'{character} - Mutation Method: {method}')
                 plt.xlabel('Mutation Rate')
                 plt.ylabel(ylabels[metrics.index(metric)])
@@ -31,7 +33,7 @@ def plot_metric_vs_mutation_rate(df):
                 plt.grid(True)
                 plt.show()
 
-def plot_average_coefficient(df):
+def plot_average_coefficient(df, error_bar=True):
     # Group the data by Mutation Method and Mutation Rate
     grouped = df.groupby(['Mutation Method', 'Mutation Rate'])
 
@@ -61,8 +63,12 @@ def plot_average_coefficient(df):
 
     # Plot the average coefficient per mutation method per mutation rate
     plt.figure()
-    for method, data in aggregated_data.groupby('Mutation Method'):
-        plt.plot(data['Mutation Rate'], data['Coefficient'], 'o-', label=method)
+    if error_bar:
+        for method, data in aggregated_data.groupby('Mutation Method'):
+            plt.errorbar(data['Mutation Rate'], data['Coefficient'], yerr=data['Coefficient'].std(), fmt='o-', label=method)
+    else:
+        for method, data in aggregated_data.groupby('Mutation Method'):
+            plt.plot(data['Mutation Rate'], data['Coefficient'], 'o-', label=method)
     plt.title('Average Coefficient per Mutation Method and Rate')
     plt.xlabel('Mutation Rate')
     plt.ylabel('Average Coefficient')
@@ -74,8 +80,8 @@ def plot_average_coefficient(df):
     plt.show()
 
 # Read the CSV file into a pandas DataFrame
-df = pd.read_csv("/Users/santiago/Desktop/ITBA/1C2024/SIA/SIA/tp2/output/mutation_method.csv")
+df = pd.read_csv("output/mutation_method.csv")
 
 # Call the functions to plot the graphs
-plot_metric_vs_mutation_rate(df)
-plot_average_coefficient(df)
+plot_metric_vs_mutation_rate(df, error_bar=True)
+plot_average_coefficient(df, error_bar=True)
