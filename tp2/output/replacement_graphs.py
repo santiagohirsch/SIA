@@ -25,6 +25,37 @@ def plot_avg_generation_count(data, combo, error_bar=True):
     plt.tight_layout()
     plt.show()
 
+def plot_fitness_metrics(data, combo, error_bar=True):
+    plt.figure(figsize=(15, 5))
+    filtered_data = data[data[['Replacement', 'First Selection Method', 'Second Selection Method']].apply(tuple, axis=1).isin([combo])]
+    characters = filtered_data['Character'].unique()
+    bar_width = 0.35
+    for i, character in enumerate(characters):
+        char_data = filtered_data[filtered_data['Character'] == character]
+        best_fitness_mean = char_data['Best Fitness'].mean()
+        average_fitness_mean = char_data['Average Fitness'].mean()
+        plt.bar(i - bar_width/2, best_fitness_mean, width=bar_width, label='Best Fitness', color='b')
+        plt.bar(i + bar_width/2, average_fitness_mean, width=bar_width, label='Average Fitness', color='r')
+        plt.text(i - bar_width/2, best_fitness_mean, round(best_fitness_mean, 2), ha='center', va='bottom')
+        plt.text(i + bar_width/2, average_fitness_mean, round(average_fitness_mean, 2), ha='center', va='bottom')
+        if error_bar:
+            average_fitness_std = char_data['Average Fitness'].std()
+            plt.errorbar(i + bar_width/2, average_fitness_mean, yerr=average_fitness_std, fmt='none', ecolor='black', capsize=5)
+    plt.title(f'Best Fitness vs Average Fitness for Combo {combo}')
+    plt.xlabel('Character')
+    plt.ylabel('Fitness')
+    plt.xticks(range(len(characters)), characters)
+    #show legend only once
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys(), loc='lower left')
+    ax = plt.gca()
+    ax.set_axisbelow(True)
+    plt.grid(axis='y')
+    plt.tight_layout()
+    plt.show()
+
+
 # Read the CSV file into a pandas DataFrame
 df = pd.read_csv("output/replacement_method.csv")
 
@@ -57,4 +88,5 @@ top_3_combinations = aggregated_data.groupby(level=[1, 2, 3]).mean().sort_values
 
 # Plot the desired generation graphs for each top combo
 for combo in top_3_combinations.index:
-    plot_avg_generation_count(df, combo, error_bar=True)
+    # plot_avg_generation_count(df, combo, error_bar=True)
+    plot_fitness_metrics(df, combo, error_bar=True)
