@@ -27,9 +27,6 @@ def plot_fitness_metrics(data, first_sel_method, error_bar=True):
             index = np.arange(len(char_data))
             bar_width = 0.35
 
-            # Plot Best Fitness bars
-            plt.bar(index, char_data['Best Fitness'], bar_width, label='Best Fitness', color='b')
-
             # Plot Average Fitness bars
             plt.bar(index + bar_width, char_data['Average Fitness'], bar_width, label='Average Fitness', color='r')
 
@@ -39,11 +36,11 @@ def plot_fitness_metrics(data, first_sel_method, error_bar=True):
                              yerr=char_data['Average Fitness'].std(), fmt='none', ecolor='black', capsize=5)
             
             # Add text annotations
-            for i, (best, avg) in enumerate(zip(char_data['Best Fitness'], char_data['Average Fitness'])):
-                plt.text(i, best, round(best, 2), ha='center', va='bottom')
+            for i, avg in enumerate(char_data['Average Fitness']):
+                # plt.text(i, best, round(best, 2), ha='center', va='bottom')
                 plt.text(i + bar_width, avg, round(avg, 2), ha='center', va='bottom')
 
-            plt.title(f'Best and Average Fitness for {first_sel_method} - Character {character}')
+            plt.title(f'Average Fitness for {first_sel_method} - Character {character}')
             plt.xlabel('Second Selection Method')
             plt.ylabel('Fitness')
             plt.xticks(index + bar_width / 2, char_data.index.get_level_values('Second Selection Method'), rotation=45)
@@ -85,7 +82,6 @@ grouped = df.groupby(['First Selection Method', 'Character', 'Second Selection M
 # Step 3: Calculate the metrics for each combo
 aggregated_data = grouped.agg({
     'Generation': 'mean',
-    'Best Fitness': 'max',
     'Average Fitness': 'mean'
 })
 

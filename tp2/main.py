@@ -94,8 +94,7 @@ def main():
         children = []
         # mutation
         for child in children_attributes:
-            mutation_class.mutate(child, mutation_rate)
-            children.append(character_class(child))
+            children.append(character_class(mutation_class.mutate(child, mutation_rate)))
             
 
         old_generations.append(population)
