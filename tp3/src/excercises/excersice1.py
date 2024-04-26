@@ -2,17 +2,20 @@ import json
 import sys
 import random
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-input = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
+#input = [[-1, 1], [1, -1], [-1, -1], [1, 1]]
+input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
 output_and = [-1, -1, -1, 1]
-output_xor = [1, 1, -1, -1]
+#output_xor = [1, 1, -1, -1]
+output_xor = [-1, 1, 1, -1]
 ws = []
 
 def initialize_weights():
     w = []
-    for i in range(len(input)):
-
-        w.append(input[i][random.randint(0, 1)])
+    for _ in range(0,3):
+        w.append(random.uniform(-1, 1))
     return w
 
 def compute_excitement(weights, values):
@@ -23,8 +26,8 @@ def compute_activation(excitement):
 
 def compute_error(weights, output):
     total_error = 0
-    for i in range(len(input)):
-        excitement = compute_excitement(weights, [1] + input[i])
+    for i in range(0,len(input)):
+        excitement = compute_excitement(weights, input[i])
         activation = compute_activation(excitement)
         total_error += (output[i] - activation) ** 2
     return total_error
@@ -43,14 +46,14 @@ def simple_percepton():
     while (min_error > 0 and i < limit):
         m = random.randint(0, len(input) - 1)
         excitement = compute_excitement(w, input[m])
-        print('excitement', excitement)
+        #print('excitement', excitement)
         activation = compute_activation(excitement)
-        print('activation', activation)
-        deltas = np.dot([1] + input[m], learning_rate * (output_and[m] - activation))
-        print('delta', deltas)
-        w = np.add(w, deltas)
+        #print('activation', activation)
+        deltas = np.dot([1] + input[m], learning_rate * (output_xor[m] - activation))
+        #print('delta', deltas)
+        w = w + deltas
         ws.append(w)
-        error = compute_error(w, output_and)
+        error = compute_error(w, output_xor)
         if error < min_error:
             min_error = error
             w_min = w
