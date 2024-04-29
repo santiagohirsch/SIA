@@ -64,3 +64,4 @@ def simple_percepton():
 
 
 print(simple_percepton())
+
