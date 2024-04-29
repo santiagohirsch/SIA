@@ -25,12 +25,12 @@ def compute_activation(excitement):
     return 1 if excitement > 0 else -1
 
 def compute_error(weights, output):
-    total_error = 0
+    error_count = 0
     for i in range(0,len(input)):
         excitement = compute_excitement(weights, input[i])
         activation = compute_activation(excitement)
-        total_error += (output[i] - activation) ** 2
-    return total_error
+        error_count += 1 if activation != output[i] else 0
+    return error_count/len(input)
 
 
 def simple_percepton():
@@ -54,10 +54,12 @@ def simple_percepton():
         w = w + deltas
         ws.append(w)
         error = compute_error(w, output_xor)
+        print(error)
         if error < min_error:
             min_error = error
             w_min = w
         i += 1
+    print(i)
     return w_min
 
 
