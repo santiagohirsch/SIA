@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
-class Optimization(ABC):
+class OptimizationMethod(ABC):
 
     learning_rate = None
 

@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.exercises.exercise2.optimization_methods.OptimizationMethod import OptimizationMethod
+from OptimizationMethod import OptimizationMethod
 
 class GradientDescent(OptimizationMethod):
     @classmethod
