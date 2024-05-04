@@ -38,7 +38,10 @@ class MultiLayer:
             new_weights.append(layer.get_weights())
         return new_weights
     
-    def test_forward_propagation(self, input):
+    def test_forward_propagation(self, input, weights = None):
+        if weights is not None:
+            for i in range(0, len(self.layers)):
+                self.layers[i].set_weights(weights[i])
         for layer in self.layers:
             input = layer.test_activate(input)
         return input
@@ -88,5 +91,46 @@ class MultiLayer:
             all_errors.append(error)
             epoch += 1
         return w_min, all_weights, all_errors
+    
+    def get_predictions(self, results):
+        predictions = []
+        for i, result in enumerate(results):
+            if result > 0.75:
+                predictions.append(i)
+        return predictions
+    
+    def get_expecteds(self, expected):
+        expecteds = []
+        for i, result in enumerate(expected):
+            if result == 1:
+                expecteds.append(i)
+        return expecteds
+            
+    def confusion_matrix(self, results, expected, classes_qty):
+        confusion_matrix = np.zeros((classes_qty, classes_qty))
+        for i in range(len(results)):
+            predictions = self.get_predictions(results[i])
+            expecteds = self.get_expecteds(expected[i])
+            for pred_class in predictions:
+                for exp_class in expecteds:
+                    confusion_matrix[exp_class][pred_class] += 1
+        return confusion_matrix
 
-    # TODO - Implement metrics for analysis - Accuracy, Precision, Recall, F1
+    def calculate_metrics(self, set, expected, metric, weights, classes_qty):
+        true_positive = 0
+        true_negative = 0
+        false_positive = 0
+        false_negative = 0
+        results = []
+        for i in range(0, len(set)):
+            results.append(self.test_forward_propagation(set[i], weights))
+        matrix = self.confusion_matrix(results, expected, classes_qty)
+        for i in range(0, classes_qty):
+            for j in range(0, classes_qty):
+                if i == j:
+                    true_positive += matrix[i][j]
+                else:
+                    false_positive += matrix[i][j]
+                    false_negative += matrix[j][i]
+                    true_negative += matrix[j][j]
+        return metric.calculate(true_positive, true_negative, false_positive, false_negative)
