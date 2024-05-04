@@ -17,14 +17,14 @@ class Layer(ABC):
         self.delta_w = np.zeros((input_qty, neurons))
         self.learning_rate = learning_rate
         self.input = None
-        self.h = None
+        self.excitement = None
 
     def activate(self, input):
-        self.h = np.dot(input, self.weights)
+        self.excitement = np.dot(input, self.weights)
         self.input = input
         self.activation_values = np.array([])
         for i in range(0, self.neurons):
-            self.activation_values = np.append(self.activation_values, self.activation_function(h[i]))
+            self.activation_values = np.append(self.activation_values, self.activation_function(self.excitement[i]))
         return self.activation_values
     
     def test_activate(self, input):
@@ -40,13 +40,17 @@ class Layer(ABC):
     def get_weights(self):
         return self.weights
     
+    def get_activation_values(self):
+        return self.activation_values
+    
     def set_weights(self, weights):
         self.weights = weights
 
     def set_delta_w(self):
         for i in range(0, self.input_qty):
             for j in range(0, self.neurons):
-                self.delta_w[i][j] = self.learning_rate * self.deltas[j] * self.activation_derivative(self.h[j]) * self.input[i]
+                self.delta_w[i][j] += self.delta_w[i][j] + self.learning_rate * self.deltas[j] * self.input[i]
+                # self.delta_w[i][j] = self.learning_rate * self.deltas[j] * self.activation_derivative(self.excitement[j]) * self.input[i]
 
     def update_weights(self):
         self.weights = np.add(self.weights, self.delta_w)
