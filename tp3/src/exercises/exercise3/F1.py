@@ -1,9 +1,9 @@
-from src.exercises.exercise3 import Metric
-from src.exercises.exercise3 import Precision
-from src.exercises.exercise3 import Recall
+from Metric import Metric
+from Precision import Precision
+from Recall import Recall
 
 class F1(Metric):
-    
+    @classmethod
     def calculate(self, true_positive, true_negative, false_positive, false_negative):
         precision = Precision().calculate(true_positive, true_negative, false_positive, false_negative)
         recall = Recall().calculate(true_positive, true_negative, false_positive, false_negative)
