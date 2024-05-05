@@ -67,7 +67,8 @@ class MultiLayer:
             weights.append(layer.get_weights())
         return weights
     
-    def train(self, training_data, expected_data, batch, max_epochs, epsilon):
+    def train(self, training_data, expected_data, batch, max_epochs, epsilon, testing_data, testing_expected, metric, classes_qty):
+        rows = []
         training_set = np.array(training_data)
         expected_set = np.array(expected_data)
         min_error = sys.maxsize
@@ -89,14 +90,30 @@ class MultiLayer:
                 w_min = we
             all_weights.append(we)
             all_errors.append(error)
+            
+            if (epoch % 1000 == 0):
+                print("Epoch: ", epoch)
+                training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
+                test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
+                rows.append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
+
             epoch += 1
-        return w_min, all_weights, all_errors
+        return w_min, all_weights, all_errors, rows
+    
+    def test(self, test_data, weights):
+        test_set = np.array(test_data)
+        results = []
+        for i in range(0, len(test_set)):
+            results.append(self.test_forward_propagation(test_set[i], weights))
+        return results
     
     def get_predictions(self, results):
         predictions = []
         for i, result in enumerate(results):
             if result > 0.75:
                 predictions.append(i)
+        if len(predictions) == 0:
+            predictions.append(np.argmax(results))
         return predictions
     
     def get_expecteds(self, expected):
@@ -112,8 +129,7 @@ class MultiLayer:
             predictions = self.get_predictions(results[i])
             expecteds = self.get_expecteds(expected[i])
             for pred_class in predictions:
-                for exp_class in expecteds:
-                    confusion_matrix[exp_class][pred_class] += 1
+                confusion_matrix[expecteds[0]][pred_class] += 1
         return confusion_matrix
 
     def calculate_metrics(self, set, expected, metric, weights, classes_qty):
