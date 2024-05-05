@@ -1,5 +1,5 @@
 import numpy as np
-from src.exercises.exercise3.Layer import Layer
+from Layer import Layer
 
 class Output(Layer):
 
