@@ -91,7 +91,7 @@ class MultiLayer:
             all_weights.append(we)
             all_errors.append(error)
             
-            if (epoch % 1000 == 0):
+            if (epoch % 20 == 0):
                 print("Epoch: ", epoch)
                 training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
                 test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)

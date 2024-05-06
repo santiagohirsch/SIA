@@ -191,7 +191,7 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
     w_min, _, _, rows = network.train(training_data, training_expected, 1, epochs, 0.1, testing_data, testing_expected, metric, classes_qty)
 
     df = pd.DataFrame(rows)
-    df.to_csv(f"./recall-digits-nosplit-noise.csv", index=False)
+    df.to_csv(f"./precision-digits-nosplit-noise.csv", index=False)
 
 
 
@@ -224,7 +224,7 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
 
 # calculate_metric([35, 2, 2, 2, 2, 2, 2], 1, 0.8, Accuracy, 100000, [[1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1]], 2, False, False)
 
-calculate_metric([35, 10, 10, 10], 1, 0.8, Recall, 75000, [
+calculate_metric([35, 10, 10, 10], 1, 0.8, Precision, 1000, [
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
