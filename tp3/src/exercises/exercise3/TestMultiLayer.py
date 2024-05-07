@@ -16,7 +16,7 @@ def test_xor(neurons_per_layer):
     input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     output_xor = [[-1], [1], [1], [-1]]
     network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
-    w_min, all_weights, all_errors = network.train(input, output_xor, 1, 1000, 0.1)
+    w_min, all_weights, all_errors, rows = network.train(input, output_xor, 1, 100000, 0.1, input, output_xor, Accuracy, 1)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
@@ -33,7 +33,7 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
     network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
     training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
-    w_min, all_weights, all_errors = network.train(training_data, training_expected, 1, 100000, 0.1)
+    w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, 1, 100000, 0.1, testing_data, testing_expected, Accuracy, 1)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
@@ -43,6 +43,7 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
         print('input: ')
         print(np.array(testing_data[i]).reshape(7, -1))
         print('output: ', results[i], 'expected: ', testing_expected[i])
+
 
 
 def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_percentage):
@@ -61,23 +62,23 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
     network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
     # SEPARATING DATA INTO TRAINING AND TESTING AND ADDING NOISE    
-    # training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
-    # w_min, all_weights, all_errors = network.train(training_data, training_expected, 1, 100000, 0.01)
+    training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
+    w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, 1, 100000, 0.01, testing_data, testing_expected, Accuracy, 10)
 
-    # # for epoch in range(len(all_errors)):
-    # #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
+    # for epoch in range(len(all_errors)):
+    #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
 
     
-    # testing_data = add_noise(testing_data, noise_percentage)
-    # results = network.test(testing_data, w_min)
-    # for i in range(0, len(testing_data)):
-    #     print('input: ')
-    #     print(np.array(testing_data[i]).reshape(7, -1))
-    #     print('output: ')
-    #     for j in range(0, len(results[i])):
-    #         print(round(results[i][j], 4), end=' ')
-    #     print()
-    #     print('expected: ', testing_expected[i])
+    testing_data = add_noise(testing_data, noise_percentage)
+    results = network.test(testing_data, w_min)
+    for i in range(0, len(testing_data)):
+        print('input: ')
+        print(np.array(testing_data[i]).reshape(7, -1))
+        print('output: ')
+        for j in range(0, len(results[i])):
+            print(round(results[i][j], 4), end=' ')
+        print()
+        print('expected: ', testing_expected[i])
 
     # TRAINING ALL THE DIGITS AND THEN TESTING ALL THE DIGITS WITH NOISE
     # w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
@@ -98,22 +99,22 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
     #     print('expected: ', expected[i])
 
     # TRAINING WITH AND WITHOUT NOISE
-    original_matrix_based_arrays = matrix_based_arrays
-    w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
-    matrix_based_arrays = add_noise(matrix_based_arrays, 0.05)
-    w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
-    matrix_based_arrays = add_noise(matrix_based_arrays, 0.05)
-    w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
-    original_matrix_based_arrays = add_noise(original_matrix_based_arrays, 0.1)
-    results = network.test(matrix_based_arrays, w_min)
-    for i in range(0, len(matrix_based_arrays)):
-        print('input: ')
-        print(np.array(matrix_based_arrays[i]).reshape(7, -1))
-        print('output: ')
-        for j in range(0, len(results[i])):
-            print(round(results[i][j], 4), end=' ')
-        print()
-        print('expected: ', expected[i])
+    # original_matrix_based_arrays = matrix_based_arrays
+    # w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
+    # matrix_based_arrays = add_noise(matrix_based_arrays, 0.05)
+    # w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
+    # matrix_based_arrays = add_noise(matrix_based_arrays, 0.05)
+    # w_min, all_weights, all_errors = network.train(matrix_based_arrays, expected, 1, 100000, 0.01)
+    # original_matrix_based_arrays = add_noise(original_matrix_based_arrays, 0.1)
+    # results = network.test(matrix_based_arrays, w_min)
+    # for i in range(0, len(matrix_based_arrays)):
+    #     print('input: ')
+    #     print(np.array(matrix_based_arrays[i]).reshape(7, -1))
+    #     print('output: ')
+    #     for j in range(0, len(results[i])):
+    #         print(round(results[i][j], 4), end=' ')
+    #     print()
+    #     print('expected: ', expected[i])
 
 
 
@@ -191,7 +192,7 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
     w_min, _, _, rows = network.train(training_data, training_expected, 1, epochs, 0.1, testing_data, testing_expected, metric, classes_qty)
 
     df = pd.DataFrame(rows)
-    df.to_csv(f"./precision-digits-nosplit-noise.csv", index=False)
+    df.to_csv(f"./F1-digits-nosplit-noise.csv", index=False)
 
 
 
@@ -199,8 +200,7 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
 # test_xor([2, 2, 1])
 # print('2 2 2 2 1 XOR')
 # test_xor([2, 2, 2, 2, 1])
-# print('2 2 2 2 2 2 2 2 2 2 2 1 XOR')
-# test_xor([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1])
+
 
 # print('35 2 1 PARITY')
 # test_parity([35, 2, 1], 1, 0.8)
@@ -224,7 +224,7 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
 
 # calculate_metric([35, 2, 2, 2, 2, 2, 2], 1, 0.8, Accuracy, 100000, [[1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1]], 2, False, False)
 
-calculate_metric([35, 10, 10, 10], 1, 0.8, Precision, 1000, [
+calculate_metric([35, 10, 10], 2, 0.8, F1, 1001, [
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -234,4 +234,4 @@ calculate_metric([35, 10, 10, 10], 1, 0.8, Precision, 1000, [
                 [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]], 10, False, True)
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]], 10, True, True)

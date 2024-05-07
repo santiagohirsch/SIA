@@ -91,7 +91,7 @@ class MultiLayer:
             all_weights.append(we)
             all_errors.append(error)
             
-            if (epoch % 20 == 0):
+            if (epoch % 50 == 0 and epoch != 0):
                 print("Epoch: ", epoch)
                 training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
                 test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
@@ -146,7 +146,7 @@ class MultiLayer:
                 if i == j:
                     true_positive += matrix[i][j]
                 else:
-                    false_positive += matrix[i][j]
-                    false_negative += matrix[j][i]
+                    false_positive += matrix[j][i]
+                    false_negative += matrix[i][j]
                     true_negative += matrix[j][j]
         return metric.calculate(true_positive, true_negative, false_positive, false_negative)
