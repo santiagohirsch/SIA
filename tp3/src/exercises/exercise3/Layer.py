@@ -1,58 +1,38 @@
-from abc import ABC, abstractmethod
-
+import random
 import numpy as np
+import Neuron
 
-class Layer(ABC):
-    def __init__(self, input_qty, neurons, learning_rate, activation_function = None, activation_derivative = None, weights = None):
-        self.input_qty = input_qty
+class Layer:
+    def __init__(self,neurons_qty,weights, activation_function, activation_derivative):
+        self.neurons_qty = neurons_qty
+        neurons = []
+        for i in range(neurons_qty):
+            neurons.append(Neuron(weights, activation_function, activation_derivative))
         self.neurons = neurons
-        if weights is None:
-            self.weights = np.array(np.random.uniform(-1, 1, size=(input, neurons)))
-        else:
-            self.weights = weights
-        self.activation_values = np.array([])
+        self.weights = weights
         self.activation_function = activation_function
         self.activation_derivative = activation_derivative
-        self.deltas = np.array([])
-        self.delta_w = np.zeros((input_qty, neurons))
-        self.learning_rate = learning_rate
-        self.input = None
-        self.excitement = None
 
-    def activate(self, input):
-        self.excitement = np.dot(input, self.weights)
-        self.input = input
-        self.activation_values = np.array([])
-        for i in range(0, self.neurons):
-            self.activation_values = np.append(self.activation_values, self.activation_function(self.excitement[i]))
-        return self.activation_values
-    
-    def test_activate(self, input):
-        h = np.dot(input, self.weights)
-        activation_values = np.array([])
-        for i in range(0, self.neurons):
-            activation_values = np.append(activation_values, self.activation_function(h[i]))
-        return activation_values
-    
-    def get_deltas(self):
-        return self.deltas
-    
-    def get_weights(self):
-        return self.weights
-    
-    def get_activation_values(self):
-        return self.activation_values
-    
-    def set_weights(self, weights):
-        self.weights = weights
+    def initialize_weights(self, input_qty):
+        self.weights = np.random.uniform(-1, 1, input_qty)
+        for neuron in self.neurons:
+            neuron.initialize_weights(input_qty)
+            neuron.delta_w = np.zeros(input_qty)
 
-    def set_delta_w(self):
-        for i in range(0, self.input_qty):
-            for j in range(0, self.neurons):
-                self.delta_w[i][j] += self.delta_w[i][j] + self.learning_rate * self.deltas[j] * self.input[i]
-                # self.delta_w[i][j] = self.learning_rate * self.deltas[j] * self.activation_derivative(self.excitement[j]) * self.input[i]
-
-    def update_weights(self):
-        self.weights = np.add(self.weights, self.delta_w)
-        self.delta_w = np.zeros((self.input_qty, self.neurons))
-        
+    def forward(self, inputs):
+        out = []
+        for neuron in self.neurons:
+            neuron.set_inputs([1] + inputs) #agrego el bias
+            out.append(neuron.calculate_output())
+        return out
+    
+    def update_neuron_weights(self):
+        for neuron in self.neurons:
+            neuron.update_weights()
+            neuron.delta_w = np.zeros(len(neuron.weights))
+            
+    def calculate_deltas(self, deltas_prev, neurons_weights):
+        deltas = []
+        for i in range(self.neurons_qty):
+            deltas.append(self.neurons[i].calculate_delta(deltas_prev, neurons_weights[i]))
+        return deltas
