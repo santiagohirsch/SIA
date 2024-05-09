@@ -10,20 +10,24 @@ class MultiLayer:
         self.layers = [] 
         for i in range(0, len(neurons_per_layer) - 1):
             if i == len(neurons_per_layer) - 2:
-                rows = neurons_per_layer[i]
+                rows = neurons_per_layer[i] + 1
                 cols = neurons_per_layer[i + 1]
                 if weights is None:
-                    self.layers.append(Output(rows, cols, learning_rate, output_func, output_derivative, np.random.uniform(-1, 1, size=(rows, cols))))
+                    self.layers.append(Output(rows, cols, learning_rate, output_func, output_derivative, np.random.uniform(0, 1, size=(rows, cols))))
                 else:
                     self.layers.append(Output(rows, cols, learning_rate, output_func, output_derivative, weights))
             else:
-                rows = neurons_per_layer[i]
+                rows = neurons_per_layer[i] + 1
                 cols = neurons_per_layer[i + 1]
-                self.layers.append(Intermediate(rows, cols, learning_rate, intermediate_func, intermediate_derivative, np.random.uniform(-1, 1, size=(rows, cols))))
+                self.layers.append(Intermediate(rows, cols, learning_rate, intermediate_func, intermediate_derivative, np.random.uniform(0, 1, size=(rows, cols))))
 
     def forward_propagation(self, input):
         for layer in self.layers:
-            input = layer.activate(input)
+            input_copy = []
+            input_copy.append(1)
+            for i in range(0, len(input)):
+                input_copy.append(input[i])
+            input = layer.activate(input_copy)
         return input
     
     def back_propagation(self, deltas):
@@ -43,7 +47,11 @@ class MultiLayer:
             for i in range(0, len(self.layers)):
                 self.layers[i].set_weights(weights[i])
         for layer in self.layers:
-            input = layer.test_activate(input)
+            input_copy = []
+            input_copy.append(1)
+            for i in range(0, len(input)):
+                input_copy.append(input[i])
+            input = layer.test_activate(input_copy)
         return input
     
     def calculate_error(self, data, expected):
@@ -85,17 +93,18 @@ class MultiLayer:
                 self.set_delta_w()
             we = self.update_weights()
             error = self.calculate_error(training_set, expected_set)
+            # print("Epoch: ", epoch, "Error: ", error)
             if error < min_error:
                 min_error = error
                 w_min = we
             all_weights.append(we)
             all_errors.append(error)
             
-            if (epoch % 50 == 0 and epoch != 0):
-                print("Epoch: ", epoch)
-                training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
-                test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
-                rows.append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
+            # if (epoch % 50 == 0 and epoch != 0):
+            #     print("Epoch: ", epoch)
+            #     training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
+            #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
+            #     rows.append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
 
             epoch += 1
         return w_min, all_weights, all_errors, rows
