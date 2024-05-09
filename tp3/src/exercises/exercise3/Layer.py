@@ -7,7 +7,7 @@ class Layer(ABC):
         self.input_qty = input_qty
         self.neurons = neurons
         if weights is None:
-            self.weights = np.array(np.random.uniform(-1, 1, size=(input, neurons)))
+            self.weights = np.array(np.random.uniform(-1, 1, size=(input_qty, neurons)))
         else:
             self.weights = weights
         self.activation_values = np.array([])
@@ -49,8 +49,7 @@ class Layer(ABC):
     def set_delta_w(self):
         for i in range(0, self.input_qty):
             for j in range(0, self.neurons):
-                self.delta_w[i][j] += self.delta_w[i][j] + self.learning_rate * self.deltas[j] * self.input[i]
-                # self.delta_w[i][j] = self.learning_rate * self.deltas[j] * self.activation_derivative(self.excitement[j]) * self.input[i]
+                self.delta_w[i][j] += self.learning_rate * self.deltas[j] * self.input[i]
 
     def update_weights(self):
         self.weights = np.add(self.weights, self.delta_w)
