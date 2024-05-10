@@ -9,6 +9,7 @@ from F1 import F1
 from Precision import Precision
 from Recall import Recall
 
+#para digits usar 0,5, para parity 0,8 y para xor 3
 TAN_H = (lambda x: np.tanh(3*x))
 TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2) * 3)
 
@@ -16,7 +17,7 @@ def test_xor(neurons_per_layer):
     input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     output_xor = [[-1], [1], [1], [-1]]
     network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.001)
-    w_min, all_weights, all_errors, rows = network.train(input, output_xor, 1, 100000, 0.00001, input, output_xor, Accuracy, 1)
+    w_min, all_weights, all_errors, rows = network.train(input, output_xor, 1, 10000, 0.01, input, output_xor, Accuracy, 1)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
@@ -30,7 +31,7 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
     matrix_based_arrays = load_data()
 
     expected = [[1], [0], [1], [0], [1], [0], [1], [0], [1], [0]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.001)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.01)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
     training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
     w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, 1, 100000, 0.01, testing_data, testing_expected, Accuracy, 1)
@@ -59,7 +60,7 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
                 [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.001)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.01)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
     # SEPARATING DATA INTO TRAINING AND TESTING AND ADDING NOISE    
     # training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
@@ -81,13 +82,15 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
     #     print('expected: ', testing_expected[i])
 
     # TRAINING ALL THE DIGITS AND THEN TESTING ALL THE DIGITS WITH NOISE
-    w_min, all_weights, all_errors, rows = network.train(matrix_based_arrays, expected, 1, 100000, 0.01, matrix_based_arrays, expected, Accuracy, 10)
+    w_min, all_weights, all_errors, rows = network.train(matrix_based_arrays, expected, 1, 1000000, 0.01, matrix_based_arrays, expected, Accuracy, 10)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
 
     
-    matrix_based_arrays = add_noise(matrix_based_arrays, noise_percentage)
+    #matrix_based_arrays = add_noise(matrix_based_arrays, noise_percentage)
+    matrix_based_arrays = add_noise(matrix_based_arrays, 0)
+
     results = network.test(matrix_based_arrays, w_min)
     for i in range(0, len(matrix_based_arrays)):
         print('input: ')
@@ -97,6 +100,7 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
             print(round(results[i][j], 4), end=' ')
         print()
         print('expected: ', expected[i])
+        # print('error is: ', np.sum(np.abs(np.array(results[i]) - np.array(expected[i]))))
 
     # TRAINING WITH AND WITHOUT NOISE
     # original_matrix_based_arrays = matrix_based_arrays
@@ -196,24 +200,24 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
 
 
 
-# print('2 2 1 XOR')
-# test_xor([2, 2, 1])
+print('2 2 1 XOR')
+test_xor([2, 2, 1])
 # print('2 2 2 2 1 XOR')
 # test_xor([2, 2, 2, 2, 1])
 
 
 # print('35 2 1 PARITY')
-# test_parity([35, 2, 1], 1, 0.8)
+# test_parity([35, 2, 1], 3, 0.8)
 # print('35 2 2 2 2 2 1 PARITY')
 # test_parity([35, 2, 2, 2, 2, 2, 1], 1, 0.8)
 # # Duplicate data set
 # print('35 2 1 PARITY (DUPLICATED)')
 # test_parity([35, 2, 1], 2, 0.8)
 # print('35 2 2 2 2 2 1 PARITY (DUPLICATED)')
-# test_parity([35, 2, 2, 2, 2, 2, 1], 2, 0.8)
+# # test_parity([35, 2, 2, 2, 2, 2, 1], 2, 0.8)
 
-print('35 10 10 DIGITS')
-test_digits([35, 10, 10], 1, 0.8, 0.1)
+# print('35 10 10 10 DIGITS')
+# test_digits([35, 10, 10], 1, 0.8, 0.1)
 # print('35 10 10 10 DIGITS')
 # test_digits([35, 10, 10, 10], 1, 0.8, 0.1)
 
