@@ -14,20 +14,27 @@ def linear_perceptron_test_k():
     expected = df['y'].to_numpy()
     np.seterr(all='raise')
     results = []
-    for i in range(2, 11):
-        # print('k: ', i)
+    test_errors_results = []
+    for i in range(2, 6):
         perceptron = Perceptron(3, GradientDescent, 0.01, MathFunctions.LINEAR, MathFunctions.LINEAR_DERIVATIVE)
-        w_min, training_errors, test_errors = perceptron.k_fold_cross_validation(i, training_set, expected, 2000, 0.01)
+        w_min, training_errors, test_errors = perceptron.k_test(i, training_set, expected, 2000, 0.01)
+        test_errors_result = {
+            'k': i,
+            'test_errors': test_errors[i-1][0]
+        }
+        test_errors_results.append(test_errors_result)
         for j in range(len(training_errors)):
-            result = {
-                'k': i,
-                'epoch': j,
-                'training_error': training_errors[j][0],
-                'test_error': test_errors[j][0]
-            }
-            results.append(result)
+            for m in range(len(training_errors[j])):
+                result = {
+                    'k': i,
+                    'epoch': m,
+                    'training_error': training_errors[j][m][0],
+                }
+                results.append(result)
     results_df = pd.DataFrame(results)
     results_df.to_csv('linear_perceptron_results.csv', index=False)
+    test_errors_df = pd.DataFrame(test_errors_results)
+    test_errors_df.to_csv('linear_perceptron_test_errors.csv', index=False)
 
 def non_linear_perceptron_test_k_sigmoid():
 
@@ -40,8 +47,7 @@ def non_linear_perceptron_test_k_sigmoid():
     np.seterr(all='raise')
     results = []
     test_errors_results = []
-    for i in range(2, 11):
-        # print('k: ', i)
+    for i in range(2, 6):
         perceptron = Perceptron(3, GradientDescent, 0.01, MathFunctions.SIGMOID, MathFunctions.SIGMOID_DERIVATIVE)
         w_min, training_errors, test_errors = perceptron.k_test(i, training_set, expected, 2000, 0.01)
         test_errors_result = {
@@ -50,9 +56,6 @@ def non_linear_perceptron_test_k_sigmoid():
             'test_errors': test_errors[i-1][0]
         }
         test_errors_results.append(test_errors_result)
-        print("training_errors: ", training_errors[0])
-        print("len(training_errors): ", len(training_errors))
-        print("len(training_errors[0]): ", len(training_errors[0]))
         for j in range(len(training_errors)):
             for m in range(len(training_errors[j])):
                 result = {
@@ -77,24 +80,32 @@ def non_linear_perceptron_test_k_tanh():
     expected = np.interp(expected_set, (min_val, max_val), (-1, 1)).tolist()
     np.seterr(all='raise')
     results = []
-    for i in range(2, 11):
-        # print('k: ', i)
+    test_errors_results = []
+    for i in range(2, 6):
         perceptron = Perceptron(3, GradientDescent, 0.01, MathFunctions.TAN_H, MathFunctions.TAN_H_DERIVATIVE)
-        w_min, training_errors, test_errors = perceptron.k_fold_cross_validation(i, training_set, expected, 2000, 0.01)
+        w_min, training_errors, test_errors = perceptron.k_test(i, training_set, expected, 2000, 0.01)
+        test_errors_result = {
+            'k': i,
+            'beta': MathFunctions.BETA,
+            'test_errors': test_errors[i-1][0]
+        }
+        test_errors_results.append(test_errors_result)
         for j in range(len(training_errors)):
-            result = {
-                'k': i,
-                'beta': MathFunctions.BETA,
-                'epoch': j,
-                'training_error': training_errors[j][0],
-                'test_error': test_errors[j][0]
-            }
-            results.append(result)
+            for m in range(len(training_errors[j])):
+                result = {
+                    'k': i,
+                    'beta': MathFunctions.BETA,
+                    'epoch': m,
+                    'training_error': training_errors[j][m][0],
+                }
+                results.append(result)
     results_df = pd.DataFrame(results)
     results_df.to_csv('non_linear_perceptron_results_tanh.csv', mode='a', header=not os.path.exists('non_linear_perceptron_results_tanh.csv'), index=False)
+    test_errors_df = pd.DataFrame(test_errors_results)
+    test_errors_df.to_csv('non_linear_perceptron_test_errors_tanh.csv', mode='a', header=not os.path.exists('non_linear_perceptron_test_errors_tanh.csv'), index=False)
 
    
 
 # linear_perceptron_test_k()
 non_linear_perceptron_test_k_sigmoid()
-# non_linear_perceptron_test_k_tanh()
+non_linear_perceptron_test_k_tanh()
