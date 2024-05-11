@@ -16,12 +16,12 @@ def test_non_linear():
     min_val = min(expected_set)
     max_val = max(expected_set)
     expected = np.interp(expected_set, (min_val, max_val), (0, 1)).tolist()
-    perceptron = Perceptron(3, GradientDescent, 0.1, MathFunctions.SIGMOID, MathFunctions.SIGMOID_DERIVATIVE)
+    perceptron = Perceptron(3, GradientDescent, 0.01, MathFunctions.SIGMOID, MathFunctions.SIGMOID_DERIVATIVE)
     training_data, training_expected, testing_data, testing_expected = split_data(training_set.values.tolist(), expected, 0.8)
-    w_min, errors = perceptron.train(training_data, training_expected, 1, 30000, 0.1)
+    w_min, errors = perceptron.train(training_data, training_expected, 1, 200000, 0.1)
     results = perceptron.test(testing_data, w_min)
 
-    print('expected: ', expected)
+    print('expected: ', testing_expected)
     print('results: ', results)
 
 
