@@ -11,7 +11,7 @@ class Perceptron():
         self.activation_function = activation_function
         self.activation_derivative = activation_derivative
         if weights is None:
-            self.weights = np.array(np.random.uniform(0, 1, size=(1, weights_qty)))
+            self.weights = np.array(np.random.uniform(-1, 1, size=(1, weights_qty + 1)))
         else:
             self.weights = np.array(weights)
 
@@ -31,9 +31,26 @@ class Perceptron():
     def error(self, training_set, expected_set):
         total_error = 0
         for i in range(0, len(training_set) - 1):
-            total_error += (expected_set[i] - self.activation(self.excitement(training_set[i]))) ** 2
+            copy = []
+            copy.append(1)
+            for j in range(0, len(training_set[i])):
+                copy.append(training_set[i][j])
+            total_error += (expected_set[i] - self.activation(self.excitement(copy))) ** 2
+        return total_error * 0.5
+
+    def test_error(self, test_set, expected_set, weights):
+        total_error = 0
+        for i in range(0, len(test_set) - 1):
+            copy = []
+            copy.append(1)
+            for j in range(0, len(test_set[i])):
+                copy.append(test_set[i][j])
+            total_error += (expected_set[i] - self.activation(self.test_excitement(copy, weights))) ** 2
         return total_error * 0.5
     
+    def test_excitement(self, test_set, w):
+        return np.dot(w, test_set)
+
 
     def k_fold_cross_validation(self, k, training_set, expected_set, epoch, epsilon):
         if k <= 1 or k >= len(training_set):
@@ -45,14 +62,12 @@ class Perceptron():
         i = 0
         limit = 0
         min_error = sys.maxsize
-        w_min = None
         training_set_aux = np.array(training_set)
 
         while(limit < epoch and min_error > epsilon):
             fold_size = len(training_set_aux) // k
             index_start = i * fold_size
             index_end = (i + 1) * fold_size
-
 
             test_set_copy = training_set_aux[index_start:index_end]
             test_expected_copy = expected_set[index_start:index_end]
@@ -66,16 +81,20 @@ class Perceptron():
                 training_value = training_copy[m]
                 training_copy = np.delete(training_copy,m,0)
                 expected = expected_copy.pop(m)
-                excitement = self.excitement(training_value)
+                copy = []
+                copy.append(1)
+                for z in range(0, len(training_value)):
+                    copy.append(training_value[z])
+                excitement = self.excitement(copy)
                 activation = self.activation(excitement)
-                delta += self.calculate_delta(activation, np.array(training_value), expected)
+                delta += self.calculate_delta(activation, np.array(copy), expected)
             w = self.update_weights(delta)
             error = self.error(training_set, expected_set)
             if error < min_error:
                 min_error = error
                 w_min = w
             training_errors.append(error)
-            test_errors.append(self.error(test_set_copy, test_expected_copy))
+            test_errors.append(self.test_error(test_set_copy, test_expected_copy, w_min)) 
             limit += 1
             if i == k-1:
                 i = 0
@@ -83,6 +102,31 @@ class Perceptron():
                 i += 1
 
         return w_min, training_errors, test_errors
+    
+    def k_test(self, k, training_set, expected_set, epoch, epsilon):
+        training_set_aux = np.array(training_set)
+        training_errors_set = []
+        test_errors_set = []
+        for i in range(k):
+            fold_size = len(training_set_aux) // k
+            index_start = i * fold_size
+            index_end = (i + 1) * fold_size
+
+            test_set_copy = training_set_aux[index_start:index_end]
+            test_expected_copy = expected_set[index_start:index_end]
+
+            training_copy = np.concatenate((training_set_aux[:index_start], training_set_aux[index_end:]), axis=0)
+            expected_copy = np.concatenate((expected_set[:index_start], expected_set[index_end:]), axis=0).tolist()
+            w_min, training_errors = self.train(training_copy, expected_copy, 1, epoch, epsilon)
+
+            training_errors_set.append(training_errors)
+            test_errors_set.append(self.test_error(test_set_copy, test_expected_copy, w_min))
+            # print("k: ", i)
+            # print("training_errors: ", training_errors)
+            # print("--------------------")
+
+        return w_min, training_errors_set, test_errors_set
+
 
     def train(self, training_set, expected_set, batch, epoch, epsilon):
         # training_set = np.array(training_set)
@@ -99,13 +143,17 @@ class Perceptron():
                 training_value = training_copy[m]
                 training_copy = np.delete(training_copy,m,0)
                 expected = expected_copy.pop(m)
-                excitement = self.excitement(training_value)
+                copy = []
+                copy.append(1)
+                for z in range(0, len(training_value)):
+                    copy.append(training_value[z])
+                excitement = self.excitement(copy)
                 activation = self.activation(excitement)
-                delta += self.calculate_delta(activation, np.array(training_value), expected)
-            print('epoch: ', i) 
+                delta += self.calculate_delta(activation, np.array(copy), expected)
+            # print('epoch: ', i) 
             we = self.update_weights(delta)
             error = self.error(training_set, expected_set)
-            print('error: ', error)
+            # print('error: ', error)
             if error < min_error:
                 min_error = error
                 w_min = we
