@@ -149,7 +149,7 @@ class MultiLayer:
     def get_predictions(self, results):
         predictions = []
         for i, result in enumerate(results):
-            if result > 0.7:
+            if result > 0.5:
                 predictions.append(i)
         return predictions
     
@@ -166,17 +166,23 @@ class MultiLayer:
         FN = 0
         TN = 0
         for i in range(len(results)):
+            tp_idx = 0
+            fp_idx = 0
+            fn_idx = 0
             predictions = self.get_predictions(results[i])
             expecteds = self.get_expecteds(expected[i])
             for prediction in predictions:
                 if prediction in expecteds:
+                    tp_idx += 1
                     TP += 1
                 else:
+                    fp_idx += 1
                     FP += 1
             for expected_value in expecteds:
                 if expected_value not in predictions:
+                    fn_idx += 1
                     FN += 1
-            TN += classes_qty - (TP + FP + FN)
+            TN += classes_qty - (tp_idx + fp_idx + fn_idx)
         return TN,FN,FP,TP
 
     def calculate_metrics(self, set, expected, metric, weights, classes_qty):
