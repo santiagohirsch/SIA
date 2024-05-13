@@ -119,8 +119,8 @@ class MultiLayer:
                 w_min = we
             all_weights.append(we)
         
-            if (epoch % 100 == 0 and epoch != 0):
-                print(f"Epoch: {epoch}, Error: {error}")
+            if (epoch % 10 == 0 and epoch != 0):
+                # print(f"Epoch: {epoch}, Error: {error}")
                 all_errors.append(error)
                 # for metric_name, metric in metric_functions.items():
                 #     training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
@@ -131,8 +131,8 @@ class MultiLayer:
         all_errors.append(min_error)
 
 
-        errors_df = pd.DataFrame({'Epoch': [i*100 for i in range(len(all_errors))], 'Error': all_errors})
-        errors_df.to_csv('betas3.csv', index=False)
+        errors_df = pd.DataFrame({'Epoch': [i*10 for i in range(len(all_errors))], 'Error': all_errors})
+        errors_df.to_csv(f'parity.csv', index=False)
         for metric_name, metric in metric_functions.items():
             test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
             print(f"Test {metric_name}: {test_metrics}")

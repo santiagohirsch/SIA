@@ -11,8 +11,8 @@ from Recall import Recall
 import random
 
 #para digits usar 0,5, para parity 0,8 y para xor 3
-TAN_H = (lambda x: np.tanh(0.75 * x) )
-TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2)* 0.75)
+TAN_H = (lambda x: np.tanh(0.8 * x) )
+TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2)* 0.8)
 
 def test_xor(neurons_per_layer):
     input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
@@ -54,37 +54,36 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
     testing_expected = []
 
     for i in range(ceil(len(matrix_based_arrays)*(split_percentage)), len(matrix_based_arrays)):
-        testing_data.append(matrix_based_arrays[i])
+        testing_data.append(copy.deepcopy(matrix_based_arrays[i]))
         testing_expected.append(expected[i])
     
     # elegi 70% para training y 30% para testing
-    testing_data = add_noise(testing_data, 0.1)
+    testing_data = add_noise(testing_data, 0.2)
 
 
-
-    w_min, test_errors, all_errors, rows = network.train(matrix_based_arrays, expected, 1, 4000, 0.01, testing_data, testing_expected, Accuracy, 1)
+    w_min, test_errors, all_errors, rows = network.train(matrix_based_arrays, expected, 1, 10000, 0.01, testing_data, testing_expected, Accuracy, 1)
 
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
     
-    results = network.test(testing_data, w_min)
-    for i in range(0, len(testing_data)):
-        print('input: ')
-        print(np.array(testing_data[i]).reshape(7, -1))
-        print('output: ', results[i], 'expected: ', testing_expected[i])
+    # results = network.test(testing_data, w_min)
+    # for i in range(0, len(testing_data)):
+    #     print('input: ')
+    #     print(np.array(testing_data[i]).reshape(7, -1))
+    #     print('output: ', results[i], 'expected: ', testing_expected[i])
 
 
-    iteraciones_all = [i * 5 for i in range(1, len(all_errors) + 1)]
-    iteraciones_test = [i * 5 for i in range(1, len(test_errors) + 1)]
-    plt.plot(iteraciones_all, all_errors, label='Training Errors')
-    plt.plot(iteraciones_test, test_errors, label='Testing Errors')
-    plt.grid()
-    plt.title('Error by Epoch in Parity Function with Noise Testing ')
-    plt.xlabel('Epoch')
-    plt.ylabel('Error')
-    plt.legend()
-    plt.show()
+    # iteraciones_all = [i * 5 for i in range(1, len(all_errors) + 1)]
+    # iteraciones_test = [i * 5 for i in range(1, len(test_errors) + 1)]
+    # plt.plot(iteraciones_all, all_errors, label='Training Errors')
+    # plt.plot(iteraciones_test, test_errors, label='Testing Errors')
+    # plt.grid()
+    # plt.title('Error by Epoch in Parity Function with Noise Testing ')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Error')
+    # plt.legend()
+    # plt.show()
 
 
 
@@ -277,15 +276,14 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, epoc
     # df.to_csv(f"./F1-digits-nosplit-noise.csv", index=False)
 
 
-
 # print('2 2 1 XOR')
 # test_xor([2, 2, 1])
 # print('2 2 2 2 1 XOR')
 # test_xor([2, 2, 2, 2, 1])
 
 
-# print('35 2 1 PARITY')
-# test_parity([35, 2, 1], 1, 0.7)
+print('35 2 1 PARITY')
+test_parity([35, 2, 1], 1, 0.7)
 # print('35 2 2 2 2 2 1 PARITY')
 # test_parity([35, 2, 2, 2, 2, 2, 1], 1, 0.8)
 # # Duplicate data set
@@ -294,8 +292,8 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, epoc
 # print('35 2 2 2 2 2 1 PARITY (DUPLICATED)')
 # # test_parity([35, 2, 2, 2, 2, 2, 1], 2, 0.8)
 
-print('35 10 10 10 DIGITS')
-test_digits([35, 10, 10], 3, 0.8, 0.9)
+# print('35 10 10 10 DIGITS')
+# test_digits([35, 10, 10], 3, 0.8, 0.1)
 # print('35 10 10 10 DIGITS')
 # test_digits([35, 10, 10, 10], 1, 0.8, 0.1)
 
