@@ -149,7 +149,7 @@ class MultiLayer:
     def get_predictions(self, results):
         predictions = []
         for i, result in enumerate(results):
-            if result > 0.5:
+            if result > 0.7:
                 predictions.append(i)
         return predictions
     
@@ -161,13 +161,13 @@ class MultiLayer:
         return expecteds
             
     def confusion_matrix(self, results, expected, classes_qty):
+        TP = 0
+        FP = 0
+        FN = 0
+        TN = 0
         for i in range(len(results)):
             predictions = self.get_predictions(results[i])
             expecteds = self.get_expecteds(expected[i])
-            TP = 0
-            FP = 0
-            FN = 0
-            TN = 0
             for prediction in predictions:
                 if prediction in expecteds:
                     TP += 1
@@ -176,8 +176,7 @@ class MultiLayer:
             for expected_value in expecteds:
                 if expected_value not in predictions:
                     FN += 1
-            TN = classes_qty - (TP + FP + FN)
-                
+            TN += classes_qty - (TP + FP + FN)
         return TN,FN,FP,TP
 
     def calculate_metrics(self, set, expected, metric, weights, classes_qty):
