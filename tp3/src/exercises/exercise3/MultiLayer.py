@@ -1,9 +1,20 @@
 import random
 import sys
 import numpy as np
+import pandas as pd
 from Intermediate import Intermediate
 from Output import Output
+from Accuracy import Accuracy
+from F1 import F1
+from Precision import Precision
+from Recall import Recall
 
+metric_functions = {
+'F1': F1,
+'recall': Recall,
+'precision': Precision,
+'accuracy': Accuracy
+}
 
 class MultiLayer:
     def __init__(self, neurons_per_layer, intermediate_func, intermediate_derivative, output_func, output_derivative, learning_rate, weights = None):
@@ -79,7 +90,13 @@ class MultiLayer:
         return weights
     
     def train(self, training_data, expected_data, batch, max_epochs, epsilon, testing_data, testing_expected, metric, classes_qty):
-        rows = []
+        # f1 = []
+        # accuracy = []
+        # precision = []
+        # recall = []
+
+        metrics_data = {metric_name: [] for metric_name in metric_functions.keys()}  # Inicializa el diccionario con listas vacías para cada métrica
+
         training_set = np.array(training_data)
         expected_set = np.array(expected_data)
         min_error = sys.maxsize
@@ -103,14 +120,18 @@ class MultiLayer:
             all_weights.append(we)
             all_errors.append(error)
             
-            # if (epoch % 50 == 0 and epoch != 0):
-            #     print("Epoch: ", epoch)
-            #     training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
-            #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
-            #     rows.append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
+            if (epoch % 50 == 0 and epoch != 0):
+                for metric_name, metric in metric_functions.items():
+                    training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
+                    test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
+                    metrics_data[metric_name].append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
 
             epoch += 1
-        return w_min, all_weights, all_errors, rows
+
+        for metric_name, metric in metric_functions.items():
+            df = pd.DataFrame(metrics_data[metric_name])
+            df.to_csv(f"./{metric_name}-digits-nosplit-noise.csv", index=False)
+        return w_min, all_weights, all_errors, []
     
     def test(self, test_data, weights):
         test_set = np.array(test_data)

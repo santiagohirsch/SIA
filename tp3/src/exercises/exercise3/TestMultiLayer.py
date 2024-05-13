@@ -11,8 +11,8 @@ from Recall import Recall
 import random
 
 #para digits usar 0,5, para parity 0,8 y para xor 3
-TAN_H = (lambda x: np.tanh(0.8 * x) )
-TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2)* 0.8)
+TAN_H = (lambda x: np.tanh(0.5 * x) )
+TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2)* 0.5)
 
 def test_xor(neurons_per_layer):
     input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
@@ -206,11 +206,18 @@ def add_noise(data_set, percentage):
             if np.random.random() < percentage:
                 numbers += 1
                 new_data_set[i][j] = 1 - new_data_set[i][j]
-        print(f"Added noise to {numbers} numbers")
+
 
     return new_data_set
 
-def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metric, epochs, expected, classes_qty, split, noise):
+metric_functions = {
+    'F1': F1,
+    'recall': Recall,
+    'precision': Precision,
+    'accuracy': Accuracy
+}
+
+def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, epochs, expected, classes_qty, split, noise):
     matrix_based_arrays = load_data()
     network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
@@ -235,13 +242,13 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
     #     print('input: ')
     #     print(np.array(testing_data[i]).reshape(7, -1))
     #     print('expected: ', testing_expected[i])
-
+    
     
 
-    w_min, _, _, rows = network.train(training_data, training_expected, 1, epochs, 0.1, testing_data, testing_expected, metric, classes_qty)
+    w_min, _, _, rows = network.train(training_data, training_expected, 1, epochs, 0.1, testing_data, testing_expected, '', classes_qty)
 
-    df = pd.DataFrame(rows)
-    df.to_csv(f"./F1-digits-nosplit-noise.csv", index=False)
+    # df = pd.DataFrame(rows)
+    # df.to_csv(f"./F1-digits-nosplit-noise.csv", index=False)
 
 
 
@@ -251,8 +258,8 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
 # test_xor([2, 2, 2, 2, 1])
 
 
-print('35 2 1 PARITY')
-test_parity([35, 2, 1], 1, 0.7)
+# print('35 2 1 PARITY')
+# test_parity([35, 2, 1], 1, 0.7)
 # print('35 2 2 2 2 2 1 PARITY')
 # test_parity([35, 2, 2, 2, 2, 2, 1], 1, 0.8)
 # # Duplicate data set
@@ -273,14 +280,14 @@ test_parity([35, 2, 1], 1, 0.7)
 
 # calculate_metric([35, 2, 2, 2, 2, 2, 2], 1, 0.8, Accuracy, 100000, [[1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1], [1, 0], [0, 1]], 2, False, False)
 
-# calculate_metric([35, 10, 10], 2, 0.8, F1, 1001, [
-#                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#                 [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-#                 [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-#                 [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-#                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-#                 [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-#                 [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-#                 [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-#                 [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-#                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]], 10, True, True)
+calculate_metric([35, 10, 10], 3, 0.8, 1001, [
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]], 10, True, True)
