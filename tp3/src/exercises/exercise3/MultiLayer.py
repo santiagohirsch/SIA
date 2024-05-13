@@ -118,19 +118,25 @@ class MultiLayer:
                 min_error = error
                 w_min = we
             all_weights.append(we)
-            all_errors.append(error)
-            
-            if (epoch % 50 == 0 and epoch != 0):
-                for metric_name, metric in metric_functions.items():
-                    training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
-                    test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
-                    metrics_data[metric_name].append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
+        
+            if (epoch % 100 == 0 and epoch != 0):
+                print(f"Epoch: {epoch}, Error: {error}")
+                all_errors.append(error)
+                # for metric_name, metric in metric_functions.items():
+                #     training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
+                #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
+                #     metrics_data[metric_name].append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
 
             epoch += 1
+        all_errors.append(min_error)
 
+
+        errors_df = pd.DataFrame({'Epoch': [i*100 for i in range(len(all_errors))], 'Error': all_errors})
+        errors_df.to_csv('betas3.csv', index=False)
         for metric_name, metric in metric_functions.items():
-            df = pd.DataFrame(metrics_data[metric_name])
-            df.to_csv(f"./{metric_name}-digits-nosplit-noise.csv", index=False)
+            test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
+            print(f"Test {metric_name}: {test_metrics}")
+        print(pd.DataFrame(metrics_data))
         return w_min, all_weights, all_errors, []
     
     def test(self, test_data, weights):
@@ -143,10 +149,8 @@ class MultiLayer:
     def get_predictions(self, results):
         predictions = []
         for i, result in enumerate(results):
-            if result > 0.75:
+            if result > 0.5:
                 predictions.append(i)
-        if len(predictions) == 0:
-            predictions.append(np.argmax(results))
         return predictions
     
     def get_expecteds(self, expected):
@@ -157,13 +161,24 @@ class MultiLayer:
         return expecteds
             
     def confusion_matrix(self, results, expected, classes_qty):
-        confusion_matrix = np.zeros((classes_qty, classes_qty))
         for i in range(len(results)):
             predictions = self.get_predictions(results[i])
             expecteds = self.get_expecteds(expected[i])
-            for pred_class in predictions:
-                confusion_matrix[expecteds[0]][pred_class] += 1
-        return confusion_matrix
+            TP = 0
+            FP = 0
+            FN = 0
+            TN = 0
+            for prediction in predictions:
+                if prediction in expecteds:
+                    TP += 1
+                else:
+                    FP += 1
+            for expected_value in expecteds:
+                if expected_value not in predictions:
+                    FN += 1
+            TN = classes_qty - (TP + FP + FN)
+                
+        return TN,FN,FP,TP
 
     def calculate_metrics(self, set, expected, metric, weights, classes_qty):
         true_positive = 0
@@ -173,13 +188,5 @@ class MultiLayer:
         results = []
         for i in range(0, len(set)):
             results.append(self.test_forward_propagation(set[i], weights))
-        matrix = self.confusion_matrix(results, expected, classes_qty)
-        for i in range(0, classes_qty):
-            for j in range(0, classes_qty):
-                if i == j:
-                    true_positive += matrix[i][j]
-                else:
-                    false_positive += matrix[j][i]
-                    false_negative += matrix[i][j]
-                    true_negative += matrix[j][j]
+        true_negative, false_negative, false_positive, true_positive = self.confusion_matrix(results, expected, classes_qty)
         return metric.calculate(true_positive, true_negative, false_positive, false_negative)

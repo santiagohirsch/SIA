@@ -16,28 +16,27 @@ def exercise_3c():
     plt.show()
 
 def betas_graph():
-    data = pd.read_csv('betas1.csv')
+    data = pd.read_csv('betas.csv')
 
     # Lista para almacenar todos los DataFrames adicionales
     additional_dfs = []
 
     # Leer y agregar los siguientes archivos CSV a la lista
-    additional_dfs.append(pd.read_csv('betas01.csv'))
+    # additional_dfs.append(pd.read_csv('betas01.csv'))
     additional_dfs.append(pd.read_csv('betas025.csv'))
     additional_dfs.append(pd.read_csv('betas05.csv'))
     additional_dfs.append(pd.read_csv('betas2.csv'))
     additional_dfs.append(pd.read_csv('betas3.csv'))
-    additional_dfs.append(pd.read_csv('betas4.csv'))
+    additional_dfs.append(pd.read_csv('betas075.csv'))
 
     # Concatenar todos los DataFrames en la lista en uno solo
     data = pd.concat([data] + additional_dfs, ignore_index=True)
     
-    grouped_data = data.groupby('Beta')
+    grouped_data = data.groupby('Betas')
     for beta, group in grouped_data:
-        plt.plot(group['Index'], group['Error'], label=f'Beta = {beta}')
+        plt.plot(group['Epoch'], group['Error'], label=f'Beta = {beta}')
     
     plt.grid()
-    plt.yticks(range(int(min(data['Error'])), int(max(data['Error']))+1, 1))
     plt.xlabel('Epoch')
     plt.ylabel('Error')
     plt.title('Error by Epoch for Different Beta Values')
@@ -70,4 +69,4 @@ def learning_rate_graph():
     plt.show()
 
 
-exercise_3c()
+betas_graph()
