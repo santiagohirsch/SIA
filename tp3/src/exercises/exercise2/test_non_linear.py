@@ -15,14 +15,20 @@ def test_non_linear():
     expected_set = df['y']
     min_val = min(expected_set)
     max_val = max(expected_set)
-    expected = np.interp(expected_set, (min_val, max_val), (0, 1)).tolist()
-    perceptron = Perceptron(3, GradientDescent, 0.01, MathFunctions.SIGMOID, MathFunctions.SIGMOID_DERIVATIVE)
-    training_data, training_expected, testing_data, testing_expected = split_data(training_set.values.tolist(), expected, 0.8)
-    w_min, errors = perceptron.train(training_data, training_expected, 1, 200000, 0.1)
-    results = perceptron.test(testing_data, w_min)
-
-    print('expected: ', testing_expected)
-    print('results: ', results)
+    expected = np.interp(expected_set, (min_val, max_val), (-1, 1)).tolist()
+    perceptron = Perceptron(3, GradientDescent, 0.01, MathFunctions.TAN_H, MathFunctions.TAN_H_DERIVATIVE)
+    # training_data, training_expected, testing_data, testing_expected = split_data(training_set.values.tolist(), expected, 0.8)
+    w_min, errors = perceptron.train(training_set.values.tolist(), expected, 1, 5000, 0.0)
+    # results = perceptron.test(testing_data, w_min)
+    training_errors = []
+    for i in range(len(errors)):
+        training_error = {
+            'epoch': i,
+            'error': errors[i][0]
+        }
+        training_errors.append(training_error)
+    training_errors_df = pd.DataFrame(training_errors)
+    training_errors_df.to_csv('non_linear_perceptron_tanh_training_errors.csv', index=False)
 
 
 def split_data(data_set, expected, percentage):

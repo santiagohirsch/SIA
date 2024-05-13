@@ -103,7 +103,7 @@ class Perceptron():
 
         return w_min, training_errors, test_errors
     
-    def k_test(self, k, training_set, expected_set, epoch, epsilon, shuffle = False):
+    def k_test(self, k, training_set, expected_set, epoch, epsilon, shuffle = False, batch = 1):
         training_set_aux = np.array(training_set)
         expected_set_aux = np.array(expected_set)  # Create a copy to avoid modifying the original
         training_errors_set = []
@@ -137,8 +137,9 @@ class Perceptron():
 
             training_copy = np.concatenate((training_set_aux[:index_start], training_set_aux[index_end:]), axis=0)
             expected_copy = np.concatenate((expected_set_aux[:index_start], expected_set_aux[index_end:]), axis=0).tolist()
-
-            w_min, training_errors = self.train(training_copy, expected_copy, 1, epoch, epsilon)
+            if batch > len(training_copy):
+                batch = len(training_copy)
+            w_min, training_errors = self.train(training_copy, expected_copy, batch, epoch, epsilon)
 
             training_errors_set.append(training_errors)
             test_errors_set.append(self.test_error(test_set_copy, test_expected_copy, w_min))
