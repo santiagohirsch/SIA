@@ -2,164 +2,106 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_training_error_vs_epoch_linear():
+def plot_testing_error_vs_k_linear_ordered():
+    plot_testing_error_vs_k('linear_perceptron_test_errors_ordered', 'IDENTITY', 'Ordered')
 
-    # Load the CSV file
-    df = pd.read_csv('linear_perceptron_results.csv')
+def plot_testing_error_vs_k_linear_shuffled():
+    plot_testing_error_vs_k('linear_perceptron_test_errors_shuffled', 'IDENTITY', 'Shuffled')
 
-    # Get unique values of k
-    unique_k_values = df['k'].unique()
+def plot_testing_error_vs_k_non_linear_sigmoid_shuffled():
+    plot_testing_error_vs_k('non_linear_perceptron_test_errors_sigmoid_shuffled', 'SIGMOID', 'Shuffled')
 
-    # Plot each k value separately
-    for k_value in unique_k_values:
-        # Filter the dataframe for the current k value
-        df_k = df[df['k'] == k_value]
-        
-        # Plot training error vs. epoch for the current k value
-        plt.plot(df_k['epoch'][:2000], df_k['training_error'][:2000], label=f'k = {k_value}')
+def plot_testing_error_vs_k_non_linear_sigmoid_ordered():
+    plot_testing_error_vs_k('non_linear_perceptron_test_errors_sigmoid_ordered', 'SIGMOID', 'Ordered')
 
-    # Add labels and legend
-    plt.xlabel('Epoch')
-    plt.ylabel('Training Error')
-    plt.title('Linear (IDENTITY) - Training Error vs. Epoch for Different k Values')
-    plt.legend()
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.grid(True, axis='y')
+def plot_testing_error_vs_k_non_linear_tanh_shuffled():
+    plot_testing_error_vs_k('non_linear_perceptron_test_errors_tanh_shuffled', 'TANH', 'Shuffled')
 
-    # Show the plot
-    plt.show()
+def plot_testing_error_vs_k_non_linear_tanh_ordered():
+    plot_testing_error_vs_k('non_linear_perceptron_test_errors_tanh_ordered', 'TANH', 'Ordered')
 
-def plot_testing_error_vs_k_linear():
+def plot_testing_error_vs_k(file_prefix, activation, data_type):
+    for i in range(2, 6):
+        # Load the CSV file
+        df = pd.read_csv(f'{file_prefix}_k{i}.csv')
 
-    # Load the CSV file
-    df = pd.read_csv('linear_perceptron_test_errors.csv')
+        # Extract the columns k and test_errors
+        k_values = df['k']
+        test_errors = df['test_errors']
 
-    # Extraer las columnas k y test_errors
-    k_values = df['k']
-    test_errors = df['test_errors']
+        # Create the bar plot
+        plt.figure(figsize=(8, 6))
+        plt.bar(range(len(k_values)), test_errors, color='blue')
 
-    # Crear el gráfico de barras
-    plt.figure(figsize=(8, 6))
-    plt.bar(range(len(k_values)), test_errors, color='blue')
+        # Set the k values on the x-axis
+        plt.xticks(range(len(k_values)), k_values)
+        # Add labels and title
+        plt.xlabel('K')
+        plt.ylabel('Test Errors')
+        plt.title(f'{activation} - Test Error vs. K - {data_type} Data - K={i}')
+        ax = plt.gca()
+        ax.set_axisbelow(True)
+        plt.grid(True, axis='y')
+        plt.show()
 
-    # Establecer los valores de k en el eje x
-    plt.xticks(range(len(k_values)), k_values)
-    # Añadir etiquetas y título
-    plt.xlabel('k')
-    plt.ylabel('Test Errors')
-    plt.title('Linear (IDENTITY) - Test Error vs. k')
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.grid(True, axis='y')
-    plt.show()
+def plot_testing_error_vs_epochs_non_linear_tanh_shuffled():
+    
+    for m in range(2, 6):
+        # Load the CSV file
+        df = pd.read_csv(f'non_linear_perceptron_tanh_test_errors_vs_epochs_k{m}.csv')
 
-def plot_training_error_vs_epoch_non_linear_sigmoid():
-    # Load the CSV file
-    df = pd.read_csv('non_linear_perceptron_results_sigmoid.csv')
+        grouped = df.groupby('k')
 
-    # Get unique values of k
-    unique_k_values = df['k'].unique()
+        # Initialize the plot
+        fig, ax = plt.subplots()
 
-    # Plot one graph per k value
-    for k_value in unique_k_values:
-        # Filter the dataframe for the current k value
-        df_k = df[df['k'] == k_value]
-        
-        # Plot training error vs. epoch for the current k value
-        plt.plot(df_k['epoch'][:1750], df_k['training_error'][:1750], label=f'k = {k_value}')
+        # Set the width of the bars
+        bar_width = 0.35
 
-    # Add labels and legend
-    plt.xlabel('Epoch')
-    plt.ylabel('Training Error')
-    plt.title('Non Linear (SIGMOID) - Training Error vs. Epoch for Different k Values')
-    plt.legend()
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.grid(True, axis='y')
-        
-    # Show the plot
-    plt.show()
+        # Get unique epochs across all groups
+        unique_epochs = df['epochs'].unique()
 
-def plot_testing_error_vs_k_non_linear_sigmoid():
-   # Load the CSV file
-    df = pd.read_csv('non_linear_perceptron_test_errors_sigmoid.csv')
+        # Calculate the total width for each group of bars
+        group_width = bar_width * len(grouped)
 
-    # Extraer las columnas k y test_errors
-    k_values = df['k']
-    test_errors = df['test_errors']
+        # Calculate the space between groups
+        space_between = 0.2
 
-    # Crear el gráfico de barras
-    plt.figure(figsize=(8, 6))
-    plt.bar(range(len(k_values)), test_errors, color='blue')
+        # Calculate the offset for each group of bars
+        offset = np.arange(len(unique_epochs)) * (group_width + space_between)
 
-    # Establecer los valores de k en el eje x
-    plt.xticks(range(len(k_values)), k_values)
-    # Añadir etiquetas y título
-    plt.xlabel('k')
-    plt.ylabel('Test Errors')
-    plt.title('Non Linear (SIGMOID) - Test Error vs. k')
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.grid(True, axis='y')
-    plt.show()
+        # Iterate over each group (k value)
+        for i, (k, group) in enumerate(grouped):
+            # Extract epochs and test errors for the current group
+            epochs = group['epochs']
+            test_errors = group['test_errors']
 
+            # Calculate x positions for bars
+            x = offset + i * bar_width
 
-def plot_training_error_vs_epoch_non_linear_tanh():
-    # Load the CSV file
-    df = pd.read_csv('non_linear_perceptron_results_tanh.csv')
+            # Plot bars
+            ax.bar(x, test_errors, bar_width, label=f'k = {k}')
 
-    # Get unique values of k
-    unique_k_values = df['k'].unique()
+        # Set x-axis ticks and labels
+        ax.set_xticks(offset + group_width / 2)
+        ax.set_xticklabels(unique_epochs)
 
-    # Plot one graph per k value
-    for k_value in unique_k_values:
-        # Filter the dataframe for the current k value
-        df_k = df[df['k'] == k_value]
-        
-        # Plot training error vs. epoch for the current k value
-        plt.plot(df_k['epoch'][:500], df_k['training_error'][:500], label=f'k = {k_value}')
+        # Add labels and title
+        ax.set_xlabel('Epochs')
+        ax.set_ylabel('Test Errors')
+        ax.set_title(f'Non Linear (TANH) - Test Error vs. Epochs - Shuffled Data - K={m}')
+        ax.legend()
+        ax.grid(axis='y')
+        ax.set_axisbelow(True)
+        ax.set_ylim(0, df['test_errors'].max()/4)
+        # Show the plot
+        plt.tight_layout()
+        plt.show()
 
-    # Add labels and legend
-    plt.xlabel('Epoch')
-    plt.ylabel('Training Error')
-    plt.title('Non Linear (TANH) - Training Error vs. Epoch for Different k Values')
-    plt.legend()
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.grid(True, axis='y')
-        
-    # Show the plot
-    plt.show()
-
-def plot_testing_error_vs_k_non_linear_tanh():
-   # Load the CSV file
-    df = pd.read_csv('non_linear_perceptron_test_errors_tanh.csv')
-
-    # Extraer las columnas k y test_errors
-    k_values = df['k']
-    test_errors = df['test_errors']
-
-    # Crear el gráfico de barras
-    plt.figure(figsize=(8, 6))
-    plt.bar(range(len(k_values)), test_errors, color='blue')
-
-    # Establecer los valores de k en el eje x
-    plt.xticks(range(len(k_values)), k_values)
-    # Añadir etiquetas y título
-    plt.xlabel('k')
-    plt.ylabel('Test Errors')
-    plt.title('Non Linear (TANH) - Test Error vs. k')
-    ax = plt.gca()
-    ax.set_axisbelow(True)
-    plt.grid(True, axis='y')
-    plt.show()
-
-
-
-plot_training_error_vs_epoch_linear()
-plot_testing_error_vs_k_linear()
-plot_training_error_vs_epoch_non_linear_sigmoid()
-plot_testing_error_vs_k_non_linear_sigmoid()
-plot_training_error_vs_epoch_non_linear_tanh()
-plot_testing_error_vs_k_non_linear_tanh()
+# plot_testing_error_vs_k_linear_ordered()
+# plot_testing_error_vs_k_linear_shuffled()
+# plot_testing_error_vs_k_non_linear_sigmoid_shuffled()
+# plot_testing_error_vs_k_non_linear_sigmoid_ordered()
+# plot_testing_error_vs_k_non_linear_tanh_shuffled()
+# plot_testing_error_vs_k_non_linear_tanh_ordered()
+plot_testing_error_vs_epochs_non_linear_tanh_shuffled()

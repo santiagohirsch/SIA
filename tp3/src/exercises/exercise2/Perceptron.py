@@ -103,20 +103,41 @@ class Perceptron():
 
         return w_min, training_errors, test_errors
     
-    def k_test(self, k, training_set, expected_set, epoch, epsilon):
+    def k_test(self, k, training_set, expected_set, epoch, epsilon, shuffle = False):
         training_set_aux = np.array(training_set)
+        expected_set_aux = np.array(expected_set)  # Create a copy to avoid modifying the original
         training_errors_set = []
         test_errors_set = []
+        
+        if shuffle:
+            sorted_arrays = []
+            sorted_expected = []
+            
+            for _ in range(len(training_set_aux)):
+                random_index = random.randint(0, len(training_set_aux) - 1)
+                sorted_arrays.append(training_set_aux[random_index])
+                sorted_expected.append(expected_set_aux[random_index])
+                
+                # Remove selected items by slicing
+                training_set_aux = np.delete(training_set_aux, random_index, axis=0)
+                expected_set_aux = np.delete(expected_set_aux, random_index)
+            
+            # Overwrite training_set_aux and expected_set with the new arrays
+            training_set_aux = np.array(sorted_arrays)
+            expected_set_aux = np.array(sorted_expected)
+
+
         for i in range(k):
             fold_size = len(training_set_aux) // k
             index_start = i * fold_size
             index_end = (i + 1) * fold_size
 
             test_set_copy = training_set_aux[index_start:index_end]
-            test_expected_copy = expected_set[index_start:index_end]
+            test_expected_copy = expected_set_aux[index_start:index_end]
 
             training_copy = np.concatenate((training_set_aux[:index_start], training_set_aux[index_end:]), axis=0)
-            expected_copy = np.concatenate((expected_set[:index_start], expected_set[index_end:]), axis=0).tolist()
+            expected_copy = np.concatenate((expected_set_aux[:index_start], expected_set_aux[index_end:]), axis=0).tolist()
+
             w_min, training_errors = self.train(training_copy, expected_copy, 1, epoch, epsilon)
 
             training_errors_set.append(training_errors)
