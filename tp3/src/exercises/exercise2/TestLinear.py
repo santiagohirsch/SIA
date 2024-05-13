@@ -12,16 +12,16 @@ def TestLinear():
     
     perceptron = Perceptron(3,GradientDescent, 0.01, MathFunctions.LINEAR, MathFunctions.LINEAR_DERIVATIVE)
     # training_data, training_expected, testing_data, testing_expected = split_data(training_set.values.tolist(), expected.values.tolist(), 0.8)
-    w_min, errors = perceptron.train(training_set.values.tolist(), expected.values.tolist(), 1, 20000, 2.0)
-    # results = perceptron.test(testing_data, w_min)
-    # mse = 0
-    # for i in range(0, len(results)):
-    #     mse += (results[i] - testing_expected[i])**2
-    # mse = mse / len(results)
-    
-    # print('expected: ', testing_expected)
-    # print('results: ', results)
-    # print('mse: ', mse)
+    w_min, errors = perceptron.train(training_set.values.tolist(), expected.values.tolist(), 1, 5000, 0.0)
+    training_errors = []
+    for i in range(len(errors)):
+        training_error = {
+            'epoch': i,
+            'error': errors[i][0]
+        }
+        training_errors.append(training_error)
+    training_errors_df = pd.DataFrame(training_errors)
+    training_errors_df.to_csv('linear_perceptron_training_errors.csv', index=False)
 
 def split_data(data_set, expected, percentage):
     training_data = []
