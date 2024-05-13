@@ -8,16 +8,17 @@ from Accuracy import Accuracy
 from F1 import F1
 from Precision import Precision
 from Recall import Recall
+import random
 
 #para digits usar 0,5, para parity 0,8 y para xor 3
-TAN_H = (lambda x: np.tanh(3*x))
-TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2) * 3)
+TAN_H = (lambda x: np.tanh(0.8 * x) )
+TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2)* 0.8)
 
 def test_xor(neurons_per_layer):
     input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     output_xor = [[-1], [1], [1], [-1]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.001)
-    w_min, all_weights, all_errors, rows = network.train(input, output_xor, 1, 10000, 0.01, input, output_xor, Accuracy, 1)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
+    w_min, all_weights, all_errors, rows = network.train(input, output_xor, 4, 1500, 0.001, input, output_xor, Accuracy, 1)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
@@ -31,10 +32,38 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
     matrix_based_arrays = load_data()
 
     expected = [[1], [0], [1], [0], [1], [0], [1], [0], [1], [0]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.01)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
-    training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
-    w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, 1, 100000, 0.01, testing_data, testing_expected, Accuracy, 1)
+    # matrix_based_arrays, expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
+    sorted_arrays = []
+    sorted_expected = []
+    for _ in range(0, len(matrix_based_arrays)):
+        random_index = random.randint(0, len(matrix_based_arrays)-1)
+        sorted_arrays.append(matrix_based_arrays[random_index])
+        sorted_expected.append(expected[random_index])
+        del matrix_based_arrays[random_index]
+        del expected[random_index]
+
+    matrix_based_arrays = sorted_arrays
+    expected = sorted_expected
+    
+    print('Training data:', len(matrix_based_arrays))
+
+
+    testing_data = []
+    testing_expected = []
+
+    for i in range(ceil(len(matrix_based_arrays)*(split_percentage)), len(matrix_based_arrays)):
+        testing_data.append(matrix_based_arrays[i])
+        testing_expected.append(expected[i])
+    
+    # elegi 70% para training y 30% para testing
+    testing_data = add_noise(testing_data, 0.1)
+
+
+
+    w_min, test_errors, all_errors, rows = network.train(matrix_based_arrays, expected, 1, 4000, 0.01, testing_data, testing_expected, Accuracy, 1)
+
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
@@ -44,6 +73,18 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
         print('input: ')
         print(np.array(testing_data[i]).reshape(7, -1))
         print('output: ', results[i], 'expected: ', testing_expected[i])
+
+
+    iteraciones_all = [i * 5 for i in range(1, len(all_errors) + 1)]
+    iteraciones_test = [i * 5 for i in range(1, len(test_errors) + 1)]
+    plt.plot(iteraciones_all, all_errors, label='Training Errors')
+    plt.plot(iteraciones_test, test_errors, label='Testing Errors')
+    plt.grid()
+    plt.title('Error by Epoch in Parity Function with Noise Testing ')
+    plt.xlabel('Epoch')
+    plt.ylabel('Error')
+    plt.legend()
+    plt.show()
 
 
 
@@ -159,10 +200,14 @@ def split_data(data_set, expected, percentage):
 def add_noise(data_set, percentage):
     new_data_set = []
     for i in range(0, len(data_set)):
+        numbers = 0
         new_data_set.append(data_set[i])
         for j in range(0, len(data_set[i])):
             if np.random.random() < percentage:
+                numbers += 1
                 new_data_set[i][j] = 1 - new_data_set[i][j]
+        print(f"Added noise to {numbers} numbers")
+
     return new_data_set
 
 def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metric, epochs, expected, classes_qty, split, noise):
@@ -200,14 +245,14 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, metr
 
 
 
-print('2 2 1 XOR')
-test_xor([2, 2, 1])
+# print('2 2 1 XOR')
+# test_xor([2, 2, 1])
 # print('2 2 2 2 1 XOR')
 # test_xor([2, 2, 2, 2, 1])
 
 
-# print('35 2 1 PARITY')
-# test_parity([35, 2, 1], 3, 0.8)
+print('35 2 1 PARITY')
+test_parity([35, 2, 1], 1, 0.7)
 # print('35 2 2 2 2 2 1 PARITY')
 # test_parity([35, 2, 2, 2, 2, 2, 1], 1, 0.8)
 # # Duplicate data set
