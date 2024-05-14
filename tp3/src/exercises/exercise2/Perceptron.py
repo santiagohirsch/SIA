@@ -189,7 +189,11 @@ class Perceptron():
         self.weights = weights
         results = np.array([])
         for i in range(0, len(test_set)):
-            excitement = self.excitement(test_set[i])
+            copy = []
+            copy.append(1)
+            for j in range(0, len(test_set[i])):
+                copy.append(test_set[i][j])
+            excitement = self.excitement(copy)
             results = np.append(results, self.activation(excitement))
         self.weights = initial_weights
         return results

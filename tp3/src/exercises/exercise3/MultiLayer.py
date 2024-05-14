@@ -102,7 +102,10 @@ class MultiLayer:
         min_error = sys.maxsize
         all_weights = [self.layers[-1].get_weights()]
         all_errors = []
+        testing_errors = []
         epoch = 0
+        w_min = None
+        
         while min_error > epsilon and epoch < max_epochs:
             training_copy = training_set.copy()
             for _ in range(0, batch):
@@ -122,6 +125,7 @@ class MultiLayer:
             if (epoch % 10 == 0 and epoch != 0):
                 # print(f"Epoch: {epoch}, Error: {error}")
                 all_errors.append(error)
+                testing_errors.append(self.calculate_error(testing_data, testing_expected))
                 # for metric_name, metric in metric_functions.items():
                 #     training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
                 #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
@@ -129,14 +133,15 @@ class MultiLayer:
 
             epoch += 1
         all_errors.append(min_error)
+        testing_errors.append(self.calculate_error(testing_data, testing_expected))
 
 
-        errors_df = pd.DataFrame({'Epoch': [i*10 for i in range(len(all_errors))], 'Error': all_errors})
-        errors_df.to_csv(f'parity.csv', index=False)
-        for metric_name, metric in metric_functions.items():
-            test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
-            print(f"Test {metric_name}: {test_metrics}")
-        print(pd.DataFrame(metrics_data))
+        # errors_df = pd.DataFrame({'Epoch': [i*10 for i in range(len(all_errors))], 'Error': all_errors})
+        # errors_df.to_csv(f'batch_{batch}.csv', index=False)
+        # for metric_name, metric in metric_functions.items():
+        #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
+        #     print(f"Test {metric_name}: {test_metrics}")
+        # print(pd.DataFrame(metrics_data))
         return w_min, all_weights, all_errors, []
     
     def test(self, test_data, weights):

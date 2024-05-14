@@ -1,0 +1,7 @@
+{
+    "learning_rate": 0.01,
+    "activation_function": "tanh",
+    "batch": 1,
+    "epochs": 100,
+    "epsilon": 0.0
+}

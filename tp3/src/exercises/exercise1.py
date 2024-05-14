@@ -33,12 +33,10 @@ def compute_error(weights, output):
     return error_count/len(input)
 
 
-def simple_percepton():
-    learning_rate = 0.1
+def simple_percepton(learning_rate = 0.1, limit = 200):
     i = 0
     w = initialize_weights()
     ws.append(w)
-    limit = 200
     error = None
     min_error = sys.maxsize
     w_min = None
@@ -60,7 +58,7 @@ def simple_percepton():
     return w_min,errors
 
 
-w_min, errors = simple_percepton()
+w_min, errors = simple_percepton(0.1, 200)
 
 # # Extract the weights for plotting the decision boundary
 # w0 = w_min[0]
@@ -90,9 +88,9 @@ w_min, errors = simple_percepton()
 
 
 # Plot the error rate
-plt.plot(errors)
-plt.xlabel('Iterations')
-plt.ylabel('Error Rate')
-plt.title('Error Rate vs Iterations')
-plt.grid()
-plt.show()
+# plt.plot(errors)
+# plt.xlabel('Iterations')
+# plt.ylabel('Error Rate')
+# plt.title('Error Rate vs Iterations')
+# plt.grid()
+# plt.show()

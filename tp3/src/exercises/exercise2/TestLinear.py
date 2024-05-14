@@ -5,14 +5,26 @@ from Perceptron import Perceptron
 from GradientDescent import GradientDescent
 import MathFunctions
 
-def TestLinear():
+math_functions = {
+    'linear': MathFunctions.LINEAR,
+    'tanh': MathFunctions.TAN_H,
+    'sigmoid': MathFunctions.SIGMOID
+}
+
+math_functions_derivatives = {
+    'linear': MathFunctions.LINEAR_DERIVATIVE,
+    'tanh': MathFunctions.TAN_H_DERIVATIVE,
+    'sigmoid': MathFunctions.SIGMOID_DERIVATIVE
+}
+
+def TestLinear(learning_rate = 0.01, batch = 1 ,epochs = 5000, epsilon = 0.0, math_function = 'linear'):
     df = pd.read_csv("TP3-ej2-conjunto.csv")
     training_set = df[['x1', 'x2', 'x3']]
     expected = df['y']
     
-    perceptron = Perceptron(3,GradientDescent, 0.01, MathFunctions.LINEAR, MathFunctions.LINEAR_DERIVATIVE)
+    perceptron = Perceptron(3,GradientDescent, learning_rate, math_functions.get(math_function), math_functions_derivatives.get(math_function))
     # training_data, training_expected, testing_data, testing_expected = split_data(training_set.values.tolist(), expected.values.tolist(), 0.8)
-    w_min, errors = perceptron.train(training_set.values.tolist(), expected.values.tolist(), 1, 5000, 0.0)
+    w_min, errors = perceptron.train(training_set.values.tolist(), expected.values.tolist(), batch, epochs, epsilon)
     training_errors = []
     for i in range(len(errors)):
         training_error = {

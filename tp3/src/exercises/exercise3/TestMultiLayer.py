@@ -14,11 +14,11 @@ import random
 TAN_H = (lambda x: np.tanh(0.8 * x) )
 TAN_H_DERIVATIVE = (lambda x: (1 - np.tanh(x) ** 2)* 0.8)
 
-def test_xor(neurons_per_layer):
+def test_xor(neurons_per_layer, learning_rate, batch = 1, epochs = 100000, epsilon = 0.01):
     input = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
     output_xor = [[-1], [1], [1], [-1]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
-    w_min, all_weights, all_errors, rows = network.train(input, output_xor, 4, 1500, 0.001, input, output_xor, Accuracy, 1)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, learning_rate)
+    w_min, all_weights, all_errors, rows = network.train(input, output_xor, batch, epochs, epsilon, input, output_xor, Accuracy, 1)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
@@ -28,11 +28,11 @@ def test_xor(neurons_per_layer):
         print('input: ', input[i], 'output: ', results[i], 'expected: ', output_xor[i])
 
 
-def test_parity(neurons_per_layer, expansion_factor, split_percentage):
+def test_parity(neurons_per_layer, expansion_factor, split_percentage, learning_rate = 0.1, batch = 1, epochs = 100000, epsilon = 0.01):
     matrix_based_arrays = load_data()
 
     expected = [[1], [0], [1], [0], [1], [0], [1], [0], [1], [0]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, learning_rate)
     matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
     # matrix_based_arrays, expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
     sorted_arrays = []
@@ -61,17 +61,17 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
     testing_data = add_noise(testing_data, 0.2)
 
 
-    w_min, test_errors, all_errors, rows = network.train(matrix_based_arrays, expected, 1, 10000, 0.01, testing_data, testing_expected, Accuracy, 1)
+    w_min, test_errors, all_errors, rows = network.train(matrix_based_arrays, expected, batch, epochs, epsilon, testing_data, testing_expected, Accuracy, 1)
 
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
     
-    # results = network.test(testing_data, w_min)
-    # for i in range(0, len(testing_data)):
-    #     print('input: ')
-    #     print(np.array(testing_data[i]).reshape(7, -1))
-    #     print('output: ', results[i], 'expected: ', testing_expected[i])
+    results = network.test(testing_data, w_min)
+    for i in range(0, len(testing_data)):
+        print('input: ')
+        print(np.array(testing_data[i]).reshape(7, -1))
+        print('output: ', results[i], 'expected: ', testing_expected[i])
 
 
     # iteraciones_all = [i * 5 for i in range(1, len(all_errors) + 1)]
@@ -87,7 +87,7 @@ def test_parity(neurons_per_layer, expansion_factor, split_percentage):
 
 
 
-def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_percentage):
+def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_percentage, learning_rate = 0.1, batch = 1, epochs = 100000, epsilon = 0.01):
     matrix_based_arrays = load_data()
 
     expected = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -100,8 +100,8 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
                 [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]]
-    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, 0.1)
-    # matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
+    network = MultiLayer(neurons_per_layer, TAN_H, TAN_H_DERIVATIVE, TAN_H, TAN_H_DERIVATIVE, learning_rate)
+    matrix_based_arrays, expected = expand_data(matrix_based_arrays, expected, expansion_factor)
     # SEPARATING DATA INTO TRAINING AND TESTING AND ADDING NOISE    
     # training_data, training_expected, testing_data, testing_expected = split_data(matrix_based_arrays, expected, split_percentage)
     # w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, 1, 100000, 0.01, testing_data, testing_expected, Accuracy, 10)
@@ -118,15 +118,15 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
         del matrix_based_arrays[random_index]
         del expected[random_index]
     
-    matrix_based_arrays = sorted_arrays
+    matrix_based_arrays = copy.deepcopy(sorted_arrays)
     expected = sorted_expected
     
     testing_data = add_noise(matrix_based_arrays, noise_percentage)
-    for i in range(0, len(matrix_based_arrays)):
-        print('input: ')
-        print(np.array(matrix_based_arrays[i]).reshape(7, -1))
-        print('expected: ', expected[i])
-    training_data = matrix_based_arrays
+    # for i in range(0, len(matrix_based_arrays)):
+    #     print('input: ')
+    #     print(np.array(matrix_based_arrays[i]).reshape(7, -1))
+    #     print('expected: ', expected[i])
+    training_data = copy.deepcopy(matrix_based_arrays)
     training_expected = expected
     testing_expected = expected
 
@@ -145,16 +145,16 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
     #     print()
     #     print('expected training: ', training_expected[i])
 
-    training_data = load_data()
+    # training_data = load_data()
     # TRAINING ALL THE DIGITS AND THEN TESTING ALL THE DIGITS WITH NOISE
-    w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, 1, 20000, 1, testing_data, testing_expected, Accuracy, 10)
+    w_min, all_weights, all_errors, rows = network.train(training_data, training_expected, batch, epochs, epsilon, testing_data, testing_expected, Accuracy, 10)
 
     # for epoch in range(len(all_errors)):
     #     print(f"Epoch {epoch+1}: Error = {all_errors[epoch]}")
 
 
     #matrix_based_arrays = add_noise(matrix_based_arrays, noise_percentage)
-    print('Testing data:', len(matrix_based_arrays))
+    # print('Testing data:', len(matrix_based_arrays))
     testing_data = add_noise(testing_data, 0)
 
     results = network.test(testing_data, w_min)
@@ -166,7 +166,7 @@ def test_digits(neurons_per_layer, expansion_factor, split_percentage, noise_per
             print(round(results[i][j], 4), end=' ')
         print()
         print('expected: ', testing_expected[i])
-        # print('error is: ', np.sum(np.abs(np.array(results[i]) - np.array(expected[i]))))
+        print('error is: ', np.sum(np.abs(np.array(results[i]) - np.array(expected[i]))))
 
     # TRAINING WITH AND WITHOUT NOISE
     # original_matrix_based_arrays = matrix_based_arrays
@@ -282,8 +282,8 @@ def calculate_metric(neurons_per_layer, expansion_factor, split_percentage, epoc
 # test_xor([2, 2, 2, 2, 1])
 
 
-print('35 2 1 PARITY')
-test_parity([35, 2, 1], 1, 0.7)
+# print('35 2 1 PARITY')
+# test_parity([35, 2, 1], 1, 0.7)
 # print('35 2 2 2 2 2 1 PARITY')
 # test_parity([35, 2, 2, 2, 2, 2, 1], 1, 0.8)
 # # Duplicate data set
