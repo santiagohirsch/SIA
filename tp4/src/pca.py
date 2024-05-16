@@ -31,10 +31,17 @@ def pca():
     load_vector = load_vector/np.linalg.norm(load_vector, axis=1)[:, np.newaxis]
     # bi_plot(fitted_data, COUNTRIES, load_vector, HEADER[1:])
 
-    # BOXPLOT
+    # BOXPLOT - NORMALIZED DATA
     df = pd.DataFrame(DATA).astype(float)
     df = df.apply(lambda x: (x - np.mean(x)) / np.std(x), axis=0)
     box_plot(df.values.tolist(), HEADER[1:])
+
+    # BOXPLOT - RAW DATA
+    box_plot(DATA, HEADER[1:])
+
+    # PC1 INDEX BAR PLOT
+    pc1 = fitted_data[:, 0]
+    # pc1_index_bar_plot(pc1, COUNTRIES)
 
     
 
@@ -59,7 +66,7 @@ def bi_plot(fitted_data, countries, load_vector, vars):
     plt.show()
 
 def box_plot(data, header):
-    df = pd.DataFrame(data, columns=header)
+    df = pd.DataFrame(data, columns=header).astype(float)
     plt.figure(figsize=(10, 10))
     box = plt.boxplot(df.values, patch_artist=True)
     
@@ -71,6 +78,14 @@ def box_plot(data, header):
     plt.xticks(range(1, len(header) + 1), header, rotation=45)
     plt.title('Boxplot')
     plt.grid(True, axis='y')
+    plt.show()
+
+def pc1_index_bar_plot(pc1, countries):
+    plt.figure(figsize=(10, 10))
+    plt.bar(countries, pc1, color='skyblue')
+    plt.xticks(rotation=45)
+    plt.title('PC1 Index')
+    plt.grid(axis='y')
     plt.show()
 
 
