@@ -20,7 +20,7 @@ class Kohonen:
         neighbours = []
 
         # Redondear radius al entero más cercano
-        radius_int = round(radius)
+        radius_int = int(radius)
 
         for i in range(-radius_int, radius_int + 1):
             if x + i < 0 or x + i >= self.neurons_qty:
