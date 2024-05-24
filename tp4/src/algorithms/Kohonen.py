@@ -1,4 +1,5 @@
-from src.neurons.KohonenNeuron import KohonenNeuron
+import math
+from neurons.KohonenNeuron import KohonenNeuron
 import numpy as np
 
 class Kohonen:
@@ -17,11 +18,14 @@ class Kohonen:
 
     def get_neighbours(self, x, y, radius):
         neighbours = []
-        
-        for i in range(-radius, radius + 1):
+
+        # Redondear radius al entero más cercano
+        radius_int = round(radius)
+
+        for i in range(-radius_int, radius_int + 1):
             if x + i < 0 or x + i >= self.neurons_qty:
                 continue
-            for j in range(-radius, radius + 1):
+            for j in range(-radius_int, radius_int + 1):
                 if i == 0 and j == 0:
                     continue
                 if y + j < 0 or y + j >= self.neurons_qty:
@@ -30,16 +34,17 @@ class Kohonen:
                 if distance <= radius:
                     neighbours.append(self.layer[y + j][x + i])
 
+
         return neighbours
     
     def get_winner_neuron(self, input):
         neuron = self.layer[0][0]
-        neuron_similarity = self.similarity(neuron, input)
+        neuron_similarity = self.similarity(neuron.get_weights(), input)
 
         for i in range(self.neurons_qty):
             for j in range(self.neurons_qty):
                 current_neuron = self.layer[i][j]
-                current_similarity = self.similarity(current_neuron, input)
+                current_similarity = self.similarity(current_neuron.get_weights(), input)
                 if current_similarity < neuron_similarity:
                     neuron = current_neuron
                     neuron_similarity = current_similarity
@@ -54,8 +59,8 @@ class Kohonen:
     def train(self, inputs, first_learning_rate, first_radius):
         iterations = 500 * self.neurons_qty
         for i in range(iterations):
-            learning_rate = first_learning_rate * (1 - i / iterations)
-            radius = first_radius * (1 - i / iterations)
+            learning_rate = first_learning_rate * math.exp(-i / iterations)
+            radius = first_radius * math.exp(-i / iterations)
             if radius < 1:
                 radius = 1
             for input in inputs:
@@ -63,5 +68,7 @@ class Kohonen:
                 neighbours = self.get_neighbours(neuron.get_x(), neuron.get_y(), radius)
                 for neighbour in neighbours:
                     self.update_weights(neighbour, input, learning_rate)
+
+        return self.layer
 
         
