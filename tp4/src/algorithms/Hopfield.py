@@ -1,5 +1,5 @@
 import numpy as np
-import src.algorithms.HopfieldNeuron as HopfieldNeuron
+from neurons.HopfieldNeuron import HopfieldNeuron
 
 class Hopfield:
     def __init__(self,  patterns: list[list[int]], input_state: list[int]):
@@ -24,7 +24,7 @@ class Hopfield:
     
             
     def get_weights_matrix(self):
-        matrix = np.zeros(self.n)
+        matrix = []
         for neuron in self.neurons:
             matrix.append(neuron.get_weights())
         return matrix
@@ -38,17 +38,16 @@ class Hopfield:
 
     def energy(self,weights,states):
         energy = 0
-        for i in enumerate(len(weights[0])):
-            for j in enumerate(len(weights[0])):
+        for i in range(len(weights[0])):
+            for j in range(len(weights[0])):
                 if i < j:
                     energy += weights[i][j] * states[i] * states[j]
         return -1 * energy
 
     def train(self, epochs: int):
         energy_array = []
-        for epoch in range(epochs):
-            for neuron in self.neurons:
-                i = self.neurons.index(neuron)
+        for _ in range(epochs):
+            for i, neuron in enumerate(self.neurons):
                 net = 0
                 for j, other_neuron in enumerate(self.neurons):
                     if i == j:
