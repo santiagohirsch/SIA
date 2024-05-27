@@ -19,26 +19,24 @@ def invert(letter):
     return np.multiply(letter, -1)
 
 def hopfield(letters):
-    # input_state = add_noise(letters[4], 0.1)
+    input_state = add_noise(letters[16], 0)
     # input_state = invert(letters[1])]
-    aux = np.array(letters[20])
-    aux[aux == -1] = 0
-    aux = aux.reshape(5, 5)
-    print(aux)
-    network = Hopfield(letters[17:21], letters[20])
-    final = network.train(1000)
-    final = np.array(final)
-    matrix = final.reshape(5, 5)
-    matrix[matrix == -1] = 0
-
-    # Mostrar la matriz
-    print(matrix)
-    # df = pd.DataFrame({'Epoch': range(1, len(energy_array)+1), 'Energy': energy_array})
-    # df.to_csv('energy_per_epoch.csv', index=False)
+    combo = []
+    combo.append(letters[3])
+    combo.append(letters[6])
+    combo.append(letters[14])
+    combo.append(letters[16])
+    network = Hopfield(combo, input_state)
+    energy_array = network.train(1000)
+    df = pd.DataFrame({'Epoch': range(0, len(energy_array)), 'Energy': energy_array})
+    df.to_csv('energy_per_epoch.csv', index=False)
 
 def plot_energy_per_epoch():
     df = pd.read_csv('energy_per_epoch.csv')
     df.plot(x='Epoch', y='Energy', title='Energy per epoch', xlabel='Epoch', ylabel='Energy')
+    plt.xticks(range(0,df['Epoch'].max() + 1,1))
+    df['Energy'] = df['Energy'].astype(int)
+    
     plt.show()
 
 def plot_letters():
@@ -99,11 +97,16 @@ def ortogonality_combos():
         max_v = np.max(np.abs(orto_matrix))
         max_dot_product.append((max_v,np.count_nonzero(np.abs(orto_matrix) == max_v)/2,combo))
 
-    avg_dot_product.sort(key=lambda x: x[0])
-    max_dot_product.sort(key=lambda x: x[0],reverse=True)
-    print(f'Average dot product\n{avg_dot_product}')
+    # Ordenar avg_dot_product de menor a mayor
+    avg_dot_product = sorted(avg_dot_product, key=lambda x: x[0], reverse=True)
 
+    # Crear un diccionario para buscar el valor max_dot_product correspondiente al combo
+    max_dot_product_dict = {item[2]: item for item in max_dot_product}
+
+
+    print(f'Average dot product\n{avg_dot_product}')
     print(f'Max dot product\n{max_dot_product}')
+
 
 hopfield(parse_letters())
 # ortogonality_combos()
