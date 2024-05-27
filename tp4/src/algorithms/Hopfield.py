@@ -47,16 +47,16 @@ class Hopfield:
     def train(self, epochs: int):
         energy_array = []
         energy_array.append(self.energy(self.get_weights_matrix(), self.get_states()))
-        print("Initial Energy: ", energy_array[0])
+        # print("Initial Energy: ", energy_array[0])
         prev_states = self.get_states()
         prev_prev_states = []
         final = np.array(self.get_states())
         matrix = final.reshape(5, 5)
         matrix[matrix == -1] = 0
-        print(matrix)
+        # print(matrix)
         while(epochs > 0):
             epochs -= 1
-            print("Epochs :",epochs)
+            # print("Epochs :",epochs)
             for i, neuron in enumerate(self.neurons):
                 net = 0
                 for j, other_neuron in enumerate(self.neurons):
@@ -75,18 +75,18 @@ class Hopfield:
                 final = np.array(self.get_states())
                 matrix = final.reshape(5, 5)
                 matrix[matrix == -1] = 0
-                print(matrix)
+                # print(matrix)
                 energy_array.append(self.energy(self.get_weights_matrix(), self.get_states()))
-                for energy in energy_array:
-                    print(energy)
-                return energy_array
+                # for energy in energy_array:
+                    # print(energy)
+                return energy_array, self.get_states()
             prev_prev_states = prev_states
             prev_states = self.get_states()
             final = np.array(self.get_states())
             matrix = final.reshape(5, 5)
             matrix[matrix == -1] = 0
-            print(matrix)
+            # print(matrix)
             energy_array.append(self.energy(self.get_weights_matrix(), self.get_states()))
             
-        return energy_array
+        return energy_array, self.get_states()
     

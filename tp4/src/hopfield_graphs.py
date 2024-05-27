@@ -19,17 +19,35 @@ def invert(letter):
     return np.multiply(letter, -1)
 
 def hopfield(letters):
-    input_state = add_noise(letters[16], 0)
-    # input_state = invert(letters[1])]
     combo = []
-    combo.append(letters[3])
-    combo.append(letters[6])
-    combo.append(letters[14])
-    combo.append(letters[16])
-    network = Hopfield(combo, input_state)
-    energy_array = network.train(1000)
-    df = pd.DataFrame({'Epoch': range(0, len(energy_array)), 'Energy': energy_array})
-    df.to_csv('energy_per_epoch.csv', index=False)
+    combo.append(letters[5])
+    combo.append(letters[8])
+    combo.append(letters[20])
+    combo.append(letters[23])
+    accuracies = []
+    stds = []
+    for i in np.arange(0, 1, 0.1):
+        successes = 0
+        for _ in range(1000):
+            if(_ % 1000 == 0):
+                print(f'Noise: {i} - Iteration: {_}')
+            input_state = add_noise(letters[23], i)
+            network = Hopfield(combo, input_state)
+            energy_array, states = network.train(1000)
+            if np.array_equal(states, letters[23]):
+                successes += 1
+        p = successes / 1000
+        accuracies.append(p)
+        stds.append(p*(1-p))
+    # input_state = invert(letters[1])]
+    # df = pd.DataFrame({'Epoch': range(0, len(energy_array)), 'Energy': energy_array})
+    # df.to_csv('energy_per_epoch.csv', index=False)
+    plt.title(f'Recognition accuracy of X over noise after 1000 iterations')
+    plt.xlabel('Amount of noise')
+    plt.ylabel('Recognition accuracy')
+    plt.grid()
+    plt.errorbar(np.arange(0, 1, 0.1), accuracies, yerr=stds)
+    plt.show()
 
 def plot_energy_per_epoch():
     df = pd.read_csv('energy_per_epoch.csv')
