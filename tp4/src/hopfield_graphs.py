@@ -1,3 +1,5 @@
+import array
+import itertools
 from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
@@ -17,12 +19,22 @@ def invert(letter):
     return np.multiply(letter, -1)
 
 def hopfield(letters):
-    input_state = add_noise(letters[4], 0.1)
-    # input_state = invert(letters[1])
-    network = Hopfield(letters[3:7], input_state)
-    energy_array = network.train(5)
-    df = pd.DataFrame({'Epoch': range(1, len(energy_array)+1), 'Energy': energy_array})
-    df.to_csv('energy_per_epoch.csv', index=False)
+    # input_state = add_noise(letters[4], 0.1)
+    # input_state = invert(letters[1])]
+    aux = np.array(letters[20])
+    aux[aux == -1] = 0
+    aux = aux.reshape(5, 5)
+    print(aux)
+    network = Hopfield(letters[17:21], letters[20])
+    final = network.train(1000)
+    final = np.array(final)
+    matrix = final.reshape(5, 5)
+    matrix[matrix == -1] = 0
+
+    # Mostrar la matriz
+    print(matrix)
+    # df = pd.DataFrame({'Epoch': range(1, len(energy_array)+1), 'Energy': energy_array})
+    # df.to_csv('energy_per_epoch.csv', index=False)
 
 def plot_energy_per_epoch():
     df = pd.read_csv('energy_per_epoch.csv')
@@ -66,7 +78,35 @@ def calculate_best_combo():
             print(f"Letter {chr(ord('A') + letter_index)} matches with letters {', '.join(chr(ord('A') + index) for index in matching_letters)}")
     # print(np.reshape(combos, (len(letters), len(letters))))
 
-# hopfield(parse_letters())
+def ortogonality_combos():
+    letters = parse_letters()
+    map = {}
+    for i, letter in enumerate(letters):
+        map[chr(ord('A') + i)] = letter
+    combos = itertools.combinations(map, 4)
+
+    avg_dot_product = []
+    max_dot_product = []
+
+ 
+    for combo in combos:
+        group = np.array([map[letter] for letter in combo])
+        orto_matrix = group.dot(group.T)
+        np.fill_diagonal(orto_matrix, 0)
+        print(f'{combo}\n{orto_matrix}\n----------------')
+        row,_ = orto_matrix.shape
+        avg_dot_product.append((np.abs(orto_matrix).sum() / (orto_matrix.size - row),combo))
+        max_v = np.max(np.abs(orto_matrix))
+        max_dot_product.append((max_v,np.count_nonzero(np.abs(orto_matrix) == max_v)/2,combo))
+
+    avg_dot_product.sort(key=lambda x: x[0])
+    max_dot_product.sort(key=lambda x: x[0],reverse=True)
+    print(f'Average dot product\n{avg_dot_product}')
+
+    print(f'Max dot product\n{max_dot_product}')
+
+hopfield(parse_letters())
+# ortogonality_combos()
 # plot_energy_per_epoch()
 # plot_letters()
-calculate_best_combo()
+# calculate_best_combo()
