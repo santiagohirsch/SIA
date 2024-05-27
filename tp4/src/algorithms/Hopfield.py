@@ -1,8 +1,8 @@
 import numpy as np
-from neurons.HopfieldNeuron import HopfieldNeuron
+from algorithms.HopfieldNeuron import HopfieldNeuron
 
 class Hopfield:
-    def __init__(self,  patterns: list[list[int]], input_state: list[int]):
+    def __init__(self,  patterns, input_state):
         self.patterns = patterns
         self.neurons = []
         for i, state in enumerate(input_state):
@@ -46,7 +46,11 @@ class Hopfield:
 
     def train(self, epochs: int):
         energy_array = []
-        for _ in range(epochs):
+        prev_states = self.get_states()
+        prev_prev_states = []
+        while(epochs > 0):
+            epochs -= 1
+            print("Epochs :",epochs)
             for i, neuron in enumerate(self.neurons):
                 net = 0
                 for j, other_neuron in enumerate(self.neurons):
@@ -60,5 +64,11 @@ class Hopfield:
                         neuron.set_state(-1)
                     else :
                         print("Error: state was 0")
+            
+            if np.array_equal(prev_states, self.get_states()) and prev_prev_states == prev_states:
+                return self.get_states()
+            prev_prev_states = prev_states
+            prev_states = self.get_states()
             energy_array.append(self.energy(self.get_weights_matrix(), self.get_states()))
-        return energy_array
+        return self.get_states()
+    
