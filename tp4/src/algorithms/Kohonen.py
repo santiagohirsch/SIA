@@ -32,7 +32,7 @@ class Kohonen:
                     continue
                 distance = (i ** 2 + j ** 2) ** 0.5
                 if distance <= radius:
-                    neighbours.append(self.layer[y + j][x + i])
+                    neighbours.append(self.layer[x + i][y + j])
 
 
         return neighbours
@@ -59,8 +59,8 @@ class Kohonen:
     def train(self, inputs, first_learning_rate, first_radius):
         iterations = 500 * self.neurons_qty
         for i in range(iterations):
-            learning_rate = first_learning_rate * math.exp(-i / iterations)
-            radius = first_radius * math.exp(-i / iterations)
+            learning_rate = first_learning_rate/(i + 1)#* math.exp(-i / iterations)
+            radius = first_radius * (iterations - i)/iterations#math.exp(-i / iterations)
             if radius < 1:
                 radius = 1
             for input in inputs:
