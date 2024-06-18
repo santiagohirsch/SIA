@@ -1,0 +1,10 @@
+{
+    "learning_rate": 0.1,
+    "batch": 1,
+    "epochs": 50000,
+    "epsilon": 0.0,
+    "type": "parity",
+    "neurons_per_layer": [35, 10, 10],
+    "expansion": 3,
+    "split": 0.8
+}
