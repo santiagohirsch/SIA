@@ -32,8 +32,10 @@ class Layer(ABC):
     
     def backward(self, deltas, epoch):
         deltas = np.multiply(self.activation_derivative(self.excitement), deltas)
-        input_error = np.dot(deltas, np.delete(self.weights, 0, axis=0).T)
-        self.weights += self.optimizer.calculate(self.input, deltas, epoch) # revisar metodos de optimizacion
+        input_error = np.dot(deltas, self.weights.T)
+        weight_error = np.dot(self.input.T, deltas)
+        # self.weights += self.optimizer.calculate(weight_error, epoch) # revisar metodos de optimizacion
+        self.weights += self.learning_rate * weight_error
         return input_error
     
     def backward_no_store(self, deltas):

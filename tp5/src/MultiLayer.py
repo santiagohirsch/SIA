@@ -1,14 +1,10 @@
-import random
-import sys
 import numpy as np
-import pandas as pd
-from Intermediate import Intermediate
-from Output import Output
 from Accuracy import Accuracy
 from F1 import F1
 from Precision import Precision
 from Recall import Recall
-from tp5.src.Layer import Layer
+from Layer import Layer
+from Adam import Adam
 
 metric_functions = {
 'F1': F1,
@@ -22,12 +18,14 @@ class MultiLayer:
         self.layers = []
         self.activation_function = activation_function
         self.activation_derivative = activation_derivative
+        self.loss_function = (lambda x, y: np.mean(np.power(x - y, 2)))
+        self.loss_derivative = (lambda x, y: y - x)
         self.learning_rate = learning_rate
-        self.optimizer = optimizer
+        self.optimizer = Adam()
         for i in range(0, len(neurons_per_layer) - 1):
-            input_qty = neurons_per_layer[i] + 1
+            input_qty = neurons_per_layer[i]
             output_qty = neurons_per_layer[i + 1]
-            self.layers.append(Layer(input_qty, output_qty, learning_rate, optimizer, activation_function, activation_derivative, weights))
+            self.layers.append(Layer(input_qty, output_qty, learning_rate, self.optimizer, activation_function, activation_derivative, weights))
         
         # for i in range(0, len(neurons_per_layer) - 1):
         #     if i == len(neurons_per_layer) - 2:
@@ -45,7 +43,7 @@ class MultiLayer:
     def forward_propagation(self, input):
         for layer in self.layers:
             input_copy = []
-            input_copy.append(1)
+            input_copy.append(1) # SACAR BIAS?
             for i in range(0, len(input)):
                 input_copy.append(input[i])
             input = layer.activate(input_copy)
@@ -105,9 +103,10 @@ class MultiLayer:
         #         error += ((expected[i][j] - output[j]) ** 2) / 2
         # return error
         error = 0
-        result = self.test_forward_propagation(data)[0]
+        result = self.test(data)
         for i in range(0, len(result)):
             count = 0
+            result[i] = result[i].round().astype(int)
             for j in range(0, len(result[i])):
                 if result[i][j] != expected[i][j]:
                     count += 1
@@ -128,114 +127,47 @@ class MultiLayer:
             weights.append(layer.get_weights())
         return weights
     
-    def train(self, training_data, expected_data, batch, max_epochs, epsilon, testing_data, testing_expected, metric, classes_qty):
-        # f1 = []
-        # accuracy = []
-        # precision = []
-        # recall = []
-
-        metrics_data = {metric_name: [] for metric_name in metric_functions.keys()}  # Inicializa el diccionario con listas vacías para cada métrica
+    def train(self, training_data, expected_data, max_epochs, testing_data, testing_expected):
 
         training_set = np.array(training_data)
         expected_set = np.array(expected_data)
-        min_error = sys.maxsize
-        all_weights = [self.layers[-1].get_weights()]
         all_errors = []
-        testing_errors = []
+        pixel_errors = []
+        computed_error = None
         epoch = 0
-        w_min = None
         
-        while min_error > epsilon and epoch < max_epochs:
-            training_copy = training_set.copy()
-            for _ in range(0, batch):
-                m = np.random.randint(0, len(training_copy))
-                training_copy = np.delete(training_copy, m, 0)
-                self.forward_propagation(training_set[m])
-                self.back_propagation(expected_set[m])
-                self.set_delta_w()
-            we = self.update_weights()
-            error = self.calculate_error(training_set, expected_set)
-            # print("Epoch: ", epoch, "Error: ", error)
-            if error < min_error:
-                min_error = error
-                w_min = we
-            all_weights.append(we)
-        
-            if (epoch % 10 == 0 and epoch != 0):
-                # print(f"Epoch: {epoch}, Error: {error}")
-                all_errors.append(error)
-                testing_errors.append(self.calculate_error(testing_data, testing_expected))
-                # for metric_name, metric in metric_functions.items():
-                #     training_metrics = self.calculate_metrics(training_data, expected_data, metric, w_min, classes_qty)
-                #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
-                #     metrics_data[metric_name].append({"epoch": epoch, "training": training_metrics, "test": test_metrics})
+        while epoch < max_epochs:
+            err = 0
+            for i in range(0, len(training_set)):
+                output = training_set[i]
+                for layer in self.layers:
+                    output = layer.activate(output)
+                err += self.loss_function(expected_set[i], output)
+                error = self.loss_derivative(expected_set[i], output)
+                for layer in reversed(self.layers):
+                    error = layer.backward(error, epoch)
+            err /= len(training_set)
+            computed_error = self.calculate_error(testing_data, testing_expected)
+            
+            print(f'Epoch: {epoch} - Error: {computed_error} ')
+            
+            if i % 100 == 0:
+                all_errors.append(err)
+                pixel_errors.append(computed_error)
 
+            if computed_error == 0:
+                break  
+            
             epoch += 1
-        all_errors.append(min_error)
-        testing_errors.append(self.calculate_error(testing_data, testing_expected))
-
-
-        # errors_df = pd.DataFrame({'Epoch': [i*10 for i in range(len(all_errors))], 'Error': all_errors})
-        # errors_df.to_csv(f'batch_{batch}.csv', index=False)
-        # for metric_name, metric in metric_functions.items():
-        #     test_metrics = self.calculate_metrics(testing_data, testing_expected, metric, w_min, classes_qty)
-        #     print(f"Test {metric_name}: {test_metrics}")
-        # print(pd.DataFrame(metrics_data))
-        return w_min, all_weights, all_errors, []
-    
-    def test(self, test_data, weights):
+        return all_errors , pixel_errors
+        
+        
+    def test(self, test_data):
         test_set = np.array(test_data)
         results = []
         for i in range(0, len(test_set)):
-            results.append(self.test_forward_propagation(test_set[i], weights))
+            output = test_set[i]
+            for layer in self.layers:
+                output = layer.activate(output)
+            results.append(output)
         return results
-    
-    def get_predictions(self, results):
-        predictions = []
-        for i, result in enumerate(results):
-            if result > 0.5:
-                predictions.append(i)
-        return predictions
-    
-    def get_expecteds(self, expected):
-        expecteds = []
-        for i, result in enumerate(expected):
-            if result == 1:
-                expecteds.append(i)
-        return expecteds
-            
-    def confusion_matrix(self, results, expected, classes_qty):
-        TP = 0
-        FP = 0
-        FN = 0
-        TN = 0
-        for i in range(len(results)):
-            tp_idx = 0
-            fp_idx = 0
-            fn_idx = 0
-            predictions = self.get_predictions(results[i])
-            expecteds = self.get_expecteds(expected[i])
-            for prediction in predictions:
-                if prediction in expecteds:
-                    tp_idx += 1
-                    TP += 1
-                else:
-                    fp_idx += 1
-                    FP += 1
-            for expected_value in expecteds:
-                if expected_value not in predictions:
-                    fn_idx += 1
-                    FN += 1
-            TN += classes_qty - (tp_idx + fp_idx + fn_idx)
-        return TN,FN,FP,TP
-
-    def calculate_metrics(self, set, expected, metric, weights, classes_qty):
-        true_positive = 0
-        true_negative = 0
-        false_positive = 0
-        false_negative = 0
-        results = []
-        for i in range(0, len(set)):
-            results.append(self.test_forward_propagation(set[i], weights))
-        true_negative, false_negative, false_positive, true_positive = self.confusion_matrix(results, expected, classes_qty)
-        return metric.calculate(true_positive, true_negative, false_positive, false_negative)
