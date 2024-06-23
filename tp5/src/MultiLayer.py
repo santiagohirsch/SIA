@@ -21,12 +21,12 @@ class MultiLayer:
         self.loss_function = (lambda x, y: np.mean(np.power(x - y, 2)))
         self.loss_derivative = (lambda x, y: y - x)
         self.learning_rate = learning_rate
-        self.optimizer = Adam(learning_rate)
+        self.optimizer = Adam
         for i in range(0, len(neurons_per_layer) - 1):
             input_qty = neurons_per_layer[i] #+ 1
             output_qty = neurons_per_layer[i + 1]
-            # optimizer = self.optimizer(learning_rate)
-            self.layers.append(Layer(input_qty, output_qty, learning_rate, self.optimizer, activation_function, activation_derivative, weights))
+            optimizer = self.optimizer(learning_rate)
+            self.layers.append(Layer(input_qty, output_qty, learning_rate, optimizer, activation_function, activation_derivative, weights))
         
         # for i in range(0, len(neurons_per_layer) - 1):
         #     if i == len(neurons_per_layer) - 2:
@@ -70,8 +70,8 @@ class MultiLayer:
 
     def update_weights(self, epoch, deltas_w):
         for i in range(len(self.layers)):
-            # self.layers[i].weights += self.optimizer.calculate(deltas_w[i], epoch) # revisar metodos de optimizacion
-            self.layers[i].weights += self.learning_rate * deltas_w[i]
+            self.layers[i].update_weights(deltas_w[i], epoch) # revisar metodos de optimizacion
+            # self.layers[i].weights += self.learning_rate * deltas_w[i]
     #     new_weights = []
     #     for layer in self.layers:
     #         layer.update_weights()
@@ -90,12 +90,9 @@ class MultiLayer:
     #             input_copy.append(input[i])
     #         input = layer.test_activate(input_copy)
     #     return input
-        result = []
-        for i in range(len(input)):
-            output = input[i]
-            for layer in self.layers:
-                output = layer.activate(output)
-            result.append(output)
+        result = input
+        for layer in self.layers:
+            result = layer.activate(result)
         return result
 
     

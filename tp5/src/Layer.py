@@ -23,9 +23,12 @@ class Layer(ABC):
 
     def activate(self, input):
         # input = np.insert(input, 0, 1, axis=1)
+        # print("input shape", input.shape)
+        # print("weights shape", self.weights.shape)
         self.excitement = np.dot(input, self.weights)
         self.input = input
         self.output = self.activation_function(self.excitement)
+        # print("--------------------")
         return self.output
     
     def backward(self, deltas, epoch):
@@ -61,7 +64,6 @@ class Layer(ABC):
     #         for j in range(0, self.output_qty):
     #             self.delta_w[i][j] += self.learning_rate * self.deltas[j] * self.input[i]
 
-    # def update_weights(self):
-    #     self.weights = np.add(self.weights, self.delta_w)
-    #     self.delta_w = np.zeros((self.input_qty, self.output_qty))
+    def update_weights(self, errors, epoch):
+        self.weights += self.optimizer.calculate(errors, epoch)
         
