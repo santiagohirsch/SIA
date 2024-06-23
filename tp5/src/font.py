@@ -50,6 +50,37 @@ def get_characters():
 
     return flatten_characters
 
+def convert_to_5x7_matrix():
+    matrix_5x7 = []
+    for char in font3:
+        char_matrix = []
+        for value in char:
+            # Convert the value to a 7-bit binary string, remove the '0b' prefix, and pad with zeros
+            binary_string = bin(value)[2:].zfill(5)
+            # Convert the binary string to a list of integers (0 or 1)
+            row = [int(bit) for bit in binary_string]
+            char_matrix.append(replace_zeros_with_minus_one(row))
+        matrix_5x7.append(char_matrix)
+
+    for row in matrix_5x7:
+        print(row)
+
+    return matrix_5x7
+
+def convert_to_35_array():
+    arrays_35 = []
+    for char in font3:
+        char_array = []
+        for value in char:
+            # Convert the value to a 7-bit binary string, remove the '0b' prefix, and pad with zeros
+            binary_string = bin(value)[2:].zfill(5)
+            # Convert the binary string to a list of integers (0 or 1)
+            row = [int(bit) for bit in binary_string]
+            char_array.extend(replace_zeros_with_minus_one(row))
+        arrays_35.append(char_array)
+    return arrays_35
+
+
 def replace_zeros_with_minus_one(array):
     numbers = []
     for i in array:
