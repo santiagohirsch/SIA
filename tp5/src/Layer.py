@@ -22,11 +22,9 @@ class Layer(ABC):
         self.optimizer = optimizer
 
     def activate(self, input):
+        # input = np.insert(input, 0, 1, axis=1)
         self.excitement = np.dot(input, self.weights)
         self.input = input
-        # self.activation_values = np.array([])
-        # for i in range(0, self.output_qty):
-        #     self.activation_values = np.append(self.activation_values, self.activation_function(self.excitement[i]))
         self.output = self.activation_function(self.excitement)
         return self.output
     
@@ -34,8 +32,8 @@ class Layer(ABC):
         deltas = np.multiply(self.activation_derivative(self.excitement), deltas)
         input_error = np.dot(deltas, self.weights.T)
         weight_error = np.dot(self.input.T, deltas)
-        # self.weights += self.optimizer.calculate(weight_error, epoch) # revisar metodos de optimizacion
-        self.weights += self.learning_rate * weight_error
+        self.weights += self.optimizer.calculate(weight_error, epoch) # revisar metodos de optimizacion
+        # self.weights += self.learning_rate * weight_error
         return input_error
     
     def backward_no_store(self, deltas):

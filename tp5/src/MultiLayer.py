@@ -21,11 +21,12 @@ class MultiLayer:
         self.loss_function = (lambda x, y: np.mean(np.power(x - y, 2)))
         self.loss_derivative = (lambda x, y: y - x)
         self.learning_rate = learning_rate
-        self.optimizer = Adam()
+        self.optimizer = Adam
         for i in range(0, len(neurons_per_layer) - 1):
             input_qty = neurons_per_layer[i]
             output_qty = neurons_per_layer[i + 1]
-            self.layers.append(Layer(input_qty, output_qty, learning_rate, self.optimizer, activation_function, activation_derivative, weights))
+            optimizer = self.optimizer(learning_rate)
+            self.layers.append(Layer(input_qty, output_qty, learning_rate, optimizer, activation_function, activation_derivative, weights))
         
         # for i in range(0, len(neurons_per_layer) - 1):
         #     if i == len(neurons_per_layer) - 2:
@@ -103,7 +104,7 @@ class MultiLayer:
         #         error += ((expected[i][j] - output[j]) ** 2) / 2
         # return error
         error = 0
-        result = self.test(data)
+        result = self.test(data)[0]
         for i in range(0, len(result)):
             count = 0
             result[i] = result[i].round().astype(int)
@@ -149,7 +150,8 @@ class MultiLayer:
             err /= len(training_set)
             computed_error = self.calculate_error(testing_data, testing_expected)
             
-            print(f'Epoch: {epoch} - Error: {computed_error} ')
+            if epoch % 10000 == 0:
+                print(f'Epoch: {epoch} - Error: {computed_error} ')
             
             if i % 100 == 0:
                 all_errors.append(err)
@@ -163,7 +165,7 @@ class MultiLayer:
         
         
     def test(self, test_data):
-        test_set = np.array(test_data)
+        test_set = [test_data]
         results = []
         for i in range(0, len(test_set)):
             output = test_set[i]
