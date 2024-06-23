@@ -21,12 +21,12 @@ class MultiLayer:
         self.loss_function = (lambda x, y: np.mean(np.power(x - y, 2)))
         self.loss_derivative = (lambda x, y: y - x)
         self.learning_rate = learning_rate
-        self.optimizer = Adam
+        self.optimizer = Adam(learning_rate)
         for i in range(0, len(neurons_per_layer) - 1):
-            input_qty = neurons_per_layer[i]
+            input_qty = neurons_per_layer[i] #+ 1
             output_qty = neurons_per_layer[i + 1]
-            optimizer = self.optimizer(learning_rate)
-            self.layers.append(Layer(input_qty, output_qty, learning_rate, optimizer, activation_function, activation_derivative, weights))
+            # optimizer = self.optimizer(learning_rate)
+            self.layers.append(Layer(input_qty, output_qty, learning_rate, self.optimizer, activation_function, activation_derivative, weights))
         
         # for i in range(0, len(neurons_per_layer) - 1):
         #     if i == len(neurons_per_layer) - 2:
@@ -43,11 +43,12 @@ class MultiLayer:
 
     def forward_propagation(self, input):
         for layer in self.layers:
-            input_copy = []
-            input_copy.append(1) # SACAR BIAS?
-            for i in range(0, len(input)):
-                input_copy.append(input[i])
-            input = layer.activate(input_copy)
+            # input_copy = []
+            # input_copy.append(1) # SACAR BIAS?
+            # for i in range(0, len(input)):
+            #     input_copy.append(input[i])
+
+            input = layer.activate(input)
         return input
     
     def back_propagation(self, deltas):
@@ -63,12 +64,14 @@ class MultiLayer:
             last_delta_to_return = new_deltas
             deltas_w.append(delta_w)
 
-        return deltas_w.reverse(), last_delta_to_return
+        deltas_w.reverse()
+        return deltas_w, last_delta_to_return
 
 
     def update_weights(self, epoch, deltas_w):
         for i in range(len(self.layers)):
-            self.layers[i].weights += self.optimizer.calculate(epoch, deltas_w[i]) # revisar metodos de optimizacion
+            # self.layers[i].weights += self.optimizer.calculate(deltas_w[i], epoch) # revisar metodos de optimizacion
+            self.layers[i].weights += self.learning_rate * deltas_w[i]
     #     new_weights = []
     #     for layer in self.layers:
     #         layer.update_weights()
