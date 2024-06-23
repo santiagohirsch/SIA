@@ -1,5 +1,5 @@
 import numpy as np
-from src.MultiLayer import MultiLayer
+from MultiLayer import MultiLayer
 
 
 class Autoencoder:
@@ -12,7 +12,7 @@ class Autoencoder:
     def __init__(self, encoder:MultiLayer, decoder:MultiLayer):
         self.encoder = encoder
         self.decoder = decoder
-        self.latent_space_size = decoder.layers[0].input_qty - 1
+        self.latent_space_size = decoder.layers[0].input_qty #- 1
         self.last_delta_size = decoder.layers[0].output_qty
 
     def get_latent_space_input(self, dataset):
@@ -23,6 +23,8 @@ class Autoencoder:
     
     def train(self, input, epochs, loss=None):
         for epoch in range(0, epochs):
+            if epoch % 1000 == 0:
+                print("Epoch: ", epoch)
             data = self.encoder.forward_propagation(input)
 
             mean = data[:, : data.shape[1] // 2]
@@ -34,22 +36,33 @@ class Autoencoder:
 
             reconstruction_error = self.reconstruction_error(input, data, mean, desviation)
 
-            if reconstruction_error < loss and loss is not None:
+            if loss is not None and reconstruction_error < loss:
                 break
 
             decoder_deltas_w, decoder_last_delta = self.decoder.back_propagation(input - data)
 
-            encoder_reconstruction_deltas_w = self.encoder.back_propagation(np.concatenate(np.dot(decoder_last_delta, np.ones(self.last_delta_size, self.latent_space_size)), np.dot(decoder_last_delta, eps * np.ones(self.last_delta_size, self.latent_space_size))))
+            aux = np.ones([self.last_delta_size, self.latent_space_size])
+            dot1 = np.dot(decoder_last_delta, aux)
+            dot2 = np.dot(decoder_last_delta, eps * aux)
+            encoder_reconstruction_deltas_w, _ = self.encoder.back_propagation(
+                np.concatenate(
+                    (dot1, dot2), axis=1
+                )
+            )
 
-            encoder_loss_error = self.encoder.back_propagation(np.concatenate(mean, 0.5 * (np.exp(desviation) ** 2 - 1)))
+            encoder_loss_error, _ = self.encoder.back_propagation(
+                np.concatenate(
+                    (mean, 0.5 * (np.exp(desviation) ** 2 - 1)), axis=1
+                )
+            )
 
             encoder_deltas_w = []
-
             for d1, d2 in zip(encoder_reconstruction_deltas_w, encoder_loss_error):
                 encoder_deltas_w.append(d1 + d2)
 
-            self.decoder.update_weights(epoch, decoder_deltas_w)
+            
             self.encoder.update_weights(epoch, encoder_deltas_w) # TODO: check if this is correct
+            self.decoder.update_weights(epoch, decoder_deltas_w)
 
     def reparametrize(self, mean, desviation):
         eps = np.random.standard_normal()
@@ -59,3 +72,6 @@ class Autoencoder:
         rec = 0.5 * np.mean((input - output) ** 2)
         kl = -0.5 * np.mean(1 + desviation - mean ** 2 - np.exp(desviation))
         return rec + kl
+    
+    def test(self, input): 
+        return self.decoder.test_forward_propagation(input)
