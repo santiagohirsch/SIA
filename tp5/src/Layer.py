@@ -38,7 +38,8 @@ class Layer(ABC):
     
     def backward_no_store(self, deltas):
         deltas = np.multiply(self.activation_derivative(self.excitement), deltas)
-        input_error = np.dot(deltas, np.delete(self.weights, 0, axis=0).T)
+        # input_error = np.dot(deltas, np.delete(self.weights, 0, axis=0).T)
+        input_error = np.dot(deltas, self.weights.T)
         delta_w = -np.dot(self.input.T, deltas)
         return input_error, deltas, delta_w
     
