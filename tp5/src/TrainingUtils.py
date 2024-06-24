@@ -38,3 +38,10 @@ class TrainingUtils:
             batches.append(last_batch)
 
         return batches
+
+    @staticmethod
+    def add_noise(data, noise_factor):
+        for i in range(len(data)):
+            if random.random() < noise_factor:
+                data[i] = data[i] * -1
+        return data
