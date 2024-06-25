@@ -32,7 +32,7 @@ def test_autoencoder():
     #     print("i: ", i)
     #     print("random: ", random.random())  
     #     print('-'*50)
-    network = MultiLayer([35, 30, 20, 15, 10, 5, 2, 5, 10, 15, 20, 30, 35], TAN_H, TAN_H_DERIVATIVE, 0.0001, Adam())
+    network = MultiLayer([35, 30, 20, 15, 10, 5, 2, 5, 10, 15, 20, 30, 35], TAN_H, TAN_H_DERIVATIVE, 0.01, Adam())
 
     characters = convert_to_35_array()
 
@@ -46,11 +46,26 @@ def test_autoencoder():
 
     network.train(training_set, training_expected, 100000, test_set, test_expected)
 
+
+
     # test
     expected_set = test_set.copy()
     for i in range(len(test_set)):
-        test_set[i] = TrainingUtils.add_noise(test_set[i], 0.1)
+        test_set[i] = TrainingUtils.add_noise(test_set[i], 0.15)
     out = network.test(test_set)[0]
+
+    errors = 0
+    for i in range(len(test_set)):
+        distinct = 0
+        print("Out", out[i]), print("Expected", expected_set[i])
+        for j in range(len(test_set)):
+            if (out[i][j] > 0 and expected_set[i][j] < 0) or (out[i][j] < 0 and expected_set[i][j] > 0):
+                distinct += 1
+        print("Distinct: ", distinct)
+        if distinct > 2:
+            errors += 1
+
+    print("Errors: ", errors)
     
     for i in range(len(test_set)):
         fig, axs = plt.subplots(1, 3, figsize=(15, 5))
@@ -131,4 +146,16 @@ def plot_latent_space_from_csv(csv_path):
 # csv_path = 'latent_space.csv'
 # save_latent_space_to_csv(test_autoencoder(), csv_path)
 # plot_latent_space_from_csv(csv_path)
-test_autoencoder()
+# test_autoencoder()
+
+noise_array = [0, 0.05, 0.1, 0.15, 0.2]
+correct_results = [32,27,24,15,11]
+
+plt.plot(noise_array, correct_results)
+plt.grid(color = 'gray')
+plt.xlabel('Noise Level')
+plt.ylabel('Correct Results')
+plt.title('Effect of Noise Level on Correct Results')
+plt.xticks(np.arange(0, 0.21, 0.05))
+plt.yticks(np.arange(0, max(correct_results)+1, 5))
+plt.show()

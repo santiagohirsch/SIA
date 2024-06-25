@@ -153,11 +153,11 @@ class MultiLayer:
             if epoch % 10000 == 0:
                 print(f'Epoch: {epoch} - Error: {computed_error} ')
             
-            if i % 100 == 0:
+            if epoch % 1000 == 0:
                 all_errors.append(err)
                 pixel_errors.append(computed_error)
 
-            if computed_error == 0:
+            if computed_error == 1:
                 break  
             
             epoch += 1
