@@ -33,40 +33,6 @@ font3 = [
     [0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f]    # 0x7f, DEL
 ]
 
-def get_characters():
-    flatten_characters = []
-    for i in range(32):
-        # Get the binary representation for each hex value as a list of integers
-        binary_representation = [list(map(int, format(value, '08b'))) for value in font3[i]]
-        
-        # Extract the 4th to 8th elements from each sub-list
-        for j in range(len(binary_representation)):
-            binary_representation[j] = binary_representation[j][1:8]
-        
-        # Flatten the list of lists into a single list
-        flattened_list = [item for sublist in binary_representation for item in sublist]
-        
-        flatten_characters.append(replace_zeros_with_minus_one(flattened_list))
-
-    return flatten_characters
-
-def convert_to_5x7_matrix():
-    matrix_5x7 = []
-    for char in font3:
-        char_matrix = []
-        for value in char:
-            # Convert the value to a 7-bit binary string, remove the '0b' prefix, and pad with zeros
-            binary_string = bin(value)[2:].zfill(5)
-            # Convert the binary string to a list of integers (0 or 1)
-            row = [int(bit) for bit in binary_string]
-            char_matrix.append(replace_zeros_with_minus_one(row))
-        matrix_5x7.append(char_matrix)
-
-    for row in matrix_5x7:
-        print(row)
-
-    return matrix_5x7
-
 def convert_to_35_array():
     arrays_35 = []
     for char in font3:
