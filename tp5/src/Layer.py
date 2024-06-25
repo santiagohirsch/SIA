@@ -21,14 +21,17 @@ class Layer(ABC):
         self.excitement = None
         self.optimizer = optimizer
 
-    def activate(self, input):
-        # input = np.insert(input, 0, 1, axis=1)
-        # print("input shape", input.shape)
-        # print("weights shape", self.weights.shape)
+    def activate_bias(self, input):
+        input = np.insert(input, 0, 1, axis=1)
         self.excitement = np.dot(input, self.weights)
         self.input = input
         self.output = self.activation_function(self.excitement)
-        # print("--------------------")
+        return self.output
+    
+    def activate(self, input):
+        self.excitement = np.dot(input, self.weights)
+        self.input = input
+        self.output = self.activation_function(self.excitement)
         return self.output
     
     def backward(self, deltas, epoch):
@@ -41,8 +44,8 @@ class Layer(ABC):
     
     def backward_no_store(self, deltas):
         deltas = np.multiply(self.activation_derivative(self.excitement), deltas)
-        # input_error = np.dot(deltas, np.delete(self.weights, 0, axis=0).T)
-        input_error = np.dot(deltas, self.weights.T)
+        input_error = np.dot(deltas, np.delete(self.weights, 0, axis=0).T)
+        # input_error = np.dot(deltas, self.weights.T)
         delta_w = -np.dot(self.input.T, deltas)
         return input_error, deltas, delta_w
     

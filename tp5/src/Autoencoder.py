@@ -12,7 +12,7 @@ class Autoencoder:
     def __init__(self, encoder:MultiLayer, decoder:MultiLayer):
         self.encoder = encoder
         self.decoder = decoder
-        self.latent_space_size = decoder.layers[0].input_qty #- 1
+        self.latent_space_size = decoder.layers[0].input_qty - 1
         self.last_delta_size = decoder.layers[0].output_qty
 
     def get_latent_space_input(self, dataset):

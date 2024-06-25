@@ -23,7 +23,7 @@ class MultiLayer:
         self.learning_rate = learning_rate
         self.optimizer = Adam
         for i in range(0, len(neurons_per_layer) - 1):
-            input_qty = neurons_per_layer[i] #+ 1
+            input_qty = neurons_per_layer[i] + 1
             output_qty = neurons_per_layer[i + 1]
             optimizer = self.optimizer(learning_rate)
             self.layers.append(Layer(input_qty, output_qty, learning_rate, optimizer, activation_function, activation_derivative, weights))
@@ -48,7 +48,7 @@ class MultiLayer:
             # for i in range(0, len(input)):
             #     input_copy.append(input[i])
 
-            input = layer.activate(input)
+            input = layer.activate_bias(input)
         return input
     
     def back_propagation(self, deltas):
@@ -92,7 +92,7 @@ class MultiLayer:
     #     return input
         result = input
         for layer in self.layers:
-            result = layer.activate(result)
+            result = layer.activate_bias(result)
         return result
 
     
@@ -150,7 +150,7 @@ class MultiLayer:
             err /= len(training_set)
             computed_error = self.calculate_error(testing_data, testing_expected)
             
-            if epoch % 10000 == 0:
+            if epoch % 5000 == 0:
                 print(f'Epoch: {epoch} - Error: {computed_error} ')
             
             if epoch % 1000 == 0:
@@ -170,6 +170,6 @@ class MultiLayer:
         for i in range(0, len(test_set)):
             output = test_set[i]
             for layer in self.layers:
-                output = layer.activate(output)
+                output = layer.activate_bias(output)
             results.append(output)
         return results
