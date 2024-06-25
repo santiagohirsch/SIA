@@ -1,3 +1,4 @@
+import colorsys
 from math import ceil
 import random
 from matplotlib import pyplot as plt
@@ -27,7 +28,7 @@ def split_data_by_count(characters, train_count):
 
     return train_set, test_set
 
-def test_autoencoder():
+def test_autoencoder(pixel_errors = False):
     # for i in range(35):
     #     print("i: ", i)
     #     print("random: ", random.random())  
@@ -40,11 +41,27 @@ def test_autoencoder():
 
     training_set = np.array(TrainingUtils.generate_batches(characters.copy(), 32))
     training_expected = training_set.copy()
+    # training_noisy = np.array([TrainingUtils.add_noise(x, 0.1) for x in training_set])
 
     test_set = np.array(characters.copy())
     test_expected = characters.copy()
 
-    network.train(training_set, training_expected, 100000, test_set, test_expected)
+    _, pixel_errors = network.train(training_set, training_expected, 100000, test_set, test_expected)
+
+    if pixel_errors:
+        data = []
+        for i, error in enumerate(pixel_errors):
+            epoch = (i + 1) * 1000  
+            data.append({'epoca': epoch, 'error': error})
+
+        # Crear el DataFrame a partir de la lista de datos
+        df = pd.DataFrame(data)
+
+
+        # Escribir el DataFrame a un archivo CSV
+        csv_path = 'pixel_errors.csv'
+        df.to_csv(csv_path, index=False)
+
 
 
 
@@ -67,29 +84,53 @@ def test_autoencoder():
 
     print("Errors: ", errors)
     
-    for i in range(len(test_set)):
-        fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+    # for i in range(len(test_set)):
+    #     fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
-        print("--------------------------------")
-        print("Input")
-        axs[0].imshow(test_set[i].reshape(7, 5), cmap='gray_r', interpolation='nearest')
-        axs[0].set_title("Input")
-        axs[0].axis('off')
+    #     print("--------------------------------")
+    #     print("Input")
+    #     axs[0].imshow(test_set[i].reshape(7, 5), cmap='gray_r', interpolation='nearest')
+    #     axs[0].set_title("Input")
+    #     axs[0].axis('off')
 
-        print("--------------------------------")
-        print("Output")
-        axs[1].imshow(out[i].reshape(7, 5), cmap='gray_r', interpolation='nearest')
-        axs[1].set_title("Output")
-        axs[1].axis('off')
+    #     print("--------------------------------")
+    #     print("Output")
+    #     axs[1].imshow(out[i].reshape(7, 5), cmap='gray_r', interpolation='nearest')
+    #     axs[1].set_title("Output")
+    #     axs[1].axis('off')
 
-        print("--------------------------------")
-        print("Expected")
-        axs[2].imshow(expected_set[i].reshape(7, 5), cmap='gray_r', interpolation='nearest')
-        axs[2].set_title("Expected")
-        axs[2].axis('off')
+    #     print("--------------------------------")
+    #     print("Expected")
+    #     axs[2].imshow(expected_set[i].reshape(7, 5), cmap='gray_r', interpolation='nearest')
+    #     axs[2].set_title("Expected")
+    #     axs[2].axis('off')
 
-        plt.show()
+    #     plt.show()
     return network
+
+def plot_error_vs_epoch(csv_path):
+    # Cargar datos desde el archivo CSV
+    df = pd.read_csv(csv_path)
+    
+    # Obtener los valores de época y error
+    epochs = df['epoca']
+    errors = df['error']
+    
+    # Crear el gráfico
+    plt.figure(figsize=(10, 6))
+    plt.plot(epochs, errors, linestyle='-', color='b', label='Error vs. Época')
+    
+    # Etiquetas y título
+    plt.xlabel('Época')
+    plt.ylabel('Error')
+    plt.title('Error en función de la Época')
+    
+    # Mostrar la leyenda y grid si es necesario
+    plt.legend()
+    plt.grid(True)
+    
+    # Mostrar el gráfico
+    plt.show()
 
 def save_latent_space_to_csv(network, csv_path):
     middle_layer = network.layers[len(network.layers) // 2]
@@ -108,29 +149,70 @@ def save_latent_space_to_csv(network, csv_path):
     # Save the DataFrame to a CSV file
     pca_df.to_csv(csv_path, index=False)
 
+def generate_distinct_colors(n):
+    colors = []
+    for i in range(n):
+        hue = i / n
+        saturation = 0.7  # Fixed saturation for vibrant colors
+        value = 0.9       # Fixed value for bright colors
+        rgb = colorsys.hsv_to_rgb(hue, saturation, value)
+        hex_color = f'#{int(rgb[0]*255):02x}{int(rgb[1]*255):02x}{int(rgb[2]*255):02x}'
+        colors.append(hex_color)
+    return colors
+
 def plot_latent_space_from_csv(csv_path):
     # Load the data from the CSV file
     pca_df = pd.read_csv(csv_path)
 
+    # Generate 32 distinct colors
+    unique_characters = pca_df['Character'].unique()
+    if len(unique_characters) > 32:
+        raise ValueError("More than 32 unique characters, cannot generate enough distinct colors.")
+    
+    distinct_colors = generate_distinct_colors(32)
+    colors = {char: distinct_colors[i] for i, char in enumerate(unique_characters)}
+
     fig = go.Figure()
 
+    # Add scatter plot trace
     fig.add_trace(go.Scatter(
         x=pca_df['PCA 1'],
         y=pca_df['PCA 2'],
         mode='markers',
-        marker=dict(color='Blue', size=20),
-        text=pca_df['Character'],
+        marker=dict(size=20, color=[colors[char] for char in pca_df['Character']]),
         name='PCA Plot'
     ))
 
-    # Add annotations for character labels
-    for i, row in pca_df.iterrows():
+    # Calculate positions for annotations outside the main scatter area
+    x_max = pca_df['PCA 1'].max()
+    y_min = pca_df['PCA 2'].min()
+    y_max = pca_df['PCA 2'].max()
+
+    # Determine the spacing for the list of labels on the right
+    y_spacing = (y_max - y_min) / len(unique_characters)
+    y_start = y_max
+
+    # Add annotations for character labels at the side of the plot
+    for i, char in enumerate(unique_characters):
+        # Calculate the y position for each label
+        y_pos = y_start - i * y_spacing
+
+        # Add a colored circle as a marker
+        fig.add_trace(go.Scatter(
+            x=[x_max + (x_max * 0.1)],  # Shift annotations to the right of the plot
+            y=[y_pos],
+            mode='markers',
+            marker=dict(size=20, color=colors[char]),
+            showlegend=False
+        ))
+
+        # Add the character label next to the colored circle
         fig.add_annotation(
-            x=row['PCA 1'],
-            y=row['PCA 2'],
-            text=row['Character'],
+            x=x_max + (x_max * 0.15),  # Position label to the right of the circle
+            y=y_pos,
+            text=char,
             showarrow=False,
-            font=dict(size=20, color='black')
+            font=dict(size=15, color='black')
         )
 
     # Customize layout
@@ -138,12 +220,60 @@ def plot_latent_space_from_csv(csv_path):
         title='Scatter plot of latent space',
         xaxis=dict(title='Dimension 1'),
         yaxis=dict(title='Dimension 2'),
+        margin=dict(r=200)  # Add margin to the right for annotations
     )
 
     # Show the plot
     fig.show()
 
-# csv_path = 'latent_space.csv'
+
+def get_latent_space(network, data):
+    middle_layer = network.layers[len(network.layers) // 2]
+    latent_space = []
+
+    for d in data:
+        output = d
+        for layer in network.layers[:len(network.layers) // 2 + 1]:
+            output = layer.activate(output)
+        latent_space.append(output)
+
+    return np.array(latent_space)
+
+def interpolate_vectors(v1, v2, alpha=0.5):
+    return v1 * (1 - alpha) + v2 * alpha
+
+def decode_latent_vector(network, latent_vector):
+    output = latent_vector
+    for layer in network.layers[len(network.layers) // 2 + 1:]:
+        output = layer.activate(output)
+    return output
+
+def save_letter_to_txt(letter, filename):
+    letter_matrix = letter.reshape(7, 5)
+    np.savetxt(filename, letter_matrix, fmt='%d', delimiter='')
+
+def read_letter_from_txt(filename):
+    return np.loadtxt(filename, dtype=int, delimiter='').reshape(7, 5)
+
+def plot_new_letter():
+    network = test_autoencoder()
+    latent_space = get_latent_space(network, convert_to_35_array())
+
+    # Interpolate between two characters
+    character1 = latent_space[0]
+    character2 = latent_space[1]
+
+    new_latent_vector = interpolate_vectors(character1, character2, 0.5)
+    output = decode_latent_vector(network, new_latent_vector)
+
+    plt.imshow(output.reshape(7, 5), cmap='gray_r', interpolation='nearest')
+    plt.title("Interpolated character")
+    plt.axis('off')
+    plt.show()
+
+    save_letter_to_txt((output > 0.5).astype(int), 'new_letter.txt')
+
+# csv_path = 'latent_space2.csv'
 # save_latent_space_to_csv(test_autoencoder(), csv_path)
 # plot_latent_space_from_csv(csv_path)
 # test_autoencoder()
